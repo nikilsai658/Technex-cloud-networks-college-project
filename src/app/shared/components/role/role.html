@@ -1,0 +1,266 @@
+<div class="min-h-screen bg-gray-100 p-6">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-[#2F3E46]">
+      Role Management
+    </h2>
+  </div>
+
+  <!-- Create / Update Form -->
+  <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+
+    <h3 class="text-xl font-semibold mb-5">
+      {{ isEditMode ? 'Update Role' : 'Create Role' }}
+    </h3>
+<!-- ================= FORM ================= -->
+
+<div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+
+  <div class="flex justify-between items-center mb-5">
+
+    <h3 class="text-2xl font-bold text-[#2F3E46]">
+
+      {{ isEditMode ? 'Update Role' : 'Create Role' }}
+
+    </h3>
+
+    <span
+      *ngIf="isEditMode"
+      class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-lg font-semibold">
+
+      Editing Role
+
+    </span>
+
+  </div>
+
+  <form
+    [formGroup]="roleForm"
+    (ngSubmit)="isEditMode ? updateRole() : createRole()">
+
+    <!-- Role Name -->
+    <div class="mb-5">
+
+      <label class="block mb-2 font-semibold">
+        Role Name
+      </label>
+
+      <input
+        type="text"
+        formControlName="name"
+        placeholder="Enter Role Name"
+        class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+      <p
+        class="text-red-500 text-sm mt-1"
+        *ngIf="roleForm.get('name')?.invalid && roleForm.get('name')?.touched">
+
+        Role Name is required.
+
+      </p>
+
+    </div>
+
+    <!-- Access -->
+
+    <h4 class="font-semibold text-lg mb-3">
+      Data Access
+    </h4>
+
+    <div class="grid md:grid-cols-2 gap-4 mb-6">
+
+      <label class="flex items-center gap-2">
+        <input type="checkbox" formControlName="requiresCollege">
+        College Required
+      </label>
+
+      <label class="flex items-center gap-2">
+        <input type="checkbox" formControlName="requiresDepartment">
+        Department Required
+      </label>
+
+      <label class="flex items-center gap-2">
+        <input type="checkbox" formControlName="requiresBranch">
+        Branch Required
+      </label>
+
+      <label class="flex items-center gap-2">
+        <input type="checkbox" formControlName="requiresYear">
+        Year Required
+      </label>
+
+    </div>
+
+    <!-- Buttons -->
+
+    <div class="flex gap-3">
+
+      <button
+        *ngIf="!isEditMode && auth.hasPermission('CREATE_ROLE')"
+        type="submit"
+        class="bg-[#24c0c5] hover:bg-[#1ea9ad] text-white px-6 py-2 rounded-lg">
+
+        Create Role
+
+      </button>
+
+      <button
+        *ngIf="isEditMode && auth.hasPermission('UPDATE_ROLE')"
+        type="submit"
+        class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg">
+
+        Save Changes
+
+      </button>
+
+      <button
+        type="button"
+        (click)="resetForm()"
+        class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
+
+        Cancel
+
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+
+  </div>
+
+  <!-- Role List -->
+
+  <div
+    class="bg-white rounded-xl shadow-lg overflow-hidden"
+    *ngIf="auth.hasPermission('VIEW_ROLE')">
+
+    <div class="overflow-x-auto">
+
+      <table class="min-w-full">
+
+        <thead class="bg-[#2F3E46] text-white">
+
+          <tr>
+
+            <th class="p-4 text-left">Role</th>
+
+            <th class="p-4 text-center">College</th>
+
+            <th class="p-4 text-center">Department</th>
+
+            <th class="p-4 text-center">Branch</th>
+
+            <th class="p-4 text-center">Year</th>
+
+            <th class="p-4 text-center">Actions</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr
+            *ngFor="let role of roles"
+            class="border-b hover:bg-gray-50">
+
+            <td class="p-4 font-medium">
+              {{ role.name }}
+            </td>
+
+            <td class="text-center p-4">
+
+              <span
+                [class]="role.requiresCollege ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
+
+                {{ role.requiresCollege ? '✔' : '✘' }}
+
+              </span>
+
+            </td>
+
+            <td class="text-center p-4">
+
+              <span
+                [class]="role.requiresDepartment ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
+
+                {{ role.requiresDepartment ? '✔' : '✘' }}
+
+              </span>
+
+            </td>
+
+            <td class="text-center p-4">
+
+              <span
+                [class]="role.requiresBranch ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
+
+                {{ role.requiresBranch ? '✔' : '✘' }}
+
+              </span>
+
+            </td>
+
+            <td class="text-center p-4">
+
+              <span
+                [class]="role.requiresYear ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
+
+                {{ role.requiresYear ? '✔' : '✘' }}
+
+              </span>
+
+            </td>
+
+            <td class="p-4">
+
+              <div class="flex justify-center gap-2">
+
+                <button
+                  *ngIf="auth.hasPermission('UPDATE_ROLE')"
+                  (click)="editRole(role)"
+                  class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+
+                  Edit
+
+                </button>
+
+                <button
+                  *ngIf="auth.hasPermission('DELETE_ROLE')"
+                  (click)="deleteRole(role.id)"
+                  class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+
+                  Delete
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+          <tr *ngIf="roles.length === 0">
+
+            <td
+              colspan="6"
+              class="text-center py-6 text-gray-500">
+
+              No Roles Found
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

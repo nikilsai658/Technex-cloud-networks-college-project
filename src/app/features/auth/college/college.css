@@ -1,0 +1,36 @@
+@reference "../../../../styles.css";
+.main-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertical center */
+    align-items: center;     /* Horizontal center */
+    text-align: center;
+    gap: 12px;
+}
+
+.companyname {
+    color: #2F3E46;
+    @apply text-3xl font-bold;
+    margin: 0;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.country-select {
+    width: 320px;
+}
+
+/* PrimeNG Button */
+:host ::ng-deep .p-button {
+    @apply w-[350px] h-12 rounded-lg bg-[#2f3e46f6] font-bold border-none;
+}
+:host ::ng-deep .p-button:hover{
+    @apply bg-[#2f3e46] border-none;
+}

@@ -1,0 +1,277 @@
+<div class="min-h-screen bg-gray-100 p-6">
+
+    <!-- Page Header -->
+
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+
+        <div>
+
+            <h1 class="text-3xl font-bold text-[#2F3E46]">
+                Branch Management
+            </h1>
+
+            <p class="text-gray-500 mt-1">
+                Create, update and manage branches.
+            </p>
+
+        </div>
+
+        <button
+            *ngIf="auth.hasPermission('CREATE_BRANCH')"
+            class="mt-4 md:mt-0 bg-[#24c0c5] hover:bg-[#20aeb2] text-white px-6 py-3 rounded-lg font-semibold shadow">
+
+            + Add Branch
+
+        </button>
+
+    </div>
+
+    <!-- Dashboard Cards -->
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+        <div class="bg-white rounded-xl shadow p-6">
+
+            <p class="text-gray-500">
+                Total Branches
+            </p>
+
+            <h2 class="text-4xl font-bold text-[#2F3E46] mt-2">
+                {{branches.length}}
+            </h2>
+
+        </div>
+
+        <div class="bg-white rounded-xl shadow p-6">
+
+            <p class="text-gray-500">
+                Active Branches
+            </p>
+
+            <h2 class="text-4xl font-bold text-green-600 mt-2">
+                {{branches.length}}
+            </h2>
+
+        </div>
+
+        <div class="bg-white rounded-xl shadow p-6">
+
+            <p class="text-gray-500">
+                Departments
+            </p>
+
+            <h2 class="text-4xl font-bold text-blue-600 mt-2">
+                {{departments.length}}
+            </h2>
+
+        </div>
+
+    </div>
+
+    <!-- Form -->
+
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+
+        <h2 class="text-xl font-bold mb-6">
+
+            {{isEditMode ? 'Update Branch' : 'Create Branch'}}
+
+        </h2>
+
+        <form
+            [formGroup]="branchForm"
+            class="grid md:grid-cols-3 gap-5">
+
+            <div>
+
+                <label class="font-medium">
+                    Branch Name
+                </label>
+
+                <input
+                    type="text"
+                    formControlName="name"
+                    class="w-full border rounded-lg p-3 mt-2">
+
+            </div>
+
+            <div>
+
+                <label class="font-medium">
+                    Branch Code
+                </label>
+
+                <input
+                    type="text"
+                    formControlName="code"
+                    class="w-full border rounded-lg p-3 mt-2">
+
+            </div>
+
+            <div>
+
+                <label class="font-medium">
+                    Department
+                </label>
+
+                <select
+                    formControlName="departmentId"
+                    class="w-full border rounded-lg p-3 mt-2">
+
+                    <option value="">
+                        Select Department
+                    </option>
+
+                    <option
+                        *ngFor="let d of departments"
+                        [value]="d.id">
+
+                        {{d.name}}
+
+                    </option>
+                    <option >
+                        D3
+                    </option>
+
+                </select>
+
+            </div>
+
+        </form>
+
+        <div class="mt-6 flex gap-4">
+
+            <button
+                *ngIf="!isEditMode"
+                (click)="createBranch()"
+                class="bg-[#24c0c5] hover:bg-[#1ea9ad] text-white px-8 py-3 rounded-lg font-semibold">
+
+                Save Branch
+
+            </button>
+
+            <button
+                *ngIf="isEditMode"
+                (click)="updateBranch()"
+                class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold">
+
+                Update Branch
+
+            </button>
+
+            <button
+                (click)="resetForm()"
+                class="bg-gray-500 hover:bg-gray-600 text-white px-8 py-3 rounded-lg">
+
+                Reset
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="bg-white rounded-xl shadow-lg p-5 mb-6">
+
+        <input
+            type="text"
+            placeholder="Search Branch..."
+            class="w-full border rounded-lg p-3">
+
+    </div>
+
+    <!-- Table -->
+
+    <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
+
+        <table class="w-full">
+
+            <thead class="bg-[#2F3E46] text-white">
+
+                <tr>
+
+                    <th class="p-4 text-left">#</th>
+
+                    <th class="p-4 text-left">Branch</th>
+
+                    <th class="p-4 text-left">Code</th>
+
+                    <th class="p-4 text-left">Department</th>
+
+                    <th class="p-4 text-left">Status</th>
+
+                    <th class="p-4 text-center">Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr
+                    *ngFor="let branch of branches; let i=index"
+                    class="border-b hover:bg-gray-50">
+
+                    <td class="p-4">
+                        {{i+1}}
+                    </td>
+
+                    <td class="p-4 font-semibold">
+                        {{branch.name}}
+                    </td>
+
+                    <td class="p-4">
+                        {{branch.code}}
+                    </td>
+
+                    <td class="p-4">
+                        {{branch.departmentName}}
+                    </td>
+
+                    <td class="p-4">
+
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">
+
+                            Active
+
+                        </span>
+
+                    </td>
+
+                    <td class="p-4">
+
+                        <div class="flex justify-center gap-3">
+
+                            <button
+                                *ngIf="auth.hasPermission('UPDATE_BRANCH')"
+                                (click)="editBranch(branch)"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+
+                                Edit
+
+                            </button>
+
+                            <button
+                                *ngIf="auth.hasPermission('DELETE_BRANCH')"
+                                (click)="deleteBranch(branch.id)"
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+
+                                Delete
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

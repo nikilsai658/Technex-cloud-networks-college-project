@@ -1,0 +1,19 @@
+<div class="main-container">
+    <app-logo></app-logo>
+    <h1 class="companyname">Technex Cloud Networks</h1>
+    <span class="companyname">Pvt Ltd</span>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+        <p-select
+            [options]="colleges"
+            formControlName="college"
+            optionLabel="name"
+            [filter]="true"
+            filterBy="name"
+            [showClear]="true"
+            placeholder="Select a Country"
+            class="country-select">
+        </p-select>
+        
+        <p-button label="Go" type="submit" styleClass="go-btn"></p-button>
+    </form>
+</div>

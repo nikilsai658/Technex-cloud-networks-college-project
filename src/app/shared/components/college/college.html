@@ -1,0 +1,340 @@
+<div *ngIf="auth.hasPermission('VIEW_COLLEGE'); else noPermission"
+    class="min-h-screen bg-gray-100 p-6">
+
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
+
+        <div>
+            <h1 class="text-3xl font-bold text-[#2F3E46]">
+                College Management
+            </h1>
+
+            <p class="text-gray-500 mt-1">
+                Create, Update and Manage Colleges
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow px-6 py-4">
+            <p class="text-sm text-gray-500">
+                Total Colleges
+            </p>
+
+            <h2 class="text-3xl font-bold text-[#24c0c5]">
+                {{ colleges?.length || 0 }}
+            </h2>
+
+        </div>
+
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+
+        <!-- ================= LEFT FORM ================= -->
+
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+
+            <h2 class="text-2xl font-bold text-[#2F3E46] mb-6">
+                {{ isEditMode ? 'Update College' : 'Create College' }}
+            </h2>
+
+            <ng-container *ngIf="collegeForm">
+
+                <form [formGroup]="collegeForm">
+
+                    <!-- College Name -->
+
+                    <div class="mb-5">
+
+                        <label class="font-semibold">
+                            College Name
+                        </label>
+
+                        <input
+                            type="text"
+                            formControlName="name"
+                            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                    </div>
+
+                    <!-- College Code -->
+
+                    <div class="mb-5">
+
+                        <label class="font-semibold">
+                            College Code
+                        </label>
+
+                        <input
+                            type="text"
+                            formControlName="code"
+                            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                    </div>
+
+                    <!-- Email -->
+
+                    <div class="mb-5">
+
+                        <label class="font-semibold">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            formControlName="email"
+                            placeholder="college@gmail.com"
+                            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                    </div>
+
+                    <!-- Phone -->
+
+                    <div class="mb-6">
+
+                        <label class="font-semibold">
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="text"
+                            formControlName="phoneNumber"
+                            placeholder="+91 9876543210"
+                            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                    </div>
+
+                    <div class="flex gap-3">
+
+                        <!-- CREATE -->
+
+                        <button
+                            *ngIf="!isEditMode && auth.hasPermission('CREATE_COLLEGE')"
+                            type="button"
+                            (click)="createCollege()"
+                            class="flex-1 bg-[#24c0c5] hover:bg-[#1fb0b5] text-white py-3 rounded-lg font-bold">
+
+                            Create
+
+                        </button>
+
+                        <!-- UPDATE -->
+
+                        <button
+                            *ngIf="isEditMode && auth.hasPermission('UPDATE_COLLEGE')"
+                            type="button"
+                            (click)="updateCollege()"
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold">
+
+                            Update
+
+                        </button>
+
+                        <!-- RESET -->
+
+                        <button
+                            *ngIf="auth.hasPermission('CREATE_COLLEGE') || auth.hasPermission('UPDATE_COLLEGE')"
+                            type="button"
+                            (click)="resetForm()"
+                            class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-bold">
+
+                            Reset
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </ng-container>
+
+        </div>
+
+        <!-- ================= TABLE ================= -->
+
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden">
+
+            <div class="bg-[#2F3E46] text-white px-6 py-4">
+
+                <h2 class="text-xl font-bold">
+                    Colleges List
+                </h2>
+
+            </div>
+
+            <div class="overflow-x-auto">
+
+                <table class="min-w-full">
+
+                    <thead class="bg-gray-100">
+
+                        <tr>
+
+                            <th class="px-5 py-4 text-left">#</th>
+
+                            <th class="px-5 py-4 text-left">College</th>
+
+                            <th class="px-5 py-4 text-left">Code</th>
+
+                            <th class="px-5 py-4 text-left">Email</th>
+
+                            <th class="px-5 py-4 text-left">Phone</th>
+
+                            <th
+                                *ngIf="auth.hasPermission('UPDATE_COLLEGE') || auth.hasPermission('DELETE_COLLEGE')"
+                                class="px-5 py-4 text-center">
+
+                                Actions
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        <tr
+    *ngFor="let college of colleges; let i = index"
+    class="border-b hover:bg-gray-50">
+
+    <!-- Serial Number -->
+    <td class="px-5 py-4">
+        {{ i + 1 }}
+    </td>
+
+    <!-- College Name -->
+    <td class="px-5 py-4 font-semibold">
+        {{ college.name }}
+    </td>
+
+    <!-- College Code -->
+    <td class="px-5 py-4">
+        {{ college.code }}
+    </td>
+
+    <!-- Email -->
+    <td class="px-5 py-4">
+        {{ college.email }}
+    </td>
+
+    <!-- Phone -->
+    <td class="px-5 py-4">
+        {{ college.phoneNumber }}
+    </td>
+
+    <!-- Actions -->
+    <td
+        *ngIf="auth.hasPermission('UPDATE_COLLEGE') || auth.hasPermission('DELETE_COLLEGE')"
+        class="px-5 py-4">
+
+        <div class="flex justify-center gap-3">
+
+            <!-- Edit -->
+            <button
+                *ngIf="auth.hasPermission('UPDATE_COLLEGE')"
+                type="button"
+                (click)="editCollege(college)"
+                class="px-4 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white transition">
+
+                Edit
+
+            </button>
+
+            <!-- Delete -->
+            <button
+                *ngIf="auth.hasPermission('DELETE_COLLEGE')"
+                type="button"
+                (click)="deleteCollege(college.id)"
+                class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition">
+
+                Delete
+
+            </button>
+
+        </div>
+
+    </td>
+
+</tr>
+
+<!-- Empty State -->
+
+<tr *ngIf="colleges?.length === 0">
+
+    <td
+        [attr.colspan]="(auth.hasPermission('UPDATE_COLLEGE') || auth.hasPermission('DELETE_COLLEGE')) ? 6 : 5"
+        class="text-center py-12 text-gray-500 font-medium">
+
+        No Colleges Found
+
+    </td>
+
+</tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+        <!-- ================= END PAGE ================= -->
+
+</div>
+
+<!-- ================= NO PERMISSION ================= -->
+
+<ng-template #noPermission>
+
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+
+        <div class="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
+
+            <div class="flex justify-center mb-6">
+
+                <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-10 h-10 text-red-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"/>
+
+                    </svg>
+
+                </div>
+
+            </div>
+
+            <h2 class="text-3xl font-bold text-[#2F3E46] mb-3">
+
+                Access Denied
+
+            </h2>
+
+            <p class="text-gray-500 mb-8">
+
+                You don't have permission to access the College Management module.
+
+            </p>
+
+            <button
+                routerLink="/dashboard"
+                class="w-full bg-[#24c0c5] hover:bg-[#1ca9ad] text-white font-semibold py-3 rounded-lg transition">
+
+                Go to Dashboard
+
+            </button>
+
+        </div>
+
+    </div>
+
+</ng-template>

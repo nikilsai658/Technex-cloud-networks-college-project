@@ -1,0 +1,71 @@
+<div class="resetpassword">
+    <h1 class="companyname">Technex Cloud Networks </h1>
+    <span class="companyname">Pvt Ltd</span>
+   <form class="form" [formGroup]="Form" (ngSubmit)="onSubmit()">
+     <p-floatlabel>
+        <input
+            pInputText
+            formControlName="fullName"
+            id="on_label"
+            name="text"
+            autocomplete="off" />
+        <label for="on_label" class="p-floatlabel">Username or Email</label>
+    </p-floatlabel>
+     <p-floatlabel>
+        <input
+            pInputText
+            formControlName="firstName"
+            id="on_label"
+            name="text"
+            autocomplete="off" />
+        <label for="on_label" class="p-floatlabel">Username or Email</label>
+    </p-floatlabel>
+    <p-floatlabel>
+        <input
+            pInputText
+            formControlName="middleName"
+            id="on_label"
+            name="text"
+            autocomplete="off" />
+        <label for="on_label" class="p-floatlabel">middle Name</label>
+    </p-floatlabel>
+     <p-floatlabel>
+        <input
+            pInputText
+            formControlName="lastName"
+            id="on_label"
+            name="text"
+            autocomplete="off" />
+        <label for="on_label" class="p-floatlabel">last Name</label>
+    </p-floatlabel>
+     <p-floatlabel>
+        <input
+            pInputText
+            formControlName="phoneNumber"
+            id="on_label"
+            name="number"
+            autocomplete="off" />
+        <label for="on_label" class="p-floatlabel">phoneNumber</label>
+    </p-floatlabel>
+     <p-floatlabel>
+        <input
+            pInputText
+            formControlName="alternatePhoneNumber"
+            id="on_label"
+            name="number"
+            autocomplete="off" />
+        <label for="on_label" class="p-floatlabel">Alternate PhoneNumber</label>
+    </p-floatlabel>
+     <p-floatlabel>
+        <input
+            pInputText
+            formControlName="alternateEmail"
+            id="on_label"
+            name="email"
+            autocomplete="off" />
+        <label for="on_label" class="p-floatlabel">Alternate Email</label>
+    </p-floatlabel>
+
+    <p-button label="submit" type="submit"></p-button>
+</form>
+</div>
