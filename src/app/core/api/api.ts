@@ -125,33 +125,4 @@ GET(url: string, params?: any) {
     )
      
   }
-
-  collegedepartments():Observable<any>{
-    return this.http.get('http://localhost:5000/api/CollegeDepartment');
-  }
-
-  getdepartments( headers: HttpHeaders):Observable<any>{
-    return this.http.get('http://localhost:5000/api/Department',{headers});
-  }
-  getbranches( headers: HttpHeaders):Observable<any>{
-    return this.http.get('http://localhost:5000/api/Branch',{headers});
-  }
-  getusers(headers:HttpHeaders):Observable<any>{
-    return this.http.get('http://localhost:5000/api/User',{headers});
-  }
-  getroles(headers:HttpHeaders):Observable<any>{
-    return this.http.get('http://localhost:5000/api/Role',{headers});
-  }
-  refreshToken(data: any):Observable<any> {
-  return this.http.post( 'http://localhost:5000/api/Auth/refresh-token', data);
-  }
-  Createdepartment(data:any,headers:HttpHeaders):Observable<any>{
-  return this.http.post('http://localhost:5000/api/Department',data,{headers});
-  }
-  editdepartment(id:number,data:any,headers:HttpHeaders):Observable<any>{
-    return this.http.put(`http://localhost:5000/api/Department/${id}`,data,{headers});
-  }
-  deletedepartment(id:number,headers:HttpHeaders):Observable<any>{
-    return this.http.delete(`http://localhost:5000/api/Department/${id}`,{headers})
-  }
 }

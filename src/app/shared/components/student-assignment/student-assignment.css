@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+/* ===========================
+   Root
+=========================== */
+
+:host {
+    @apply block h-screen overflow-hidden bg-gray-100;
+}
+
+.coding-platform {
+    @apply flex flex-col h-screen bg-gray-100;
+}
+
+/* ===========================
+   Header
+=========================== */
+
+.platform-header {
+    @apply flex items-center justify-between h-16 px-6 bg-[#2F3E46] text-white shadow-md border-b border-gray-700;
+}
+
+.header-left {
+    @apply flex items-center gap-4;
+}
+
+.back-btn {
+    @apply w-10 h-10 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 transition cursor-pointer text-lg;
+}
+
+.problem-name {
+    @apply text-xl font-bold;
+}
+
+.problem-id {
+    @apply text-xs text-gray-300 mt-1;
+}
+
+.header-right {
+    @apply flex items-center gap-6;
+}
+
+.header-box {
+    @apply flex flex-col items-center;
+}
+
+.header-label {
+    @apply text-xs uppercase tracking-wide text-gray-300;
+}
+
+.header-value {
+    @apply text-lg font-bold;
+}
+
+/* ===========================
+   Difficulty
+=========================== */
+
+.difficulty-badge {
+    @apply px-3 py-1 rounded-full text-xs font-semibold;
+}
+
+.easy {
+    @apply bg-green-500 text-white;
+}
+
+.medium {
+    @apply bg-yellow-400 text-black;
+}
+
+.hard {
+    @apply bg-red-500 text-white;
+}
+
+/* ===========================
+   Body Layout
+=========================== */
+
+.platform-body {
+    @apply flex flex-1 overflow-hidden;
+}
+
+.problem-panel {
+    width: 40%;
+    @apply bg-white border-r border-gray-200 overflow-y-auto;
+}
+
+.editor-panel {
+    width: 60%;
+    @apply flex flex-col bg-[#1E1E1E];
+}
+
+.problem-content {
+    @apply p-8 space-y-8;
+}
+
+/* ===========================
+   Sections
+=========================== */
+
+.problem-section {
+    @apply pb-8 border-b border-gray-200;
+}
+
+.section-heading {
+    @apply text-xl font-bold text-gray-800 mb-4;
+}
+
+.section-text {
+    @apply text-gray-600 leading-8 text-[15px];
+}
+
+/* ===========================
+   Information Grid
+=========================== */
+
+.info-grid {
+    @apply grid grid-cols-2 gap-5;
+}
+
+.info-item {
+    @apply bg-gray-50 rounded-xl border border-gray-200 p-5 shadow-sm;
+}
+
+.info-item label {
+    @apply block text-xs uppercase tracking-wide text-gray-500 mb-2;
+}
+
+.info-item span {
+    @apply font-semibold text-gray-800 break-all;
+}
+
+/* ===========================
+   Constraints
+=========================== */
+
+.constraint-list {
+    @apply list-disc pl-6 space-y-3 text-gray-700;
+}
+
+.constraint-list strong {
+    @apply text-black;
+}

@@ -103,15 +103,12 @@ export class Course implements OnInit {
         else {
           this.courses = [];
         }
-
         this.cd.detectChanges();
-
       },
 
       error: (err) => {
 
         console.error(err);
-
         this.courses = [];
 
       }

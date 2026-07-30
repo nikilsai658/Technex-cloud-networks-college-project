@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Logo } from '../../../shared/logo/logo';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -6,10 +6,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
 import {PasswordModule} from 'primeng/password';
 import {FormBuilder,Validators} from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthServices } from '../../services/auth/auth-services'
+import { UserStore } from '../../../core/store/user';
 @Component({
   selector: 'app-login',
   standalone:true,
@@ -17,22 +18,31 @@ import { AuthServices } from '../../services/auth/auth-services'
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {
+export class Login implements OnInit{
   Form !:FormGroup;
-   constructor(private fb: FormBuilder, private router:Router,private cookie:CookieService,private auth:AuthServices){
+  collegecode:any;
+   constructor(private fb: FormBuilder, private router:Router,private cookie:CookieService,private auth:AuthServices,private userStore:UserStore,@Inject(PLATFORM_ID) private platformId: Object){
     this.Form=this.fb.group({
       userNameOrEmail: ['',Validators.required],
       password: ['',Validators.required],
-      collegeCode:['c1']
+      collegeCode: ['HISAC', Validators.required]
     });
+    
    }
+    ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.collegecode = localStorage.getItem('collegecode');
+    }
+  }
+     
    onSubmit(){
     if(this.Form.valid){
       this.auth.login(this.Form.value).subscribe({
         next:(res :any)=>{
           const token=res.data.accessToken;
           const refresh=res.data.refreshToken;
-          localStorage.setItem('user', JSON.stringify(res));
+         localStorage.setItem('user', JSON.stringify(res.data));
+          this.userStore.setUser(res.data);
           this.cookie.set('token', token, 7, '/');
           this.cookie.set('refresh', refresh, 7, '/');
          if(res.data.isFirstLogin=== true ){

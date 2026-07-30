@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+.assignment-page{
+  @apply min-h-screen bg-slate-100 p-4 md:p-6 lg:p-8;
+}
+
+.page-header{
+  @apply flex flex-col lg:flex-row justify-between items-center gap-5 mb-8;
+}
+
+.page-title{
+  @apply text-3xl lg:text-4xl font-bold text-[#183153];
+}
+
+.page-subtitle{
+  @apply mt-2 text-gray-500 text-base lg:text-lg;
+}
+
+.total-card{
+  @apply bg-white rounded-2xl shadow-md px-6 py-5 text-lg font-semibold;
+}
+
+.assignment-card{
+  @apply bg-white rounded-3xl shadow border border-gray-200
+         hover:shadow-xl hover:-translate-y-1
+         transition-all duration-300
+         p-6 lg:p-8
+         flex flex-col xl:flex-row
+         justify-between gap-8
+         mb-6;
+}
+
+.card-left{
+  @apply flex flex-1 gap-6;
+}
+
+.assignment-number{
+  @apply w-16 h-16 rounded-full bg-[#2F3E46]
+         text-white text-2xl font-bold
+         flex items-center justify-center
+         flex-shrink-0;
+}
+
+.assignment-content{
+  @apply flex-1;
+}
+
+.assignment-title{
+  @apply text-2xl lg:text-4xl font-bold text-[#183153];
+}
+
+.assignment-description{
+  @apply mt-2 text-gray-500 text-base lg:text-lg;
+}
+
+.assignment-info{
+  @apply grid grid-cols-1
+         sm:grid-cols-2
+         lg:grid-cols-4
+         gap-6
+         mt-8;
+}
+
+.info-item{
+  @apply flex flex-col;
+}
+
+.info-label{
+  @apply text-sm text-gray-500 mb-1;
+}
+
+.info-value{
+  @apply text-xl font-bold;
+}
+
+.pending{
+  @apply text-orange-600 font-semibold;
+}
+
+.easy{
+  @apply inline-flex px-4 py-1 rounded-full
+         bg-green-100 text-green-700
+         text-sm font-semibold;
+}
+
+.medium{
+  @apply inline-flex px-4 py-1 rounded-full
+         bg-yellow-100 text-yellow-700
+         text-sm font-semibold;
+}
+
+.hard{
+  @apply inline-flex px-4 py-1 rounded-full
+         bg-red-100 text-red-700
+         text-sm font-semibold;
+}
+
+.card-right{
+  @apply flex items-center justify-center
+         xl:items-end;
+}
+
+.start-btn{
+  @apply bg-[#2F3E46]
+         hover:bg-[#435861]
+         text-white
+         font-semibold
+         text-lg
+         px-8
+         py-3
+         rounded-xl
+         transition-all
+         duration-300
+         w-full
+         xl:w-auto;
+}
+
+.empty-card{
+  @apply bg-white rounded-2xl shadow
+         text-center py-16;
+}
+
+.empty-text{
+  @apply text-2xl text-gray-500 font-semibold;
+}

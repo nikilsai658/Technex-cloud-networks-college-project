@@ -1,0 +1,329 @@
+<div class="profile-page" *ngIf="user() as u">
+
+  <!-- ================= Header ================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1 class="page-title">
+        My Profile
+      </h1>
+
+      <p class="page-subtitle">
+        Manage your profile and academic information.
+      </p>
+
+    </div>
+
+    <button class="edit-btn">
+
+      Edit Profile
+
+    </button>
+
+  </div>
+
+  <!-- ================= Main Layout ================= -->
+
+  <div class="profile-layout">
+
+    <!-- ================= Left Profile Card ================= -->
+
+    <div class="left-card">
+
+      <!-- Profile Image -->
+
+      <div class="image-section">
+
+        <div class="profile-image-box">
+
+          <img
+            *ngIf="selectedImage"
+            [src]="selectedImage"
+            class="profile-image">
+
+          <div
+            *ngIf="!selectedImage"
+            class="profile-placeholder">
+
+            {{u.name.charAt(0).toUpperCase()}}
+
+          </div>
+
+        </div>
+
+        <label class="upload-image-btn">
+
+          Upload Photo
+
+          <input
+            hidden
+            type="file"
+            accept="image/*"
+            (change)="onImageSelected($event)">
+
+        </label>
+
+      </div>
+
+      <!-- Name -->
+
+      <h2 class="student-name">
+
+        {{u.name}}
+
+      </h2>
+
+      <!-- Badge -->
+
+      <span class="status-badge">
+
+        Active Student
+
+      </span>
+
+      <hr>
+
+      <!-- Details -->
+
+      <div class="left-details">
+
+        <div class="detail-row">
+
+          <span>User ID</span>
+
+          <strong>{{u.userId}}</strong>
+
+        </div>
+
+        <div class="detail-row">
+
+          <span>Email</span>
+
+          <strong>{{u.email}}</strong>
+
+        </div>
+
+        <div class="detail-row">
+
+          <span>Role</span>
+
+          <strong>{{u.role}}</strong>
+
+        </div>
+
+        <div class="detail-row">
+
+          <span>College</span>
+
+          <strong>{{u.collegeName}}</strong>
+
+        </div>
+
+        <div class="detail-row">
+
+          <span>Department</span>
+
+          <strong>{{u.departmentName}}</strong>
+
+        </div>
+
+        <div class="detail-row">
+
+          <span>Branch</span>
+
+          <strong>{{u.branchName}}</strong>
+
+        </div>
+
+        <div class="detail-row">
+
+          <span>Year</span>
+
+          <strong>{{u.yearNumber}}</strong>
+
+        </div>
+
+        <div class="detail-row">
+
+          <span>Semester</span>
+
+          <strong>{{u.semester}}</strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= Right Side ================= -->
+
+    <div class="right-section">
+
+      <!-- ================= Personal Information ================= -->
+
+      <div class="info-card">
+
+        <h2 class="card-title">
+
+          Personal Information
+
+        </h2>
+
+        <div class="info-grid">
+
+          <div class="input-group">
+
+            <label>Name</label>
+
+            <input
+              [value]="u.name"
+              readonly>
+
+          </div>
+
+          <div class="input-group">
+
+            <label>Email</label>
+
+            <input
+              [value]="u.email"
+              readonly>
+
+          </div>
+
+          <div class="input-group">
+
+            <label>Role</label>
+
+            <input
+              [value]="u.role"
+              readonly>
+
+          </div>
+
+          <div class="input-group">
+
+            <label>User ID</label>
+
+            <input
+              [value]="u.userId"
+              readonly>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= Academic ================= -->
+
+      <div class="info-card">
+
+        <h2 class="card-title">
+
+          Academic Information
+
+        </h2>
+
+        <div class="info-grid">
+
+          <div class="input-group">
+
+            <label>College</label>
+
+            <input
+              [value]="u.collegeName"
+              readonly>
+
+          </div>
+
+          <div class="input-group">
+
+            <label>Department</label>
+
+            <input
+              [value]="u.departmentName"
+              readonly>
+
+          </div>
+
+          <div class="input-group">
+
+            <label>Branch</label>
+
+            <input
+              [value]="u.branchName"
+              readonly>
+
+          </div>
+
+          <div class="input-group">
+
+            <label>Year</label>
+
+            <input
+              [value]="u.yearNumber"
+              readonly>
+
+          </div>
+
+          <div class="input-group">
+
+            <label>Semester</label>
+
+            <input
+              [value]="u.semester"
+              readonly>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================= Resume ================= -->
+
+      <div class="info-card">
+
+        <h2 class="card-title">
+
+          Resume Upload
+
+        </h2>
+
+        <div class="resume-box">
+
+          <div>
+
+            <p class="resume-name">
+
+              {{resumeName || 'No Resume Uploaded'}}
+
+            </p>
+
+          </div>
+
+          <label class="resume-btn">
+
+            Upload Resume
+
+            <input
+              hidden
+              type="file"
+              accept=".pdf,.doc,.docx"
+              (change)="onResumeSelected($event)">
+
+          </label>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

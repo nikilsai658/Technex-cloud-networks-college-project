@@ -1,49 +1,29 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable } from '@angular/core';
+import { UserStore } from '../store/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Auth {
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  constructor(private userStore: UserStore) {}
 
-  getUser(): any {
+  getUser() {
 
-    if (!isPlatformBrowser(this.platformId)) {
-      return null;
-    }
+    return this.userStore.user();
 
-    const user = localStorage.getItem('user');
-
-    if (!user) {
-      return null;
-    }
-
-    try {
-      return JSON.parse(user);
-    } catch {
-      return null;
-    }
   }
 
   getPermissions(): any[] {
 
-    const user = this.getUser();
+    return this.userStore.user()?.permissions ?? [];
 
-    if (!user) {
-      return [];
-    }
-
-    return user.data?.permissions || [];
   }
 
   hasPermission(permission: string): boolean {
 
     return this.getPermissions().some(
-      (p: any) => p.code === permission
+      p => p.code === permission
     );
 
   }

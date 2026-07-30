@@ -18,7 +18,9 @@ h1{
 .p-floatlabel input {
     @apply w-full;
 }
-
+.f{
+    @apply flex justify-between
+}
 :host ::ng-deep .p-inputtext {
     @apply w-full h-12 px-3 rounded-lg border border-gray-300;
 }

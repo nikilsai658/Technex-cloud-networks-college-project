@@ -7,6 +7,7 @@ import { FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import {Router} from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CollegeService } from '../../services/college/college-service';
 @Component({
   selector: 'app-college',
   imports: [Logo,ButtonModule,FormsModule,SelectModule,ReactiveFormsModule],
@@ -17,28 +18,23 @@ export class College implements OnInit {
   form !:FormGroup;
    colleges: any[] | undefined;
     selectedcollege: any | undefined ;
-  constructor(private fb:FormBuilder, private router:Router) {
+  constructor(private fb:FormBuilder, private router:Router,private api:CollegeService) {
    this.form=this.fb.group({
     college:['',Validators.required]
    })
   }
     ngOnInit() {
         this.colleges = [
-            { name: 'Jain University', code: 'AU', image: 'assets/jain.png' },
-            { name: 'JNTUA college of Engineering Kalikiri', code: 'BR', image: 'assets/jntua.png' },
-            { name: 'China', code: 'CN', image: 'assets/china.png' },
-            { name: 'Egypt', code: 'EG', image: 'assets/egypt.png' },
-            { name: 'France', code: 'FR', image: 'assets/france.png' },
-            { name: 'Germany', code: 'DE', image: 'assets/germany.png' },
-            { name: 'India', code: 'IN', image: 'assets/india.png' },
-            { name: 'Japan', code: 'JP', image: 'assets/japan.png' },
-            { name: 'Spain', code: 'ES', image: 'assets/spain.png' },
-            { name: 'United States', code: 'US', image: 'assets/united-states.png' }
+            { name: 'Jain University', code: 'AU'},
+            {name:'HINDUSTHAN COLLEGE OF ENGINEERING',code:'HISAC'},
+            {name:'RVS COLLEGE OF ENGINEERING',code:'RVS'},
+            {name:'CMS COLLEGE OF SCIENCE & COMMERCE',code:'CMS'}
         ];
     }
     onSubmit(){
       if(this.form.valid){
         localStorage.setItem('college',this.form.value.college.name);
+         localStorage.setItem('collegecode',this.form.value.college.code);
           console.log(this.form.value);
         this.router.navigate(['auth/login']);
       }

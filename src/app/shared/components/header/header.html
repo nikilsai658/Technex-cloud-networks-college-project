@@ -1,38 +1,290 @@
-<header class="header">
+<div>
 
-    <div class="header-container">
+  <!-- Overlay -->
+  <div
+  
+    (click)="toggleSidebar()"
+    class="overlay">
+  </div>
+<aside
+    class="sidebar"
+    [class.-translate-x-full]="!sidebarOpen"
+    [class.translate-x-0]="sidebarOpen">
 
-        <div class="company-name">
-            <span>Technex Cloud Networks Pvt Ltd</span>
+    <!-- Fixed Header -->
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+
+        <img
+          src="../../../../assets/images/logo.jpeg"
+          class="company-logo">
+
+        <div>
+          <p class="company-title">
+            Technex Cloud Networks
+            <br>
+            Pvt Ltd
+          </p>
         </div>
 
-        <div class="header-right">
+      </div>
 
-            <div class="college-logo">
-                College Logo
-            </div>
+      <button
+        (click)="toggleSidebar()"
+        class="close-btn">
+        ✕
+      </button>
+    </div>
 
-            <div>
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    class="search-box">
-            </div>
+    <!-- Scrollable Body -->
+    <div class="sidebar-body">
 
-            <div class="profile-section">
+        <nav class="sidebar-nav">
 
-                <span class="profile-text">
-                    Profile
-                </span>
+             <a
+        routerLink="/main/student-domain"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+        Dashboard
 
-                <button class="logout-btn" (click)="logout()">
-                    Logout
-                </button>
+      </a>
 
-            </div>
+      <a
+        routerLink="/courses/leaderboard"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
 
-        </div>
+        Leaderboard
+
+      </a>
+
+      <a
+        routerLink="/courses/certificate"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        Certifications
+
+      </a>
+
+      <a
+        routerLink="/courses/faqs"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        FAQs
+
+      </a>
+
+      <a
+        routerLink="/courses/help-support"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        Help & Support
+
+      </a>
+       <a
+        *ngIf="this.auth.hasPermission('UPDATE_COLLEGE')"
+        routerLink="/main/college-management"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        College Management
+
+      </a>
+      
+      <a
+      *ngIf="this.auth.hasPermission('VIEW_DEPARTMENT')"
+        routerLink="/main/department-management"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        Department Management
+
+      </a>
+      <a
+      *ngIf="this.auth.hasPermission('UPDATE_BRANCH')"
+        routerLink="/main/branch-management"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        Branch Management
+
+      </a>
+      <a
+      *ngIf="this.auth.hasPermission('VIEW_DOMAIN')"
+        routerLink="/main/domain"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        Domain Management
+
+      </a>
+
+      <a
+      *ngIf="this.auth.hasPermission('VIEW_COURSE')"
+        routerLink="/main/course"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        Course Management
+
+      </a>
+      <a
+      *ngIf="this.auth.hasPermission('VIEW_COURSE')"
+        routerLink="/main/user"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+       User Management
+
+      </a>
+      <a
+      *ngIf="this.auth.hasPermission('VIEW_ROLE')"
+        routerLink="/main/role"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        Role Management
+
+      </a>
+      <a
+      *ngIf="this.auth.hasPermission('VIEW_PERMISSION')"
+        routerLink="/main/permission"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        Permission Management
+
+      </a>
+       <a
+      *ngIf="this.auth.hasPermission('VIEW_YEAR')"
+        routerLink="/main/year"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        Year Management
+
+      </a>
+      <a
+      *ngIf="this.auth.hasPermission('UPDATE_ASSIGNMENT')"
+        routerLink="/main/assignment"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-link">
+
+        Assignment Management
+
+      </a>
+
+        </nav>
 
     </div>
 
-</header>
+  </aside>
+
+  <!-- Header -->
+
+  <header class="main-header">
+
+    <div class="header-container">
+
+      <!-- Left -->
+
+      <div class="header-left">
+
+        <button
+          (click)="toggleSidebar()"
+          class="menu-btn">
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="menu-icon"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"/>
+
+          </svg>
+
+        </button>
+
+        <a routerLink="/main/student-domain">
+
+            <img
+    *ngIf="collegeLogo"
+    [src]="collegeLogo"
+    alt="College Logo"
+    class="college-logo"
+  />
+
+        </a>
+
+        <div class="divider"></div>
+
+        <a routerLink="/main/student-domain">
+
+          <img
+            src="../../../../assets/images/logo.jpeg"
+            class="company-logo-small">
+
+        </a>
+
+      </div>
+
+      <!-- Right -->
+
+      <div class="header-right">
+
+        <button
+          routerLink="/main/profile"
+          class="profile-btn">
+
+          <img
+            src="../../assets/images/profile-fill.svg"
+            class="profile-icon">
+
+          <span class="username">
+
+            {{ username }}
+
+          </span>
+
+        </button>
+
+        <a
+          (click)="logout()"
+          routerLink="/auth/login"
+          class="logout-btn">
+
+          Logout
+
+        </a>
+
+      </div>
+
+    </div>
+
+  </header>
+
+</div>

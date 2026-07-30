@@ -1,0 +1,268 @@
+@import "tailwindcss";
+/* ===============================
+   PAGE
+================================= */
+
+.profile-page{
+    @apply min-h-screen bg-gray-100 p-8;
+}
+
+/* ===============================
+   HEADER
+================================= */
+
+.page-header{
+    @apply flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8;
+}
+
+.page-title{
+    @apply text-5xl font-bold text-[#183153];
+}
+
+.page-subtitle{
+    @apply text-gray-500 text-lg mt-2;
+}
+
+.edit-btn{
+    @apply bg-[#2F3E46] hover:bg-[#435861] text-white font-semibold px-6 py-3 rounded-xl transition;
+}
+
+/* ===============================
+   LAYOUT
+================================= */
+
+.profile-layout{
+    @apply grid grid-cols-1 xl:grid-cols-3 gap-8;
+}
+
+.left-card{
+    @apply bg-white rounded-3xl shadow-lg p-8 flex flex-col items-center;
+}
+
+.right-section{
+    @apply xl:col-span-2 space-y-8;
+}
+
+/* ===============================
+   PROFILE IMAGE
+================================= */
+
+.image-section{
+    @apply flex flex-col items-center;
+}
+
+.profile-image-box{
+    @apply w-44 h-44 rounded-full overflow-hidden border-4 border-[#2F3E46] shadow-lg;
+}
+
+.profile-image{
+    @apply w-full h-full object-cover;
+}
+
+.profile-placeholder{
+    @apply w-full h-full flex items-center justify-center bg-[#2F3E46] text-white text-6xl font-bold;
+}
+
+.upload-image-btn{
+    @apply mt-5 cursor-pointer bg-[#24c0c5] hover:bg-cyan-600 text-white px-5 py-2 rounded-lg transition;
+}
+
+/* ===============================
+   NAME
+================================= */
+
+.student-name{
+    @apply mt-6 text-4xl font-bold text-[#183153];
+}
+
+.status-badge{
+    @apply mt-4 px-6 py-2 rounded-full bg-green-100 text-green-700 font-semibold;
+}
+
+/* ===============================
+   DETAILS
+================================= */
+
+.left-card hr{
+    @apply w-full my-8 border-gray-300;
+}
+
+.left-details{
+    @apply w-full space-y-5;
+}
+
+.detail-row{
+    @apply flex justify-between items-center gap-4;
+}
+
+.detail-row span{
+    @apply text-gray-500 text-lg;
+}
+
+.detail-row strong{
+    @apply text-[#183153] font-semibold text-lg text-right;
+}
+
+/* ===============================
+   CARD
+================================= */
+
+.info-card{
+    @apply bg-white rounded-3xl shadow-lg p-8;
+}
+
+.card-title{
+    @apply text-3xl font-bold text-[#183153] mb-8;
+}
+
+/* ===============================
+   GRID
+================================= */
+
+.info-grid{
+    @apply grid md:grid-cols-2 gap-6;
+}
+
+.input-group{
+    @apply flex flex-col;
+}
+
+.input-group label{
+    @apply text-gray-500 mb-2 text-lg;
+}
+
+.input-group input{
+    @apply border border-gray-300 rounded-xl px-5 py-4 bg-gray-50 text-lg outline-none;
+}
+
+.input-group input:focus{
+    @apply border-[#24c0c5];
+}
+
+/* ===============================
+   PERMISSIONS
+================================= */
+
+.permission-wrapper{
+    @apply flex flex-wrap gap-4;
+}
+
+.permission-chip{
+    @apply bg-[#2F3E46] text-white px-5 py-2 rounded-full text-sm font-semibold shadow;
+}
+
+/* ===============================
+   RESUME
+================================= */
+
+.resume-box{
+    @apply flex flex-col lg:flex-row justify-between items-center gap-5 bg-gray-50 rounded-2xl border p-6;
+}
+
+.resume-name{
+    @apply text-lg font-medium text-gray-700 break-all;
+}
+
+.resume-btn{
+    @apply cursor-pointer bg-[#24c0c5] hover:bg-cyan-600 text-white font-semibold px-6 py-3 rounded-xl transition;
+}
+
+/* ===============================
+   RESPONSIVE
+================================= */
+
+@media (max-width:1024px){
+
+.profile-page{
+    @apply p-6;
+}
+
+.page-title{
+    @apply text-4xl;
+}
+
+.student-name{
+    @apply text-3xl;
+}
+
+.card-title{
+    @apply text-2xl;
+}
+
+}
+
+@media (max-width:768px){
+
+.profile-page{
+    @apply p-4;
+}
+
+.page-title{
+    @apply text-3xl;
+}
+
+.page-subtitle{
+    @apply text-base;
+}
+
+.profile-image-box{
+    @apply w-36 h-36;
+}
+
+.student-name{
+    @apply text-2xl;
+}
+
+.detail-row{
+    @apply flex-col items-start;
+}
+
+.detail-row strong{
+    @apply text-left;
+}
+
+.info-grid{
+    @apply grid-cols-1;
+}
+
+.resume-box{
+    @apply flex-col items-start;
+}
+
+.edit-btn{
+    @apply w-full;
+}
+
+.resume-btn{
+    @apply w-full text-center;
+}
+
+.upload-image-btn{
+    @apply w-full text-center;
+}
+
+}
+
+@media (max-width:480px){
+
+.profile-image-box{
+    @apply w-32 h-32;
+}
+
+.profile-placeholder{
+    @apply text-5xl;
+}
+
+.permission-wrapper{
+    @apply gap-2;
+}
+
+.permission-chip{
+    @apply text-xs px-3 py-2;
+}
+
+.input-group input{
+    @apply text-base;
+}
+
+}

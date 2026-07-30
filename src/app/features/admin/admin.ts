@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
@@ -23,6 +23,7 @@ import { CourseAssignmentMapComponent } from '../../shared/components/courseassi
 import { StudentDomainMapComponent } from '../../shared/components/studentdomaincourse/studentdomaincourse';
 import { RolePermissionComponent } from '../../shared/components/rolepermission/rolepermission';
 import { UserComponent } from '../../shared/components/user/user';
+import { Department } from "../../shared/components/department/department";
 @Component({
   selector: 'app-admin',
   standalone: true,
@@ -45,7 +46,9 @@ import { UserComponent } from '../../shared/components/user/user';
     CourseAssignmentMapComponent,
     StudentDomainMapComponent,
     RolePermissionComponent,
-    UserComponent
+    UserComponent,
+    Department,
+    RouterOutlet
 ],
   templateUrl: './admin.html',
   styleUrls: ['./admin.css']
@@ -59,6 +62,11 @@ export class Admin implements OnInit {
   isEditMode = false;
   selectedDepartmentId = 0;
 
+ sidebarOpen = false;
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
   constructor(
     private api: DepartmentService,
     private fb: FormBuilder,

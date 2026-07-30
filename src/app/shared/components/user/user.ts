@@ -66,7 +66,7 @@ export class UserComponent implements OnInit {
   // Data Sources
   //==========================
 
-  users: any[] = [];
+  users: any ;
   colleges: any[] = [];
   departments: any[] = [];
   branches: any[] = [];

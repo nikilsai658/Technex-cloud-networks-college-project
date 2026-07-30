@@ -1,0 +1,105 @@
+<div class="p-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+
+    <div>
+      <h2 class="text-3xl font-bold text-[#2F3E46]">
+        My Courses
+      </h2>
+
+      <p class="text-gray-500">
+        Explore your assigned courses
+      </p>
+    </div>
+
+    <div class="bg-[#24C0C5] text-white px-5 py-2 rounded-full font-semibold shadow">
+      {{ courses.length }} Courses
+    </div>
+
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading"
+       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+    <div *ngFor="let x of [1,2,3,4]"
+         class="h-56 rounded-2xl bg-gray-200 animate-pulse">
+    </div>
+
+  </div>
+
+  <!-- No Data -->
+  <div *ngIf="!loading && courses.length == 0"
+       class="bg-white rounded-xl shadow p-10 text-center">
+
+    <h3 class="text-2xl font-semibold text-[#2F3E46]">
+      No Courses Available
+    </h3>
+
+    <p class="text-gray-500 mt-2">
+      Courses will appear here after they are assigned.
+    </p>
+
+  </div>
+
+  <!-- Course Cards -->
+  <div *ngIf="!loading && courses.length > 0"
+       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+    <div *ngFor="let item of courses"
+         class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 border border-gray-200 hover:border-[#24C0C5] overflow-hidden">
+
+      <!-- Card Header -->
+      <div class="bg-gradient-to-r from-[#2F3E46] to-[#24C0C5] h-28 flex items-center justify-center">
+
+        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow">
+          <span class="text-3xl">📘</span>
+        </div>
+
+      </div>
+
+      <!-- Card Body -->
+      <div class="p-5">
+
+        <h3 class="text-xl font-bold text-[#2F3E46]">
+          {{ item.courseName }}
+        </h3>
+
+        <p class="text-gray-500 mt-2 min-h-[48px]">
+          {{ item.description }}
+        </p>
+
+        <div class="mt-4 space-y-2">
+
+          <div class="flex justify-between">
+            <span class="text-gray-500">Year</span>
+            <span class="font-semibold text-[#2F3E46]">
+              {{ item.year }}
+            </span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-gray-500">Semester</span>
+            <span class="font-semibold text-[#2F3E46]">
+              {{ item.semester }}
+            </span>
+          </div>
+
+        </div>
+
+        <button
+          (click)="view(item.courseId)"
+          class="w-full mt-6 bg-[#24C0C5] hover:bg-[#2F3E46] text-white py-2 rounded-lg transition duration-300">
+
+          View Course
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

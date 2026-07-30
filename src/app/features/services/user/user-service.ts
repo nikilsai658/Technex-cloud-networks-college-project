@@ -12,7 +12,7 @@ export class UserService {
   branchName?: string,
   yearNumber?: number,
   isActive?: boolean
-) {
+  ) {
 
   let params: any = {};
 
@@ -41,7 +41,7 @@ export class UserService {
   }
 
   return this.api.GET('User',params);
-}
+  }
   getUserById(id:number){
     return this.api.GET(`User/${id}`);
   }

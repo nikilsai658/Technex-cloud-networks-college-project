@@ -1,0 +1,315 @@
+<div class="coding-platform">
+
+  <!-- ================= HEADER ================= -->
+  <header class="platform-header">
+
+    <div class="header-left">
+
+      <button class="back-btn" (click)="goBack()">
+        ←
+      </button>
+
+      <div>
+
+        <h2 class="problem-name">
+
+          {{ assignment?.title }}
+
+        </h2>
+
+        <p class="problem-id">
+
+          Assignment ID : {{ assignment.assignmentId }}
+
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="header-right">
+
+      <div class="header-box">
+
+        <span class="header-label">Score</span>
+
+        <span class="header-value">
+
+          {{ assignment.score }}
+
+        </span>
+
+      </div>
+
+      <div class="header-box">
+
+        <span class="header-label">Difficulty</span>
+
+        <span
+          class="difficulty-badge"
+          [ngClass]="{
+            'easy': assignment.difficulty=='Easy',
+            'medium': assignment.difficulty=='Medium',
+            'hard': assignment.difficulty=='Hard'
+          }">
+
+          {{assignment.difficulty}}
+
+        </span>
+
+      </div>
+
+    </div>
+
+  </header>
+
+  <!-- ================= BODY ================= -->
+
+  <div class="platform-body">
+
+    <!-- ================= LEFT PANEL ================= -->
+
+    <div class="problem-panel">
+
+      <div class="problem-content">
+
+        <!-- Description -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+
+            Problem Description
+
+          </h3>
+
+          <p class="section-text">
+
+            {{ assignment.description }}
+
+          </p>
+
+        </section>
+
+        <!-- Information -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+
+            Information
+
+          </h3>
+
+          <div class="info-grid">
+
+            <div class="info-item">
+
+              <label>Platform</label>
+
+              <span>{{assignment.platform}}</span>
+
+            </div>
+
+            <div class="info-item">
+
+              <label>Contest</label>
+
+              <span>{{assignment.contestId}}</span>
+
+            </div>
+
+            <div class="info-item">
+
+              <label>Question ID</label>
+
+              <span>{{assignment.questionId}}</span>
+
+            </div>
+
+            <div class="info-item">
+
+              <label>Created</label>
+
+              <span>{{assignment.createdAt | date:'mediumDate'}}</span>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- Constraints -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+
+            Constraints
+
+          </h3>
+
+          <ul class="constraint-list">
+
+            <li>
+
+              Time Limit :
+              <strong>{{assignment.timeLimit}} Seconds</strong>
+
+            </li>
+
+            <li>
+
+              Memory Limit :
+              <strong>{{assignment.memoryLimit}} MB</strong>
+
+            </li>
+
+          </ul>
+
+        </section>
+
+        <!-- Languages -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+
+            Supported Languages
+
+          </h3>
+
+          <div class="language-list">
+
+            <span
+              *ngFor="let lang of assignment.languageSupport?.split(',')"
+              class="language-chip">
+
+              {{lang}}
+
+            </span>
+
+          </div>
+
+        </section>
+
+        <!-- Challenge Link -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+
+            Challenge Link
+
+          </h3>
+
+          <a
+            [href]="assignment.challengeUrl"
+            target="_blank"
+            class="challenge-link">
+
+            {{assignment.challengeUrl}}
+
+          </a>
+
+        </section>
+
+        <!-- Sample Input -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+
+            Sample Input
+
+          </h3>
+
+          <pre class="code-block">
+
+5
+2 8 4 10 6
+
+          </pre>
+
+        </section>
+
+        <!-- Sample Output -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+
+            Sample Output
+
+          </h3>
+
+          <pre class="code-block">
+
+10
+
+          </pre>
+
+        </section>
+
+        <!-- Explanation -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+
+            Explanation
+
+          </h3>
+
+          <p class="section-text">
+
+            The maximum element in the array is
+            <strong>10</strong>.
+
+          </p>
+
+        </section>
+
+      </div>
+
+    </div>
+
+    <!-- ================= RIGHT PANEL ================= -->
+
+    <div class="editor-panel">
+
+      <!-- Editor -->
+
+      <div class="editor-container">
+
+        <app-code-editor></app-code-editor>
+
+      </div>
+
+      <!-- Output -->
+
+      <div class="output-panel">
+
+        <div class="output-header">
+
+          Output
+
+        </div>
+
+        <div class="output-body">
+
+          <p>
+
+            Run your code to see the output...
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

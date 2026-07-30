@@ -1,0 +1,108 @@
+<div class="assignment-page">
+
+  <!-- Header -->
+  <div class="page-header">
+
+    <div>
+      <h1 class="page-title">Assignments</h1>
+      <p class="page-subtitle">
+        Complete assignments to unlock the next challenge.
+      </p>
+    </div>
+
+    <div class="total-card">
+      <span>Total Assignments :</span>
+      <strong>{{ assignments.length }}</strong>
+    </div>
+
+  </div>
+
+  <!-- Assignment Card -->
+
+  <div
+    class="assignment-card"
+    *ngFor="let assignment of assignments; let i=index">
+
+    <div class="card-left">
+
+      <div class="assignment-number">
+        {{ i + 1 }}
+      </div>
+
+      <div class="assignment-content">
+
+        <h2>
+          {{ assignment.title }}
+        </h2>
+
+        <p>
+          {{ assignment.description }}
+        </p>
+
+        <div class="assignment-info">
+
+          <div class="info-item">
+            <span>Score</span>
+            <strong>{{ assignment.score }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Platform</span>
+            <strong>{{ assignment.platform || 'Internal' }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span>Difficulty</span>
+
+            <span
+              class="difficulty"
+              [ngClass]="{
+                'easy': assignment.difficulty=='Easy',
+                'medium': assignment.difficulty=='Medium',
+                'hard': assignment.difficulty=='Hard'
+              }">
+
+              {{ assignment.difficulty }}
+
+            </span>
+
+          </div>
+
+          <div class="info-item">
+            <span>Status</span>
+            <strong class="pending">
+              Pending
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card-right">
+
+      <button
+        class="start-btn"
+        (click)="startAssignment(assignment.assignmentId)">
+
+        Start Assignment
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Empty -->
+
+  <div
+    class="empty-card"
+    *ngIf="assignments.length==0">
+
+    No Assignments Available
+
+  </div>
+
+</div>

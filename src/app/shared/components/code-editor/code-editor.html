@@ -1,0 +1,59 @@
+<div class="editor-layout">
+
+    <!-- Toolbar -->
+    <div class="editor-toolbar">
+
+        <div class="toolbar-left">
+
+            <select
+                (change)="changeLanguage($any($event.target).value)"
+                class="language-select">
+
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+                <option value="csharp">C#</option>
+
+            </select>
+
+        </div>
+
+        <div class="toolbar-right">
+
+            <button
+                class="reset-btn"
+                >
+
+                Reset
+
+            </button>
+
+            <button
+                class="run-btn"
+            >
+
+                Run Code
+
+            </button>
+
+            <button
+                class="submit-btn"
+                >
+
+                Submit
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Monaco Editor -->
+
+    <div
+        #editorContainer
+        class="editor-container">
+    </div>
+
+</div>

@@ -209,6 +209,14 @@ export class StudentDomainMapComponent implements OnInit {
 
     });
 
+    window.scroll({
+
+      top: 0,
+
+      behavior: 'smooth'
+
+    });
+
   }
 
   //============================

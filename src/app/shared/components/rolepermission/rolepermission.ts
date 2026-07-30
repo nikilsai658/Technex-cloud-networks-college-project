@@ -102,7 +102,7 @@ export class RolePermissionComponent implements OnInit {
       next: (res: any) => {
 
         this.roles = res.data || [];
-
+        
         this.cd.detectChanges();
 
       },

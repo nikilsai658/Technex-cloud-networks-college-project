@@ -9,15 +9,16 @@ const routes: Routes = [
   {
     path:'',redirectTo:'college',pathMatch:'full'
   },
+   {
+    path:'college',component:College
+  },
   {
     path:'login',component:Login
   },
   {
     path:'forgot-password',component:ForgotPassword
   },
-  {
-    path:'college',component:College
-  },
+ 
   {
    path:'reset-password', component:ResetPassword
   }
