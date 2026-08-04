@@ -54,4 +54,14 @@ export class UserService {
   deleteUser(id:number){
     return this.api.DELETE(`User/${id}`);
   }
+uploadUsers(file: File) {
+
+  const formData = new FormData();
+
+  // Fixed key expected by backend
+  formData.append('file', file);
+
+  return this.api.POST('User/BulkUpload', formData);
+
+}
 }

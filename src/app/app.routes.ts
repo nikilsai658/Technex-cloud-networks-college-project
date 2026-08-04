@@ -19,6 +19,11 @@ import { Permission } from './shared/components/permissions/permissions';
 import { AssignmentComponent } from './shared/components/assignment/assignment';
 import {  StudentProfile } from './shared/components/student-profile/student-profile';
 import { College } from './shared/components/college/college';
+import { Leadership } from './shared/components/leadership/leadership';
+import { Certificate } from './shared/components/certificate/certificate';
+import { FAQ } from './shared/components/faq/faq';
+import { Helpandsupport } from './shared/components/helpandsupport/helpandsupport';
+import { Role } from './shared/components/role/role';
 
 export const routes: Routes = [
 
@@ -52,11 +57,11 @@ export const routes: Routes = [
       },
 
       {
-        path: 'student-assignments/:courseId', component: StudentAssignments
+        path: 'student-assignments', component: StudentAssignments
       },
   
       {
-        path: 'student-assignment/:Id',  component: StudentAssignment
+        path: 'student-assignment',  component: StudentAssignment
       },
       {
         path:'college-management',component:College
@@ -83,13 +88,25 @@ export const routes: Routes = [
         path:'user',component:UserComponent
       },
       {
-        path:'role',component:RolePermissionComponent
+        path:'role',component:Role
       },
       {
         path:'permission',component:Permission
       },
       {
         path:'profile',component:StudentProfile
+      },
+      {
+       path:'leadership',component:Leadership
+      },
+      {
+        path:'certificate',component:Certificate
+      },
+      {
+         path:'faq',component:FAQ
+      },
+      {
+        path:'helpandsupport',component:Helpandsupport
       }
     ]
   },

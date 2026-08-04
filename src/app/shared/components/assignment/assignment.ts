@@ -66,6 +66,8 @@ export class AssignmentComponent implements OnInit {
 
       questionId: ['', Validators.required],
 
+      Platform: ['Technex', Validators.required],
+
       difficulty: ['', Validators.required],
 
       score: [1, Validators.required],
@@ -194,9 +196,9 @@ export class AssignmentComponent implements OnInit {
       description: item.description,
 
       questionId: item.questionId,
-
+       Platform: item.platform ?? 'Technex',
       difficulty: item.difficulty,
-
+     
       score: item.score,
 
       languageSupport: item.languageSupport,
@@ -286,34 +288,22 @@ export class AssignmentComponent implements OnInit {
 
   resetForm(): void {
 
-    this.isEditMode = false;
+  this.isEditMode = false;
+  this.selectedId = 0;
 
-    this.selectedId = 0;
-
-    this.assignmentForm.reset({
-
-      title: '',
-
-      description: '',
-
-      questionId: '',
-
-      difficulty: '',
-
-      score: 1,
-
-      languageSupport: '',
-
-      iframeUrl: '',
-
-      timeLimit: 1,
-
-      memoryLimit: 1,
-
-      isActive: true
-
-    });
-
-  }
+  this.assignmentForm.reset({
+    title: '',
+    description: '',
+    questionId: '',
+    Platform: 'Technex',   // <-- Add this
+    difficulty: '',
+    score: 1,
+    languageSupport: '',
+    iframeUrl: '',
+    timeLimit: 1,
+    memoryLimit: 1,
+    isActive: true
+  });
+}
 
 }

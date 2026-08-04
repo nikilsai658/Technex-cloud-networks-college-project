@@ -48,7 +48,9 @@ export class StudentCourses {
     });
 
   }
-  view(courseId:number):void{
-    this.router.navigate([`/main/student-assignments/${courseId}`]);
-  }
+  view(courseId: number): void {
+  this.router.navigate(['/main/student-assignments'], {
+    state: { courseId }
+  });
+}
 }

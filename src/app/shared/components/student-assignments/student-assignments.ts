@@ -17,7 +17,7 @@ export class StudentAssignments implements OnInit {
   constructor(private route: ActivatedRoute,private api:Student,private cd:ChangeDetectorRef, private router:Router) {}
 
   ngOnInit(): void {
-    this.courseId = Number(this.route.snapshot.paramMap.get('courseId'));
+     this.courseId = history.state.courseId;
     this.loadAssignments();
   }
   loadAssignments():void{
@@ -33,6 +33,57 @@ export class StudentAssignments implements OnInit {
    })
   }
   startAssignment(Id:number):void{
-  this.router.navigate([`/main/student-assignment/${Id}`]);
+  this.router.navigate([`/main/student-assignment`],{state:{Id}});
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 }

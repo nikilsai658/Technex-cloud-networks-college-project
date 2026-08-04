@@ -52,7 +52,7 @@ colleges = [
 
   const selectedCollege = this.colleges.find(college =>
     college.name.trim().toLowerCase() ===
-    user.collegeName.trim().toLowerCase()
+    user.collegeName?.trim().toLowerCase()
   );
 
   if (selectedCollege) {

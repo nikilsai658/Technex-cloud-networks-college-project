@@ -17,27 +17,40 @@
 =========================== */
 
 .platform-header {
-    @apply flex items-center justify-between h-16 px-6 bg-[#2F3E46] text-white shadow-md border-b border-gray-700;
+    @apply flex flex-col sm:flex-row
+           justify-between
+           items-start sm:items-center
+           gap-4
+           px-4 sm:px-6
+           py-3
+           bg-[#2F3E46]
+           text-white
+           shadow-md
+           border-b border-gray-700;
 }
 
 .header-left {
-    @apply flex items-center gap-4;
+    @apply flex items-center gap-3 min-w-0;
 }
 
 .back-btn {
-    @apply w-10 h-10 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 transition cursor-pointer text-lg;
+    @apply w-10 h-10 flex items-center justify-center
+           rounded-lg bg-white/10 hover:bg-white/20
+           transition cursor-pointer text-lg flex-shrink-0;
 }
 
 .problem-name {
-    @apply text-xl font-bold;
+    @apply text-lg sm:text-xl lg:text-2xl
+           font-bold
+           break-words;
 }
 
 .problem-id {
-    @apply text-xs text-gray-300 mt-1;
+    @apply text-xs text-gray-300;
 }
 
 .header-right {
-    @apply flex items-center gap-6;
+    @apply flex flex-wrap items-center gap-4 sm:gap-6;
 }
 
 .header-box {
@@ -45,11 +58,11 @@
 }
 
 .header-label {
-    @apply text-xs uppercase tracking-wide text-gray-300;
+    @apply text-[10px] sm:text-xs uppercase tracking-wide text-gray-300;
 }
 
 .header-value {
-    @apply text-lg font-bold;
+    @apply text-base sm:text-lg font-bold;
 }
 
 /* ===========================
@@ -73,25 +86,36 @@
 }
 
 /* ===========================
-   Body Layout
+   Body
 =========================== */
 
 .platform-body {
-    @apply flex flex-1 overflow-hidden;
+    @apply flex flex-col lg:flex-row flex-1 overflow-hidden;
 }
+
+/* Left */
 
 .problem-panel {
-    width: 40%;
-    @apply bg-white border-r border-gray-200 overflow-y-auto;
+    @apply w-full lg:w-2/5
+           bg-white
+           border-b lg:border-b-0
+           lg:border-r
+           border-gray-200
+           overflow-y-auto;
 }
 
+/* Right */
+
 .editor-panel {
-    width: 60%;
-    @apply flex flex-col bg-[#1E1E1E];
+    @apply w-full lg:w-3/5
+           flex flex-col
+           bg-[#1E1E1E]
+           min-h-[400px];
 }
 
 .problem-content {
-    @apply p-8 space-y-8;
+    @apply p-4 sm:p-6 lg:p-8
+           space-y-6;
 }
 
 /* ===========================
@@ -99,35 +123,56 @@
 =========================== */
 
 .problem-section {
-    @apply pb-8 border-b border-gray-200;
+    @apply pb-6 border-b border-gray-200;
 }
 
 .section-heading {
-    @apply text-xl font-bold text-gray-800 mb-4;
+    @apply text-lg sm:text-xl
+           font-bold
+           text-gray-800
+           mb-3;
 }
 
 .section-text {
-    @apply text-gray-600 leading-8 text-[15px];
+    @apply text-sm sm:text-[15px]
+           leading-7
+           text-gray-600
+           break-words;
 }
 
 /* ===========================
-   Information Grid
+   Info Grid
 =========================== */
 
 .info-grid {
-    @apply grid grid-cols-2 gap-5;
+    @apply grid
+           grid-cols-1
+           sm:grid-cols-2
+           gap-4;
 }
 
 .info-item {
-    @apply bg-gray-50 rounded-xl border border-gray-200 p-5 shadow-sm;
+    @apply bg-gray-50
+           rounded-xl
+           border
+           border-gray-200
+           p-4
+           shadow-sm;
 }
 
 .info-item label {
-    @apply block text-xs uppercase tracking-wide text-gray-500 mb-2;
+    @apply block
+           text-xs
+           uppercase
+           tracking-wide
+           text-gray-500
+           mb-2;
 }
 
 .info-item span {
-    @apply font-semibold text-gray-800 break-all;
+    @apply font-semibold
+           text-gray-800
+           break-words;
 }
 
 /* ===========================
@@ -135,9 +180,60 @@
 =========================== */
 
 .constraint-list {
-    @apply list-disc pl-6 space-y-3 text-gray-700;
+    @apply list-disc
+           pl-5
+           space-y-2
+           text-gray-700
+           text-sm
+           sm:text-base;
 }
 
 .constraint-list strong {
     @apply text-black;
+}
+
+/* ===========================
+   Tablet
+=========================== */
+
+@media (max-width:1024px){
+
+    .platform-body{
+        @apply flex-col;
+    }
+
+    .problem-panel{
+        width:100%;
+        height:45%;
+    }
+
+    .editor-panel{
+        width:100%;
+        height:55%;
+    }
+
+}
+
+/* ===========================
+   Mobile
+=========================== */
+
+@media (max-width:640px){
+
+    .platform-header{
+        @apply px-3 py-3;
+    }
+
+    .header-right{
+        @apply w-full justify-between;
+    }
+
+    .problem-panel{
+        height:50%;
+    }
+
+    .editor-panel{
+        height:50%;
+    }
+
 }

@@ -24,6 +24,7 @@ import { StudentDomainMapComponent } from '../../shared/components/studentdomain
 import { RolePermissionComponent } from '../../shared/components/rolepermission/rolepermission';
 import { UserComponent } from '../../shared/components/user/user';
 import { Department } from "../../shared/components/department/department";
+import { StudentAssignment } from "../../shared/components/studentassignment/studentassignment";
 @Component({
   selector: 'app-admin',
   standalone: true,
@@ -48,7 +49,8 @@ import { Department } from "../../shared/components/department/department";
     RolePermissionComponent,
     UserComponent,
     Department,
-    RouterOutlet
+    RouterOutlet,
+    StudentAssignment
 ],
   templateUrl: './admin.html',
   styleUrls: ['./admin.css']

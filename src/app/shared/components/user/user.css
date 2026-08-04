@@ -1,0 +1,128 @@
+@import  "tailwindcss";
+
+.page{
+    @apply max-w-7xl mx-auto p-6 space-y-6 bg-slate-100 min-h-screen;
+}
+
+.card{
+    @apply bg-white rounded-xl shadow-lg p-6;
+}
+
+.card-header{
+    @apply border-b pb-3 mb-5;
+}
+
+.card-header h2{
+    @apply text-2xl font-bold text-[#2F3E46];
+}
+
+/* Upload */
+
+.upload-section{
+    @apply flex flex-col md:flex-row items-center gap-4;
+}
+
+.file-input{
+    @apply w-full border rounded-lg p-3 bg-gray-50;
+}
+
+.btn-upload{
+    @apply bg-[#24c0c5] text-white px-6 py-3 rounded-lg hover:bg-[#1aa6aa] transition;
+}
+
+/* Form */
+
+.form-grid{
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5;
+}
+
+.field{
+    @apply flex flex-col gap-2;
+}
+
+.field label{
+    @apply font-semibold text-gray-700;
+}
+
+.field input,
+.field select{
+    @apply border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none;
+}
+
+.button-group{
+    @apply flex justify-end gap-4 mt-8;
+}
+
+.btn-save{
+    @apply bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg;
+}
+
+.btn-reset{
+    @apply bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg;
+}
+
+/* Search */
+
+.table-header{
+    @apply flex justify-end mb-5;
+}
+
+.search-box{
+    @apply w-full md:w-80 border rounded-lg p-3;
+}
+
+/* Table */
+
+.table-wrapper{
+    @apply overflow-x-auto;
+}
+
+table{
+    @apply w-full border-collapse;
+}
+
+thead{
+    @apply bg-[#2F3E46] text-white;
+}
+
+th{
+    @apply p-4 text-left;
+}
+
+td{
+    @apply border-b p-4;
+}
+
+tbody tr{
+    @apply hover:bg-gray-50;
+}
+
+/* Status */
+
+.active{
+    @apply bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm;
+}
+
+.inactive{
+    @apply bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm;
+}
+
+/* Buttons */
+
+.edit-btn{
+    @apply bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded mr-2;
+}
+
+.delete-btn{
+    @apply bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded;
+}
+
+/* Pagination */
+
+.pagination{
+    @apply flex justify-end items-center gap-4 mt-6;
+}
+
+.pagination button{
+    @apply bg-[#2F3E46] text-white px-5 py-2 rounded disabled:opacity-50;
+}

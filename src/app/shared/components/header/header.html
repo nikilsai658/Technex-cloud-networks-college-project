@@ -1,11 +1,11 @@
 <div>
 
   <!-- Overlay -->
-  <div
-  
-    (click)="toggleSidebar()"
-    class="overlay">
-  </div>
+<div
+  *ngIf="sidebarOpen"
+  class="overlay"
+  (click)="toggleSidebar()">
+</div>
 <aside
     class="sidebar"
     [class.-translate-x-full]="!sidebarOpen"
@@ -51,7 +51,7 @@
       </a>
 
       <a
-        routerLink="/courses/leaderboard"
+        routerLink="/main/leadership"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
         class="nav-link">
@@ -61,7 +61,7 @@
       </a>
 
       <a
-        routerLink="/courses/certificate"
+        routerLink="/main/certificate"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
         class="nav-link">
@@ -71,7 +71,7 @@
       </a>
 
       <a
-        routerLink="/courses/faqs"
+        routerLink="/main/faq"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
         class="nav-link">
@@ -81,7 +81,7 @@
       </a>
 
       <a
-        routerLink="/courses/help-support"
+        routerLink="/main/helpandsupport"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
         class="nav-link">
@@ -232,11 +232,11 @@
         <a routerLink="/main/student-domain">
 
             <img
-    *ngIf="collegeLogo"
-    [src]="collegeLogo"
-    alt="College Logo"
-    class="college-logo"
-  />
+          *ngIf="collegeLogo"
+          [src]="collegeLogo"
+          alt="College Logo"
+          class="college-logo"
+            />
 
         </a>
 

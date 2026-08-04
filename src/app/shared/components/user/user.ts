@@ -70,8 +70,8 @@ export class UserComponent implements OnInit {
   colleges: any[] = [];
   departments: any[] = [];
   branches: any[] = [];
-  roles: any = {};
-
+  roles: any[] = [];
+  selectedFile: File | null = null;
   //==========================
   // UI
   //==========================
@@ -181,31 +181,27 @@ initializeForm(): void {
 
   this.userForm = this.fb.group({
 
-    id: [0],
-
-    firstName: ['', Validators.required],
-
-    lastName: [''],
-
-    userName: ['', Validators.required],
+    fullName: ['', Validators.required],
 
     email: ['', [Validators.required, Validators.email]],
 
     password: ['', Validators.required],
 
-    phoneNumber: [''],
+    roleId: ['', Validators.required],
 
-    roleName: [''],
+    collegeName: [null],
 
-    collegeName: [''],
+    departmentName: [null],
 
-    departmentName: [''],
-
-    branchName: [''],
+    branchName: [null],
 
     yearNumber: [null],
 
-    isActive: [true]
+    semester: [null],
+
+    phoneNumber: [null],
+
+    registerNumber: [null]
 
   });
 
@@ -307,7 +303,7 @@ loadDepartments(): void {
 
       next: (res: any) => {
 
-       this.departments = res.data;
+       this.departments = Array.isArray(res?.data) ? res.data : [];
 
       },
 
@@ -334,7 +330,7 @@ loadBranches(): void {
 
       next: (res: any) => {
 
-        this.branches = res.data ?? [];
+        this.branches = Array.isArray(res?.data) ? res.data : [];
 
       },
 
@@ -361,7 +357,7 @@ loadRoles(): void {
 
       next: (res: any) => {
 
-        this.roles = res.data;
+        this.roles = Array.isArray(res?.data) ? res.data : [];
 
       },
 
@@ -423,18 +419,22 @@ saveUser(): void {
 
 createUser(): void {
 
+  if (this.userForm.invalid) {
+    this.userForm.markAllAsTouched();
+    return;
+  }
+
   this.loading = true;
 
   const payload = this.userForm.value;
 
-  this.userService
-    .createUser(payload)
+  this.userService.createUser(payload)
     .pipe(finalize(() => this.loading = false))
     .subscribe({
 
       next: (res: any) => {
 
-        alert(res?.message || 'User created successfully.');
+        alert(res.message || 'User created successfully');
 
         this.resetForm();
 
@@ -445,8 +445,6 @@ createUser(): void {
       error: (err) => {
 
         console.error(err);
-
-        alert(err?.error?.message || 'Unable to create user.');
 
       }
 
@@ -460,24 +458,34 @@ createUser(): void {
 
 editUser(user: any): void {
 
-  this.editMode = true;
-
   this.selectedUserId = user.id;
 
+  this.editMode = true;
+
   this.userForm.patchValue({
-    id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    userName: user.userName,
+
+    fullName: user.fullName,
+
     email: user.email,
+
     password: '',
-    phoneNumber: user.phoneNumber,
-    roleName: user.roleName,
+
+    roleId: user.roleId,
+
     collegeName: user.collegeName,
+
     departmentName: user.departmentName,
+
     branchName: user.branchName,
+
     yearNumber: user.yearNumber,
-    isActive: user.isActive
+
+    semester: user.semester,
+
+    phoneNumber: user.phoneNumber,
+
+    registerNumber: user.registerNumber
+
   });
 
 }
@@ -488,25 +496,23 @@ editUser(user: any): void {
 
 updateUser(): void {
 
-  this.loading = true;
-  const payload = this.userForm.value;
-  if (this.selectedUserId == null) {
-  return;
-}
+  if (this.selectedUserId == null) return;
+
   this.userService
-    .updateUser(this.selectedUserId, payload)
-    .pipe(finalize(() => this.loading = false))
+    .updateUser(this.selectedUserId, this.userForm.value)
     .subscribe({
-      next: (res: any) => {
-        alert(res?.message || 'User updated successfully.');
+
+      next: () => {
+
+        alert('Updated Successfully');
+
         this.resetForm();
+
         this.loadUsers();
+
       },
 
-      error: (err) => {
-        console.error(err);
-        alert(err?.error?.message || 'Unable to update user.');
-      }
+      error: err => console.error(err)
 
     });
 
@@ -545,39 +551,29 @@ deleteUser(id: number): void {
 
 resetForm(): void {
 
-  this.submitted = false;
-
-  this.editMode = false;
-
-  this.selectedUserId = null;
-
   this.userForm.reset({
 
-    id: 0,
-
-    firstName: '',
-
-    lastName: '',
-
-    userName: '',
+    fullName: '',
 
     email: '',
 
     password: '',
 
-    phoneNumber: '',
+    roleId: '',
 
-    roleName: '',
+    collegeName: null,
 
-    collegeName: '',
+    departmentName: null,
 
-    departmentName: '',
-
-    branchName: '',
+    branchName: null,
 
     yearNumber: null,
 
-    isActive: true
+    semester: null,
+
+    phoneNumber: null,
+
+    registerNumber: null
 
   });
 
@@ -816,6 +812,57 @@ logout() {
 
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+
+}
+
+onFileSelected(event: Event): void {
+
+  const input = event.target as HTMLInputElement;
+
+  if (input.files && input.files.length > 0) {
+
+    this.selectedFile = input.files[0];
+
+    console.log(this.selectedFile);
+
+  }
+
+}
+uploadFile(): void {
+
+  if (!this.selectedFile) {
+
+    alert('Please select a file');
+
+    return;
+
+  }
+
+  this.loading = true;
+
+  this.userService
+      .uploadUsers(this.selectedFile)
+      .subscribe({
+
+        next: (res:any) => {
+
+          this.loading = false;
+
+          alert('File Uploaded Successfully');
+
+          this.loadUsers();
+
+        },
+
+        error: (err) => {
+
+          this.loading = false;
+
+          console.log(err);
+
+        }
+
+      });
 
 }
 }

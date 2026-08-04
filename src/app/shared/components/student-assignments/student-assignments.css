@@ -1,64 +1,80 @@
 @import "tailwindcss";
 
 .assignment-page{
-  @apply min-h-screen bg-slate-100 p-4 md:p-6 lg:p-8;
+  @apply min-h-screen bg-slate-100 p-3 sm:p-4 md:p-6 lg:p-8;
 }
 
+/* Header */
+
 .page-header{
-  @apply flex flex-col lg:flex-row justify-between items-center gap-5 mb-8;
+  @apply flex flex-col lg:flex-row
+         justify-between items-start lg:items-center
+         gap-4 mb-6;
 }
 
 .page-title{
-  @apply text-3xl lg:text-4xl font-bold text-[#183153];
+  @apply text-2xl sm:text-3xl lg:text-4xl
+         font-bold text-[#183153];
 }
 
 .page-subtitle{
-  @apply mt-2 text-gray-500 text-base lg:text-lg;
+  @apply mt-1 text-sm sm:text-base lg:text-lg text-gray-500;
 }
 
 .total-card{
-  @apply bg-white rounded-2xl shadow-md px-6 py-5 text-lg font-semibold;
+  @apply w-full lg:w-auto
+         bg-white rounded-2xl shadow-md
+         px-5 py-4
+         text-base sm:text-lg font-semibold;
 }
 
+/* Assignment Card */
+
 .assignment-card{
-  @apply bg-white rounded-3xl shadow border border-gray-200
-         hover:shadow-xl hover:-translate-y-1
-         transition-all duration-300
-         p-6 lg:p-8
+  @apply bg-white rounded-2xl shadow border border-gray-200
+         hover:shadow-xl transition-all duration-300
+         p-4 sm:p-6 lg:p-8
          flex flex-col xl:flex-row
-         justify-between gap-8
-         mb-6;
+         gap-6;
 }
 
 .card-left{
-  @apply flex flex-1 gap-6;
+  @apply flex flex-col sm:flex-row flex-1 gap-4 sm:gap-6;
 }
 
 .assignment-number{
-  @apply w-16 h-16 rounded-full bg-[#2F3E46]
-         text-white text-2xl font-bold
+  @apply w-12 h-12 sm:w-16 sm:h-16
+         rounded-full bg-[#2F3E46]
+         text-white
+         text-lg sm:text-2xl
+         font-bold
          flex items-center justify-center
          flex-shrink-0;
 }
 
 .assignment-content{
-  @apply flex-1;
+  @apply flex-1 min-w-0;
 }
 
 .assignment-title{
-  @apply text-2xl lg:text-4xl font-bold text-[#183153];
+  @apply text-xl sm:text-2xl lg:text-3xl
+         font-bold text-[#183153]
+         break-words;
 }
 
 .assignment-description{
-  @apply mt-2 text-gray-500 text-base lg:text-lg;
+  @apply mt-2 text-sm sm:text-base text-gray-500;
 }
 
+/* Info */
+
 .assignment-info{
-  @apply grid grid-cols-1
-         sm:grid-cols-2
+  @apply grid
+         grid-cols-2
+         md:grid-cols-2
          lg:grid-cols-4
-         gap-6
-         mt-8;
+         gap-4
+         mt-6;
 }
 
 .info-item{
@@ -66,60 +82,62 @@
 }
 
 .info-label{
-  @apply text-sm text-gray-500 mb-1;
+  @apply text-xs sm:text-sm text-gray-500;
 }
 
 .info-value{
-  @apply text-xl font-bold;
+  @apply text-base sm:text-lg lg:text-xl font-bold break-words;
 }
+
+/* Status */
 
 .pending{
   @apply text-orange-600 font-semibold;
 }
 
 .easy{
-  @apply inline-flex px-4 py-1 rounded-full
+  @apply inline-flex px-3 py-1 rounded-full
          bg-green-100 text-green-700
-         text-sm font-semibold;
+         text-xs sm:text-sm font-semibold;
 }
 
 .medium{
-  @apply inline-flex px-4 py-1 rounded-full
+  @apply inline-flex px-3 py-1 rounded-full
          bg-yellow-100 text-yellow-700
-         text-sm font-semibold;
+         text-xs sm:text-sm font-semibold;
 }
 
 .hard{
-  @apply inline-flex px-4 py-1 rounded-full
+  @apply inline-flex px-3 py-1 rounded-full
          bg-red-100 text-red-700
-         text-sm font-semibold;
+         text-xs sm:text-sm font-semibold;
 }
 
+/* Button */
+
 .card-right{
-  @apply flex items-center justify-center
-         xl:items-end;
+  @apply flex justify-center xl:justify-end items-center;
 }
 
 .start-btn{
-  @apply bg-[#2F3E46]
+  @apply w-full sm:w-auto
+         bg-[#2F3E46]
          hover:bg-[#435861]
          text-white
+         text-base sm:text-lg
          font-semibold
-         text-lg
-         px-8
+         px-6 sm:px-8
          py-3
          rounded-xl
-         transition-all
-         duration-300
-         w-full
-         xl:w-auto;
+         transition-all duration-300;
 }
 
+/* Empty */
+
 .empty-card{
-  @apply bg-white rounded-2xl shadow
-         text-center py-16;
+  @apply bg-white rounded-2xl shadow text-center py-12 sm:py-16;
 }
 
 .empty-text{
-  @apply text-2xl text-gray-500 font-semibold;
+  @apply text-lg sm:text-2xl font-semibold text-gray-500;
 }

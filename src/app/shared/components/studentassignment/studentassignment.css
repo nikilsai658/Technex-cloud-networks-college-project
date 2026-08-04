@@ -1,0 +1,117 @@
+@import "../../../../styles.css";
+
+.container {
+  @apply max-w-7xl mx-auto p-6 bg-white rounded-xl shadow-lg;
+}
+
+h2 {
+  @apply text-2xl font-bold text-[#2F3E46] mb-6;
+}
+
+form {
+  @apply space-y-6;
+}
+
+.row {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+}
+
+.col {
+  @apply flex flex-col gap-2;
+}
+
+label {
+  @apply text-sm font-semibold text-gray-700;
+}
+
+input,
+select {
+  @apply w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none transition-all duration-200 bg-white;
+}
+
+input:focus,
+select:focus {
+  @apply border-[#24c0c5] ring-2 ring-[#24c0c5]/20;
+}
+
+.buttons {
+  @apply flex flex-wrap gap-4 mt-6;
+}
+
+.buttons button {
+  @apply px-6 py-2.5 rounded-lg font-medium transition-all duration-300;
+}
+
+.buttons button[type="submit"] {
+  @apply bg-[#24c0c5] text-white hover:bg-[#1aa8ad];
+}
+
+.buttons button[type="button"] {
+  @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
+}
+
+hr {
+  @apply my-8 border-gray-300;
+}
+
+/* Table */
+
+table {
+  @apply w-full border-collapse overflow-hidden rounded-xl shadow;
+}
+
+thead {
+  @apply bg-[#2F3E46] text-white;
+}
+
+th {
+  @apply px-4 py-3 text-left text-sm font-semibold;
+}
+
+td {
+  @apply px-4 py-3 border-b border-gray-200 text-sm;
+}
+
+tbody tr {
+  @apply hover:bg-gray-50 transition-colors;
+}
+
+tbody tr:nth-child(even) {
+  @apply bg-gray-50;
+}
+
+td button {
+  @apply px-3 py-1 rounded-md text-white text-sm mr-2 transition;
+}
+
+td button:first-child {
+  @apply bg-blue-600 hover:bg-blue-700;
+}
+
+td button:last-child {
+  @apply bg-red-600 hover:bg-red-700;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .container {
+    @apply p-4;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
+  table {
+    @apply block overflow-x-auto whitespace-nowrap;
+  }
+
+  .buttons {
+    @apply flex-col;
+  }
+
+  .buttons button {
+    @apply w-full;
+  }
+}

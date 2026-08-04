@@ -13,7 +13,7 @@ export class Studentassignment {
     return this.api.GET(`StudentAssignment/${id}`);
   }
   updatestudentassignment(id:number,data:any){
-    return this.api.POST(`StudentAssignment/${id}`,data);
+    return this.api.PUT(`StudentAssignment/${id}`,data);
   }
   deletestudentassignmnet(id:number){
     return this.api.DELETE(`StudentAssignment/${id}`);

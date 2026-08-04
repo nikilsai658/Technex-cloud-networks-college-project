@@ -25,7 +25,7 @@ export class Login implements OnInit{
     this.Form=this.fb.group({
       userNameOrEmail: ['',Validators.required],
       password: ['',Validators.required],
-      collegeCode: ['HISAC', Validators.required]
+      collegeCode: ["HECT", Validators.required]
     });
     
    }

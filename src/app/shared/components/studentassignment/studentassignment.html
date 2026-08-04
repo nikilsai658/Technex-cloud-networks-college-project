@@ -1,1 +1,201 @@
-<p>studentassignment works!</p>
+<div class="container">
+
+    <h2>{{ editMode ? 'Update Student Assignment' : 'Create Student Assignment' }}</h2>
+
+    <form [formGroup]="assignmentForm" (ngSubmit)="save()">
+
+        <div class="row">
+
+            <div class="col">
+                <label>Student Email</label>
+                <input
+                    type="email"
+                    formControlName="studentEmail">
+            </div>
+
+            <div class="col">
+                <label>Course Name</label>
+                <input
+                    type="text"
+                    formControlName="courseName">
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col">
+                <label>Assignment Title</label>
+                <input
+                    type="text"
+                    formControlName="assignmentTitle">
+            </div>
+
+            <div class="col">
+                <label>Status</label>
+
+                <select formControlName="status">
+                    <option value="">Select Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Started">Started</option>
+                    <option value="Completed">Completed</option>
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col">
+                <label>Started On</label>
+                <input
+                    type="datetime-local"
+                    formControlName="startedOn">
+            </div>
+
+            <div class="col">
+                <label>Completed On</label>
+                <input
+                    type="datetime-local"
+                    formControlName="completedOn">
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col">
+                <label>Score</label>
+                <input
+                    type="number"
+                    formControlName="score">
+            </div>
+
+            <div class="col">
+                <label>Attempts</label>
+                <input
+                    type="number"
+                    formControlName="attempts">
+            </div>
+
+        </div>
+
+        <div class="col">
+    <label>Best Submission Id</label>
+    <input
+        type="text"
+        formControlName="bestSubmissionId">
+</div>
+
+<div class="col">
+    <label>Last Submission Id</label>
+    <input
+        type="text"
+        formControlName="lastSubmissionId">
+</div>
+
+        <div class="row">
+
+            <div class="col">
+                <label>Time Taken (Minutes)</label>
+                <input
+                    type="number"
+                    formControlName="timeTaken">
+            </div>
+
+            <div class="col">
+
+                <label>Passed</label>
+
+                <select formControlName="isPassed">
+                    <option [ngValue]="true">Yes</option>
+                    <option [ngValue]="false">No</option>
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="buttons">
+
+            <button type="submit">
+                {{ editMode ? 'Update' : 'Create' }}
+            </button>
+
+            <button
+                type="button"
+                (click)="cancel()">
+                Reset
+            </button>
+
+        </div>
+
+    </form>
+
+    <hr>
+
+    <h2>Student Assignments</h2>
+
+    <table border="1" width="100%">
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Course</th>
+                <th>Assignment</th>
+                <th>Status</th>
+                <th>Score</th>
+                <th>Attempts</th>
+                <th>Time</th>
+                <th>Passed</th>
+                <th>Actions</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let item of assignments">
+
+                <td>{{ item.id }}</td>
+                <td>{{ item.studentEmail }}</td>
+                <td>{{ item.courseName }}</td>
+                <td>{{ item.assignmentTitle }}</td>
+                <td>{{ item.status }}</td>
+                <td>{{ item.score }}</td>
+                <td>{{ item.attempts }}</td>
+                <td>{{ item.timeTaken }}</td>
+                <td>{{ item.isPassed ? 'Yes' : 'No' }}</td>
+
+                <td>
+
+                    <button
+                        type="button"
+                        (click)="edit(item.id)">
+                        Edit
+                    </button>
+
+                    <button
+                        type="button"
+                        (click)="delete(item.id)">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <tr *ngIf="assignments.length === 0">
+                <td colspan="10" align="center">
+                    No Assignments Found
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
