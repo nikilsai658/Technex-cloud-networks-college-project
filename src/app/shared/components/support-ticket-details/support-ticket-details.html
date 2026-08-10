@@ -1,0 +1,742 @@
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6">
+
+  <div class="max-w-6xl mx-auto">
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <div
+      class="flex flex-col sm:flex-row
+             sm:items-center
+             sm:justify-between
+             gap-4 mb-6">
+
+      <div>
+
+        <!-- Back -->
+        <button
+          type="button"
+          (click)="back()"
+          class="flex items-center gap-2
+                 text-sm text-gray-500
+                 hover:text-cyan-600
+                 transition mb-2">
+
+          ← Back to Tickets
+
+        </button>
+
+        <h1
+          class="text-2xl font-bold
+                 text-gray-900">
+
+          Support Ticket
+
+        </h1>
+
+        <p
+          class="text-sm text-gray-500 mt-1">
+
+          View ticket and communicate with the student
+
+        </p>
+
+      </div>
+
+
+      <!-- STATUS -->
+      <div
+        *ngIf="ticket"
+        class="flex items-center gap-3">
+
+        <span
+          class="text-sm font-medium
+                 text-gray-500">
+
+          Status
+
+        </span>
+
+        <select
+          [ngModel]="selectedStatus"
+          (ngModelChange)="changeStatus($event)"
+          [disabled]="updatingStatus"
+          class="rounded-lg
+                 border border-gray-300
+                 bg-white
+                 px-4 py-2.5
+                 text-sm font-medium
+                 text-gray-700
+                 focus:outline-none
+                 focus:ring-2
+                 focus:ring-cyan-500
+                 disabled:opacity-50">
+
+          <option value="Open">
+            Open
+          </option>
+
+          <option value="Pending">
+            Pending
+          </option>
+
+          <option value="Resolved">
+            Resolved
+          </option>
+
+          <option value="Closed">
+            Closed
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- LOADING -->
+    <!-- ================================================= -->
+
+    <div
+      *ngIf="loading"
+      class="flex justify-center
+             py-20">
+
+      <div
+        class="w-10 h-10
+               border-4 border-gray-200
+               border-t-cyan-600
+               rounded-full
+               animate-spin">
+      </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- ERROR -->
+    <!-- ================================================= -->
+
+    <div
+      *ngIf="!loading && errorMessage"
+      class="rounded-xl
+             border border-red-200
+             bg-red-50
+             p-5">
+
+      <p
+        class="text-sm text-red-600">
+
+        {{ errorMessage }}
+
+      </p>
+
+      <button
+        type="button"
+        (click)="getTicket()"
+        class="mt-3
+               text-sm font-semibold
+               text-red-700
+               underline">
+
+        Try Again
+
+      </button>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ================================================= -->
+
+    <div
+      *ngIf="!loading && ticket"
+      class="grid grid-cols-1
+             lg:grid-cols-3
+             gap-6">
+
+
+      <!-- ================================================= -->
+      <!-- LEFT : TICKET DETAILS -->
+      <!-- ================================================= -->
+
+      <div class="lg:col-span-1">
+
+        <div
+          class="bg-white
+                 rounded-xl
+                 border border-gray-200
+                 shadow-sm
+                 p-5">
+
+          <!-- Title -->
+
+          <div
+            class="flex items-center
+                   justify-between">
+
+            <h2
+              class="text-lg font-semibold
+                     text-gray-800">
+
+              Ticket Details
+
+            </h2>
+
+            <span
+              class="text-xs font-semibold
+                     text-gray-400">
+
+              #{{ ticket.id }}
+
+            </span>
+
+          </div>
+
+
+          <!-- Subject -->
+
+          <div class="mt-6">
+
+            <p
+              class="text-xs font-semibold
+                     text-gray-400
+                     uppercase
+                     tracking-wide">
+
+              Subject
+
+            </p>
+
+            <p
+              class="text-sm font-semibold
+                     text-gray-800
+                     mt-1">
+
+              {{ ticket.subject }}
+
+            </p>
+
+          </div>
+
+
+          <!-- Description -->
+
+          <div class="mt-5">
+
+            <p
+              class="text-xs font-semibold
+                     text-gray-400
+                     uppercase
+                     tracking-wide">
+
+              Description
+
+            </p>
+
+            <div
+              class="mt-2
+                     rounded-lg
+                     bg-gray-50
+                     border border-gray-100
+                     p-4">
+
+              <p
+                class="text-sm
+                       leading-6
+                       text-gray-600
+                       whitespace-pre-line">
+
+                {{ ticket.description }}
+
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- Student -->
+
+          <div class="mt-5">
+
+            <p
+              class="text-xs font-semibold
+                     text-gray-400
+                     uppercase
+                     tracking-wide">
+
+              Student
+
+            </p>
+
+            <p
+              class="text-sm font-semibold
+                     text-gray-800
+                     mt-1">
+
+              {{ ticket.studentName || 'Student' }}
+
+            </p>
+
+            <p
+              *ngIf="ticket.studentEmail"
+              class="text-xs
+                     text-gray-500
+                     mt-1
+                     break-all">
+
+              {{ ticket.studentEmail }}
+
+            </p>
+
+          </div>
+
+
+          <!-- Created -->
+
+          <div class="mt-5">
+
+            <p
+              class="text-xs font-semibold
+                     text-gray-400
+                     uppercase
+                     tracking-wide">
+
+              Created
+
+            </p>
+
+            <p
+              class="text-sm
+                     text-gray-700
+                     mt-1">
+
+              {{ ticket.createdAt
+                 | date:'dd MMM yyyy, hh:mm a' }}
+
+            </p>
+
+          </div>
+
+
+          <!-- Current Status -->
+
+          <div class="mt-5">
+
+            <p
+              class="text-xs font-semibold
+                     text-gray-400
+                     uppercase
+                     tracking-wide">
+
+              Current Status
+
+            </p>
+
+            <span
+              class="inline-flex
+                     mt-2
+                     px-3 py-1.5
+                     rounded-full
+                     bg-blue-50
+                     text-blue-700
+                     text-xs
+                     font-semibold">
+
+              {{ ticket.status || 'Open' }}
+
+            </span>
+
+          </div>
+
+
+          <!-- Close Ticket -->
+
+          <button
+            *ngIf="
+              ticket.status?.toLowerCase() !== 'closed'
+            "
+            type="button"
+            (click)="closeTicket()"
+            [disabled]="updatingStatus"
+            class="w-full
+                   mt-6
+                   px-4 py-2.5
+                   rounded-lg
+                   border border-red-200
+                   bg-red-50
+                   text-red-600
+                   text-sm font-semibold
+                   hover:bg-red-100
+                   disabled:opacity-50
+                   disabled:cursor-not-allowed
+                   transition">
+
+            {{ updatingStatus
+              ? 'Closing...'
+              : 'Close Ticket' }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- RIGHT : CONVERSATION -->
+      <!-- ================================================= -->
+
+     <!-- ================================================= -->
+<!-- RIGHT : CONVERSATION -->
+<!-- ================================================= -->
+
+<div class="lg:col-span-2">
+
+  <div
+    class="bg-white
+           rounded-xl
+           border border-gray-200
+           shadow-sm
+           overflow-hidden
+           flex
+           flex-col">
+
+
+    <!-- ================================================= -->
+    <!-- CONVERSATION HEADER -->
+    <!-- ================================================= -->
+
+    <div
+      class="px-5 py-4
+             border-b border-gray-100
+             flex items-center
+             justify-between
+             shrink-0">
+
+      <div>
+
+        <h2
+          class="text-lg
+                 font-semibold
+                 text-gray-800">
+
+          Conversation
+
+        </h2>
+
+        <p
+          class="text-xs
+                 text-gray-500
+                 mt-1">
+
+          Chat with the student
+
+        </p>
+
+      </div>
+
+
+      <!-- Refresh -->
+
+      <button
+        type="button"
+        (click)="refreshMessages()"
+        [disabled]="messagesLoading"
+        class="px-3 py-2
+               rounded-lg
+               border border-gray-200
+               text-sm
+               text-gray-600
+               hover:bg-gray-50
+               hover:text-cyan-600
+               disabled:opacity-50
+               transition">
+
+        ↻ Refresh
+
+      </button>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- CHAT MESSAGES - ONLY THIS AREA SCROLLS -->
+    <!-- ================================================= -->
+
+    <div
+      class="h-[300px]
+             overflow-y-auto
+             bg-gray-50
+             p-5
+             space-y-5
+             scroll-smooth">
+
+      <!-- Loading -->
+
+      <div
+        *ngIf="messagesLoading"
+        class="flex
+               justify-center
+               py-10">
+
+        <div
+          class="w-7 h-7
+                 border-4
+                 border-gray-200
+                 border-t-cyan-600
+                 rounded-full
+                 animate-spin">
+        </div>
+
+      </div>
+
+
+      <!-- No Messages -->
+
+      <div
+        *ngIf="
+          !messagesLoading &&
+          messages.length === 0
+        "
+        class="flex
+               items-center
+               justify-center
+               h-full
+               text-sm
+               text-gray-400">
+
+        No messages yet.
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- MESSAGE LIST -->
+      <!-- ================================================= -->
+
+      <div
+        *ngFor="let msg of messages"
+        class="flex w-full"
+        [ngClass]="{
+          'justify-start': msg.isStudent === true,
+          'justify-end': msg.isStudent === false
+        }">
+
+
+        <!-- Message Content -->
+
+        <div
+          class="max-w-[80%]
+                 sm:max-w-[65%]">
+
+
+          <!-- Sender -->
+
+          <p
+            class="text-xs
+                   text-gray-400
+                   mb-1"
+            [ngClass]="{
+              'text-left': msg.isStudent === true,
+              'text-right': msg.isStudent === false
+            }">
+
+            {{ msg.isStudent ? 'Student' : 'Admin' }}
+
+          </p>
+
+
+          <!-- Message Bubble -->
+
+          <div
+            class="px-4
+                   py-3
+                   rounded-xl
+                   text-sm
+                   leading-relaxed
+                   shadow-sm
+                   break-words
+                   whitespace-pre-wrap"
+            [ngClass]="{
+              'bg-white
+               border
+               border-gray-200
+               text-gray-700
+               rounded-tl-none':
+                msg.isStudent === true,
+
+              'bg-cyan-600
+               text-white
+               rounded-tr-none':
+                msg.isStudent === false
+            }">
+
+            {{ msg.message }}
+
+          </div>
+
+
+          <!-- Time -->
+
+          <p
+            class="text-[11px]
+                   text-gray-400
+                   mt-1"
+            [ngClass]="{
+              'text-left': msg.isStudent === true,
+              'text-right': msg.isStudent === false
+            }">
+
+            {{ msg.sentAt | date:'hh:mm a' }}
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- REPLY AREA -->
+    <!-- ================================================= -->
+
+    <div
+      *ngIf="
+        ticket.status?.toLowerCase() !== 'closed'
+      "
+      class="border-t
+             border-gray-100
+             p-4
+             shrink-0">
+
+      <div
+        class="flex
+               flex-col
+               sm:flex-row
+               gap-3">
+
+        <textarea
+          [(ngModel)]="message"
+          rows="2"
+          maxlength="1000"
+          placeholder="Write a reply to the student..."
+          [disabled]="sending"
+          class="flex-1
+                 resize-none
+                 rounded-lg
+                 border border-gray-300
+                 px-4 py-3
+                 text-sm
+                 text-gray-700
+                 placeholder-gray-400
+                 focus:outline-none
+                 focus:ring-2
+                 focus:ring-cyan-500
+                 focus:border-cyan-500
+                 disabled:bg-gray-100
+                 disabled:cursor-not-allowed">
+        </textarea>
+
+
+        <button
+          type="button"
+          (click)="sendReply()"
+          [disabled]="
+            sending ||
+            !message.trim()
+          "
+          class="sm:self-end
+                 px-5 py-3
+                 rounded-lg
+                 bg-cyan-600
+                 text-white
+                 text-sm
+                 font-semibold
+                 hover:bg-cyan-700
+                 disabled:opacity-50
+                 disabled:cursor-not-allowed
+                 transition">
+
+          {{ sending
+            ? 'Sending...'
+            : 'Send Reply' }}
+
+        </button>
+
+      </div>
+
+
+      <!-- Character Count -->
+
+      <div
+        class="flex
+               items-center
+               justify-between
+               mt-2">
+
+        <p
+          class="text-xs
+                 text-gray-400">
+
+          Your reply will be sent
+          to the student.
+
+        </p>
+
+        <p
+          class="text-xs
+                 text-gray-400">
+
+          {{ message.length }}/1000
+
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- CLOSED MESSAGE -->
+    <!-- ================================================= -->
+
+    <div
+      *ngIf="
+        ticket.status?.toLowerCase() === 'closed'
+      "
+      class="border-t
+             border-gray-100
+             bg-gray-50
+             px-5 py-4
+             text-center
+             shrink-0">
+
+      <p
+        class="text-sm
+               font-medium
+               text-gray-500">
+
+        This ticket is closed.
+        No further replies can be sent.
+
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+    </div>
+
+  </div>
+
+</div>

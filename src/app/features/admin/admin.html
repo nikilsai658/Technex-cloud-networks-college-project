@@ -8,6 +8,9 @@
 <div *ngIf="auth.hasPermission('VIEW_COLLEGE_DEPARTMENT')"  >
     <app-collegedepartment></app-collegedepartment>
 </div>
+<div *ngIf="auth.hasPermission('VIEW_DEPARTMENT_BRANCH')">
+    <app-departmentbranch></app-departmentbranch>
+</div>
 <div *ngIf="auth.hasPermission('VIEW_DOMAIN_COURSE_MAP')">
   <app-domaincoursemap></app-domaincoursemap>
 </div>
@@ -20,7 +23,7 @@
 <div *ngIf="auth.hasPermission('VIEW_ROLE_PERMISSION')">
     <app-rolepermission></app-rolepermission>
 </div>
-<div>
+<div *ngIf="auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT')">
     <app-student-assignment></app-student-assignment>
 </div>
 </div>

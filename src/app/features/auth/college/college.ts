@@ -26,7 +26,7 @@ export class College implements OnInit {
     ngOnInit() {
         this.colleges = [
             { name: 'Jain University', code: 'AU'},
-            {name:'HINDUSTHAN COLLEGE OF ENGINEERING',code:'HISAC'},
+            {name:'HINDUSTHAN COLLEGE OF ENGINEERING',code:'HECT'},
             {name:'RVS COLLEGE OF ENGINEERING',code:'RVS'},
             {name:'CMS COLLEGE OF SCIENCE & COMMERCE',code:'CMS'}
         ];

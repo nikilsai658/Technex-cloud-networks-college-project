@@ -1,1 +1,107 @@
-<p>leadership works!</p>
+<div class="p-6">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h2 class="text-3xl font-bold text-slate-800">
+        Leaderboard
+      </h2>
+      <p class="text-gray-500">
+        Student Rankings
+      </p>
+    </div>
+
+    <div class="flex gap-6">
+      <div class="bg-white shadow rounded-lg px-5 py-3">
+        <p class="text-gray-500 text-sm">My Rank</p>
+        <h3 class="text-2xl font-bold text-cyan-600">
+          #{{ myRank }}
+        </h3>
+      </div>
+
+      <div class="bg-white shadow rounded-lg px-5 py-3">
+        <p class="text-gray-500 text-sm">My Score</p>
+        <h3 class="text-2xl font-bold text-green-600">
+          {{ myScore }}
+        </h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Table -->
+  <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
+
+    <table class="min-w-full border-collapse">
+
+      <thead class="bg-slate-800 text-white">
+
+        <tr>
+          <th class="px-4 py-3 text-left">Rank</th>
+          <th class="px-4 py-3 text-left">Student</th>
+          <th class="px-4 py-3 text-center">Score</th>
+          <th class="px-4 py-3 text-center">Assignments</th>
+          <th class="px-4 py-3 text-center">Attempts</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr
+          *ngFor="let student of leaderboard"
+          class="border-b hover:bg-slate-50 transition">
+
+          <!-- Rank -->
+          <td class="px-4 py-4">
+
+            <div
+              class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+              [ngClass]="{
+                'bg-yellow-500': student.rank === 1,
+                'bg-gray-400': student.rank === 2,
+                'bg-orange-500': student.rank === 3,
+                'bg-slate-600': student.rank > 3
+              }">
+
+              {{ student.rank }}
+
+            </div>
+
+          </td>
+
+          <!-- Student -->
+          <td class="px-4 py-4 font-semibold">
+            {{ student.studentName }}
+          </td>
+
+          <!-- Score -->
+          <td class="px-4 py-4 text-center font-bold text-cyan-600">
+            {{ student.totalScore }}
+          </td>
+
+          <!-- Assignments -->
+          <td class="px-4 py-4 text-center">
+            {{ student.totalAssignments }}
+          </td>
+
+          <!-- Attempts -->
+          <td class="px-4 py-4 text-center">
+            {{ student.totalAttempts }}
+          </td>
+
+        </tr>
+
+        <tr *ngIf="!leaderboard || leaderboard.length === 0">
+    <td colspan="8" class="text-center py-8 text-gray-500">
+      No leaderboard available
+    </td>
+  </tr>
+
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

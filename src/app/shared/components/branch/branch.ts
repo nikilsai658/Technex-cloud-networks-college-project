@@ -68,8 +68,6 @@ export class Branch implements OnInit {
 
       code: ['', Validators.required],
 
-      departmentId: ['', Validators.required]
-
     });
 
     const token = this.cookie.get('token');

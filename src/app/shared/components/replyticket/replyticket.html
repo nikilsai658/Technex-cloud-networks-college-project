@@ -1,0 +1,448 @@
+
+<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+
+  <!-- Page Container -->
+  <div class="mx-auto max-w-5xl">
+
+    <!-- Header -->
+    <div class="mb-6 flex items-center gap-3">
+
+      <!-- Back Button -->
+      <button
+        type="button"
+        (click)="back()"
+        class="flex h-10 w-10 items-center justify-center rounded-lg
+               border border-gray-200 bg-white text-gray-600
+               shadow-sm transition hover:bg-gray-100">
+
+        ←
+
+      </button>
+
+      <!-- Title -->
+      <div>
+        <h1 class="text-xl font-bold text-gray-800">
+          Ticket Conversation
+        </h1>
+
+        <p class="text-sm text-gray-500">
+          Ticket #{{ ticketId }}
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- Loading -->
+    <div
+      *ngIf="loading"
+      class="flex min-h-[300px] items-center justify-center
+             rounded-xl border border-gray-200 bg-white shadow-sm">
+
+      <div class="text-center">
+
+        <div
+          class="mx-auto mb-3 h-8 w-8 animate-spin rounded-full
+                 border-4 border-gray-200 border-t-cyan-500">
+        </div>
+
+        <p class="text-sm text-gray-500">
+          Loading ticket...
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- Main Ticket -->
+    <div
+      *ngIf="!loading && ticket"
+      class="overflow-hidden rounded-xl border
+             border-gray-200 bg-white shadow-sm">
+
+
+      <!-- ====================================== -->
+      <!-- TICKET INFORMATION -->
+      <!-- ====================================== -->
+
+      <div class="border-b border-gray-200 p-5">
+
+        <div
+          class="flex flex-col gap-4
+                 md:flex-row md:items-start md:justify-between">
+
+          <div>
+
+            <p
+              class="mb-1 text-xs font-semibold uppercase
+                     tracking-wide text-gray-400">
+
+              Ticket #{{ ticketId }}
+
+            </p>
+
+            <h2
+              class="text-lg font-semibold text-gray-800">
+
+              {{ ticket.subject }}
+
+            </h2>
+
+          </div>
+
+
+          <!-- Status -->
+          <span
+            class="w-fit rounded-full px-3 py-1 text-xs font-semibold"
+            [ngClass]="{
+              'bg-yellow-100 text-yellow-700':
+                ticket.status === 'Open',
+
+              'bg-blue-100 text-blue-700':
+                ticket.status === 'In Progress',
+
+              'bg-green-100 text-green-700':
+                ticket.status === 'Resolved' ||
+                ticket.status === 'Closed',
+
+              'bg-gray-100 text-gray-600':
+                !ticket.status
+            }">
+
+            {{ ticket.status || 'Open' }}
+
+          </span>
+
+        </div>
+
+
+        <!-- Description -->
+        <div
+          *ngIf="ticket.description"
+          class="mt-4 rounded-lg bg-gray-50 p-4">
+
+          <p
+            class="mb-1 text-xs font-semibold uppercase
+                   tracking-wide text-gray-400">
+
+            Description
+
+          </p>
+
+          <p
+            class="whitespace-pre-wrap text-sm leading-6
+                   text-gray-600">
+
+            {{ ticket.description }}
+
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- ====================================== -->
+      <!-- CHAT -->
+      <!-- ====================================== -->
+
+      <div class="flex flex-col">
+
+
+        <!-- Chat Header -->
+        <div
+          class="flex items-center justify-between
+                 border-b border-gray-200 px-5 py-4">
+
+          <div>
+
+            <h3
+              class="font-semibold text-gray-800">
+
+              Conversation
+
+            </h3>
+
+            <p
+              class="text-xs text-gray-400">
+
+              Student & Support Team
+
+            </p>
+
+          </div>
+
+
+          <!-- HTTP Polling Indicator -->
+          <div
+            class="flex items-center gap-2 text-xs text-gray-500">
+
+            <span
+              class="h-2 w-2 rounded-full bg-green-500">
+            </span>
+
+            Live updates
+
+          </div>
+
+        </div>
+
+
+        <!-- ====================================== -->
+        <!-- MESSAGES -->
+        <!-- ====================================== -->
+
+        <div
+          class="chat-messages h-[450px] overflow-y-auto
+                 bg-gray-50 p-4 md:p-6">
+
+
+          <!-- No Messages -->
+          <div
+            *ngIf="messages.length === 0"
+            class="flex h-full items-center
+                   justify-center">
+
+            <div class="text-center">
+
+              <div
+                class="mx-auto mb-3 flex h-12 w-12
+                       items-center justify-center
+                       rounded-full bg-gray-100">
+
+                💬
+
+              </div>
+
+              <p
+                class="font-medium text-gray-600">
+
+                No messages yet
+
+              </p>
+
+              <p
+                class="mt-1 text-sm text-gray-400">
+
+                Start the conversation below.
+
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- Message List -->
+          <div
+            *ngIf="messages.length > 0"
+            class="space-y-4">
+
+
+            <!-- Message -->
+            <div
+              *ngFor="let msg of messages"
+              class="flex"
+              [ngClass]="{
+                'justify-end': isMyMessage(msg),
+                'justify-start': !isMyMessage(msg)
+              }">
+
+
+              <!-- Message Bubble -->
+              <div
+                class="max-w-[80%] md:max-w-[65%]">
+
+
+                <!-- Sender -->
+                <div
+                  class="mb-1 text-xs text-gray-400"
+                  [ngClass]="{
+                    'text-right': isMyMessage(msg)
+                  }">
+
+                  {{ isMyMessage(msg)
+                    ? 'You'
+                    : (msg.senderName || 'Support') }}
+
+                </div>
+
+
+                <!-- Bubble -->
+                <div
+                  class="rounded-2xl px-4 py-3 shadow-sm"
+                  [ngClass]="{
+                    'rounded-br-sm bg-cyan-500 text-white':
+                      isMyMessage(msg),
+
+                    'rounded-bl-sm border border-gray-200
+                     bg-white text-gray-700':
+                      !isMyMessage(msg)
+                  }">
+
+
+                  <!-- Message -->
+                  <p
+                    class="whitespace-pre-wrap break-words
+                           text-sm leading-6">
+
+                    {{ msg.message }}
+
+                  </p>
+
+
+                  <!-- Time -->
+                  <div
+                    class="mt-1 text-[10px]"
+                    [ngClass]="{
+                      'text-cyan-100': isMyMessage(msg),
+                      'text-gray-400': !isMyMessage(msg)
+                    }">
+
+                    {{ msg.createdAt | date:'short' }}
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ====================================== -->
+        <!-- MESSAGE INPUT -->
+        <!-- ====================================== -->
+
+        <div
+          class="border-t border-gray-200 bg-white p-4">
+
+
+          <div
+            class="flex items-end gap-3">
+
+
+            <!-- Textarea -->
+            <textarea
+              [(ngModel)]="message"
+              rows="2"
+              placeholder="Type your message..."
+              [disabled]="sending"
+              (keydown.enter)="sendOnEnter($event)"
+              class="min-h-[50px] flex-1 resize-none rounded-xl
+                     border border-gray-300 px-4 py-3 text-sm
+                     text-gray-700 outline-none transition
+                     placeholder:text-gray-400
+                     focus:border-cyan-500
+                     focus:ring-2 focus:ring-cyan-100
+                     disabled:cursor-not-allowed
+                     disabled:bg-gray-100">
+            </textarea>
+
+
+            <!-- Send Button -->
+            <button
+              type="button"
+              (click)="send()"
+              [disabled]="sending || !message.trim()"
+              class="flex h-[50px] min-w-[90px]
+                     items-center justify-center
+                     rounded-xl bg-cyan-500 px-5
+                     text-sm font-semibold text-white
+                     transition hover:bg-cyan-600
+                     disabled:cursor-not-allowed
+                     disabled:bg-gray-300">
+
+
+              <!-- Sending -->
+              <ng-container *ngIf="sending">
+
+                <span
+                  class="mr-2 h-4 w-4 animate-spin
+                         rounded-full border-2
+                         border-white border-t-transparent">
+                </span>
+
+                Sending
+
+              </ng-container>
+
+
+              <!-- Normal -->
+              <ng-container *ngIf="!sending">
+
+                Send
+
+              </ng-container>
+
+            </button>
+
+          </div>
+
+
+          <!-- Hint -->
+          <p
+            class="mt-2 text-xs text-gray-400">
+
+            Press Enter to send • Shift + Enter for a new line
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Ticket Not Found -->
+    <div
+      *ngIf="!loading && !ticket"
+      class="rounded-xl border border-gray-200
+             bg-white p-10 text-center shadow-sm">
+
+      <div
+        class="mx-auto mb-4 flex h-14 w-14
+               items-center justify-center rounded-full
+               bg-gray-100 text-2xl">
+
+        🎫
+
+      </div>
+
+      <h2
+        class="text-lg font-semibold text-gray-800">
+
+        Ticket not found
+
+      </h2>
+
+      <p
+        class="mt-1 text-sm text-gray-500">
+
+        The ticket could not be loaded.
+
+      </p>
+
+      <button
+        type="button"
+        (click)="back()"
+        class="mt-5 rounded-lg bg-cyan-500
+               px-5 py-2.5 text-sm font-semibold
+               text-white transition hover:bg-cyan-600">
+
+        Back to My Tickets
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+

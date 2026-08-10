@@ -21,10 +21,12 @@ import {  StudentProfile } from './shared/components/student-profile/student-pro
 import { College } from './shared/components/college/college';
 import { Leadership } from './shared/components/leadership/leadership';
 import { Certificate } from './shared/components/certificate/certificate';
-import { FAQ } from './shared/components/faq/faq';
-import { Helpandsupport } from './shared/components/helpandsupport/helpandsupport';
 import { Role } from './shared/components/role/role';
-
+import { TicketComponent } from './shared/components/ticket/ticket';
+import { MyTicketComponent } from './shared/components/mytickets/mytickets';
+import { ReplyTicketComponent } from './shared/components/replyticket/replyticket';
+import { AllTicketsComponent } from './shared/components/alltickets/alltickets';
+import { SupportTicketDetailsComponent } from './shared/components/support-ticket-details/support-ticket-details';
 export const routes: Routes = [
 
   {
@@ -103,11 +105,21 @@ export const routes: Routes = [
         path:'certificate',component:Certificate
       },
       {
-         path:'faq',component:FAQ
+        path:'ticket',component:TicketComponent
       },
       {
-        path:'helpandsupport',component:Helpandsupport
-      }
+      path:'mytickets',component:MyTicketComponent
+      },
+      {
+        path:'replyticket/:id',component:ReplyTicketComponent
+      },
+      {
+        path:'alltickets',component:AllTicketsComponent
+      },
+     {
+  path: 'support-ticket-details/:id',
+  component: SupportTicketDetailsComponent
+}
     ]
   },
 
@@ -118,12 +130,9 @@ export const routes: Routes = [
   {
     path: 'profile', component: ProfilePage
   },
-
-  // Optional 404 route
   {
     path: '**',
     redirectTo: 'home'
   }
-
 ];
  

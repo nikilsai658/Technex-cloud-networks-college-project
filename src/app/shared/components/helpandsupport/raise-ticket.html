@@ -1,0 +1,149 @@
+<div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
+
+    <h2 class="text-2xl font-bold mb-6">
+        Raise Support Ticket
+    </h2>
+
+    <form [formGroup]="ticketForm" (ngSubmit)="submit()">
+
+        <!-- Subject -->
+        <div class="mb-4">
+            <label class="block font-medium mb-2">
+                Subject
+            </label>
+
+            <input
+                type="text"
+                formControlName="subject"
+                placeholder="Enter ticket subject"
+                class="w-full border rounded-lg p-3">
+
+            <small
+                class="text-red-500"
+                *ngIf="ticketForm.get('subject')?.touched && ticketForm.get('subject')?.invalid">
+                Subject is required.
+            </small>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+            <label class="block font-medium mb-2">
+                Description
+            </label>
+
+            <textarea
+                rows="6"
+                formControlName="description"
+                placeholder="Describe your issue..."
+                class="w-full border rounded-lg p-3">
+            </textarea>
+
+            <small
+                class="text-red-500"
+                *ngIf="ticketForm.get('description')?.touched && ticketForm.get('description')?.invalid">
+                Description is required.
+            </small>
+        </div>
+
+        <button
+            type="submit"
+            [disabled]="loading"
+            class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+
+            Raise Ticket
+
+        </button>
+
+    </form>
+
+</div>
+<div class="container">
+
+    <div class="header">
+        <h2>My Support Tickets</h2>
+        <span>{{tickets.length}} Tickets</span>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading">
+        Loading...
+    </div>
+
+    <!-- No Data -->
+    <div *ngIf="!loading && tickets.length==0" class="no-data">
+        No Tickets Found
+    </div>
+
+    <!-- Ticket List -->
+    <div
+        class="ticket-card"
+        *ngFor="let ticket of tickets">
+
+        <div class="ticket-top">
+
+            <div>
+                <h3>#{{ticket.id}} - {{ticket.subject}}</h3>
+
+                <p>
+                    {{ticket.description}}
+                </p>
+            </div>
+
+            <div class="badges">
+
+                <span
+                    class="status"
+                    [ngClass]="getStatusClass(ticket.status)">
+                    {{ticket.status}}
+                </span>
+
+                <span
+                    class="priority"
+                    [ngClass]="getPriorityClass(ticket.priority)">
+                    {{ticket.priority}}
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="details">
+
+            <div>
+                <strong>Domain</strong>
+                <p>{{ticket.domainName}}</p>
+            </div>
+
+            <div>
+                <strong>College</strong>
+                <p>{{ticket.collegeName}}</p>
+            </div>
+
+            <div>
+                <strong>Department</strong>
+                <p>{{ticket.departmentName}}</p>
+            </div>
+
+            <div>
+                <strong>Branch</strong>
+                <p>{{ticket.branchName}}</p>
+            </div>
+
+            <div>
+                <strong>Created</strong>
+                <p>{{ticket.createdAt | date:'dd MMM yyyy hh:mm a'}}</p>
+            </div>
+
+        </div>
+
+        <div class="footer">
+
+            <button (click)="viewConversation(ticket)">
+                View Conversation
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
