@@ -27,7 +27,8 @@ import { TicketService } from '../../../features/services/ticket/ticket-service'
   styleUrl: './replyticket.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReplyTicketComponent implements OnInit, OnDestroy {
+export class ReplyTicketComponent
+  implements OnInit, OnDestroy {
 
   ticketId!: number;
 
@@ -39,6 +40,8 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
 
   loading = false;
 
+  messagesLoading = false;
+
   sending = false;
 
   lastMessageId = 0;
@@ -47,12 +50,20 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
 
   private readonly pollingInterval = 2000;
 
+  readonly maxMessageLength = 1000;
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private ticketService: TicketService,
     private cdr: ChangeDetectorRef
   ) {}
+
+
+  // ==========================================
+  // INIT
+  // ==========================================
 
   ngOnInit(): void {
 
@@ -64,7 +75,7 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
 
     if (!this.ticketId || isNaN(this.ticketId)) {
 
-      console.error('Invalid ticket ID');
+      console.error('Invalid Ticket ID');
 
       this.router.navigate([
         '/main/my-tickets'
@@ -73,16 +84,19 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.getTicket();
+    this.loadTicket();
+
+    this.loadMessages();
 
     this.startPolling();
   }
 
+
   // ==========================================
-  // GET TICKET
+  // LOAD TICKET
   // ==========================================
 
-  getTicket(): void {
+  loadTicket(): void {
 
     this.loading = true;
 
@@ -97,25 +111,8 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
             res
           );
 
-          this.ticket = res?.data ?? null;
-
-          if (this.ticket?.replies?.length) {
-
-            this.messages = [
-              ...this.ticket.replies
-            ];
-
-            const lastMessage =
-              this.messages[
-                this.messages.length - 1
-              ];
-
-            if (lastMessage?.id) {
-
-              this.lastMessageId =
-                Number(lastMessage.id);
-            }
-          }
+          this.ticket =
+            res?.data ?? null;
 
           this.loading = false;
 
@@ -137,30 +134,6 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
       });
   }
 
-  // ==========================================
-  // START POLLING
-  // ==========================================
-
-  startPolling(): void {
-
-    if (this.pollingId) {
-      return;
-    }
-
-    console.log(
-      'HTTP polling started'
-    );
-
-    // Load immediately
-    this.loadMessages();
-
-    // Check every 2 seconds
-    this.pollingId = setInterval(() => {
-
-      this.loadMessages();
-
-    }, this.pollingInterval);
-  }
 
   // ==========================================
   // LOAD MESSAGES
@@ -172,6 +145,8 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.messagesLoading = true;
+
     this.ticketService
       .getMessages(
         this.ticketId,
@@ -181,18 +156,27 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
 
         next: (res: any) => {
 
+          console.log(
+            'Messages response:',
+            res
+          );
+
           const newMessages =
             res?.data ?? [];
 
-          if (!newMessages.length) {
+          if (!Array.isArray(newMessages)) {
+
+            this.messagesLoading = false;
+
+            this.cdr.markForCheck();
+
             return;
           }
 
-          console.log(
-            'New messages:',
-            newMessages
-          );
 
+          /*
+           * Add only new messages.
+           */
           for (const newMessage of newMessages) {
 
             const exists =
@@ -210,22 +194,40 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
             }
           }
 
-          const lastMessage =
-            newMessages[
-              newMessages.length - 1
-            ];
 
-          if (lastMessage?.id) {
+          /*
+           * Update last message ID.
+           */
+          if (newMessages.length > 0) {
 
-            this.lastMessageId =
-              Number(lastMessage.id);
+            const lastMessage =
+              newMessages[
+                newMessages.length - 1
+              ];
+
+            if (lastMessage?.id) {
+
+              this.lastMessageId =
+                Number(lastMessage.id);
+            }
           }
+
+
+          this.messagesLoading = false;
 
           this.cdr.markForCheck();
 
+
+          /*
+           * Scroll after Angular
+           * renders messages.
+           */
           setTimeout(() => {
+
             this.scrollToBottom();
+
           });
+
         },
 
         error: (err) => {
@@ -234,10 +236,60 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
             'Error loading messages:',
             err
           );
+
+          this.messagesLoading = false;
+
+          this.cdr.markForCheck();
         }
 
       });
   }
+
+
+  // ==========================================
+  // REFRESH
+  // ==========================================
+
+  refresh(): void {
+
+    console.log(
+      'Refreshing conversation'
+    );
+
+    /*
+     * Reload all messages.
+     */
+    this.lastMessageId = 0;
+
+    this.messages = [];
+
+    this.loadTicket();
+
+    this.loadMessages();
+  }
+
+
+  // ==========================================
+  // START POLLING
+  // ==========================================
+
+  startPolling(): void {
+
+    if (this.pollingId) {
+      return;
+    }
+
+    console.log(
+      'HTTP polling started'
+    );
+
+    this.pollingId = setInterval(() => {
+
+      this.loadMessages();
+
+    }, this.pollingInterval);
+  }
+
 
   // ==========================================
   // SEND MESSAGE
@@ -253,6 +305,13 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
     }
 
     if (this.sending) {
+      return;
+    }
+
+    if (
+      text.length >
+      this.maxMessageLength
+    ) {
       return;
     }
 
@@ -278,7 +337,10 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
 
           this.cdr.markForCheck();
 
-          // Immediately check for the new message
+          /*
+           * Get the newly created
+           * message immediately.
+           */
           this.loadMessages();
         },
 
@@ -297,8 +359,69 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
       });
   }
 
+
   // ==========================================
-  // SCROLL
+  // MESSAGE POSITION
+  // ==========================================
+
+  isMyMessage(msg: any): boolean {
+
+    const role =
+      String(msg?.senderRole || '')
+        .trim()
+        .toLowerCase();
+
+    /*
+     * Student = YOU
+     *
+     * Student -> RIGHT
+     *
+     * Admin/Superadmin -> LEFT
+     */
+
+    return role === 'student';
+  }
+
+
+  // ==========================================
+  // ADMIN MESSAGE
+  // ==========================================
+
+  isAdminMessage(msg: any): boolean {
+
+    return !this.isMyMessage(msg);
+  }
+
+
+  // ==========================================
+  // SENDER LABEL
+  // ==========================================
+
+  getSenderLabel(msg: any): string {
+
+    /*
+     * Student's own message
+     */
+    if (this.isMyMessage(msg)) {
+      return 'You';
+    }
+
+
+    /*
+     * Admin / Superadmin message
+     */
+    const senderName =
+      msg?.senderName || 'Admin';
+
+    const senderRole =
+      msg?.senderRole || 'Admin';
+
+    return `${senderName} (${senderRole})`;
+  }
+
+
+  // ==========================================
+  // SCROLL TO BOTTOM
   // ==========================================
 
   private scrollToBottom(): void {
@@ -316,6 +439,34 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
       container.scrollHeight;
   }
 
+
+  // ==========================================
+  // ENTER TO SEND
+  // ==========================================
+
+  sendOnEnter(event: Event): void {
+
+    const keyboardEvent =
+      event as KeyboardEvent;
+
+    /*
+     * Shift + Enter
+     * = new line
+     */
+    if (keyboardEvent.shiftKey) {
+      return;
+    }
+
+    /*
+     * Enter
+     * = send
+     */
+    event.preventDefault();
+
+    this.send();
+  }
+
+
   // ==========================================
   // BACK
   // ==========================================
@@ -328,6 +479,7 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
       '/main/my-tickets'
     ]);
   }
+
 
   // ==========================================
   // STOP POLLING
@@ -349,39 +501,14 @@ export class ReplyTicketComponent implements OnInit, OnDestroy {
     }
   }
 
+
   // ==========================================
   // DESTROY
   // ==========================================
 
   ngOnDestroy(): void {
 
-    console.log(
-      'Leaving ticket:',
-      this.ticketId
-    );
-
     this.stopPolling();
   }
 
-  // ==========================================
-  // MESSAGE OWNER
-  // ==========================================
-
-  isMyMessage(msg: any): boolean {
-
-    return String(msg.senderId) ===
-      String(this.ticket?.studentId);
-  }
-  sendOnEnter(event: Event): void {
-
-  const keyboardEvent = event as KeyboardEvent;
-
-  if (keyboardEvent.shiftKey) {
-    return;
-  }
-
-  event.preventDefault();
-
-  this.send();
-}
 }
