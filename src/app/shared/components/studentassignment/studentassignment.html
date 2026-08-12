@@ -1,201 +1,332 @@
-<div class="container">
+<div class="min-h-screen bg-gray-100 p-6">
 
-    <h2>{{ editMode ? 'Update Student Assignment' : 'Create Student Assignment' }}</h2>
+  <!-- Header -->
 
-    <form [formGroup]="assignmentForm" (ngSubmit)="save()">
+  <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
 
-        <div class="row">
+    <div>
 
-            <div class="col">
-                <label>Student Email</label>
-                <input
-                    type="email"
-                    formControlName="studentEmail">
-            </div>
+      <h1 class="text-3xl font-bold text-[#2F3E46]">
+        Student Assignment Scores
+      </h1>
 
-            <div class="col">
-                <label>Course Name</label>
-                <input
-                    type="text"
-                    formControlName="courseName">
-            </div>
+      <p class="text-gray-500 mt-1">
+        View and correct student assignment submission records
+      </p>
 
-        </div>
+    </div>
 
-        <div class="row">
+    <div
+      *ngIf="auth.hasPermission('VIEW_STUDENT_ASSIGNMENT')"
+      class="bg-white rounded-xl shadow px-6 py-4">
 
-            <div class="col">
-                <label>Assignment Title</label>
-                <input
-                    type="text"
-                    formControlName="assignmentTitle">
-            </div>
+      <p class="text-sm text-gray-500">
+        Total Records
+      </p>
 
-            <div class="col">
-                <label>Status</label>
+      <h2 class="text-3xl font-bold text-[#24c0c5]">
 
-                <select formControlName="status">
-                    <option value="">Select Status</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Started">Started</option>
-                    <option value="Completed">Completed</option>
-                </select>
+        {{ assignments.length }}
 
-            </div>
+      </h2>
 
-        </div>
+    </div>
 
-        <div class="row">
+  </div>
 
-            <div class="col">
-                <label>Started On</label>
-                <input
-                    type="datetime-local"
-                    formControlName="startedOn">
-            </div>
+  <div class="grid lg:grid-cols-3 gap-8">
 
-            <div class="col">
-                <label>Completed On</label>
-                <input
-                    type="datetime-local"
-                    formControlName="completedOn">
-            </div>
+    <!-- ================= FORM ================= -->
 
-        </div>
+    <div
+      *ngIf="editMode"
+      class="bg-white rounded-2xl shadow-lg p-6">
 
-        <div class="row">
+      <h2 class="text-2xl font-bold text-[#2F3E46] mb-6">
+        Update Student Assignment Record
+      </h2>
 
-            <div class="col">
-                <label>Score</label>
-                <input
-                    type="number"
-                    formControlName="score">
-            </div>
+      <form
+        [formGroup]="assignmentForm"
+        (ngSubmit)="update()">
 
-            <div class="col">
-                <label>Attempts</label>
-                <input
-                    type="number"
-                    formControlName="attempts">
-            </div>
+        <!-- Student Email -->
+
+        <div class="mb-5">
+
+          <label class="font-semibold">
+            Student Email
+          </label>
+
+          <input
+            type="email"
+            formControlName="studentEmail"
+            class="mt-2 w-full border rounded-lg p-3">
 
         </div>
 
-        <div class="col">
-    <label>Best Submission Id</label>
-    <input
-        type="text"
-        formControlName="bestSubmissionId">
-</div>
+        <!-- Course Name -->
 
-<div class="col">
-    <label>Last Submission Id</label>
-    <input
-        type="text"
-        formControlName="lastSubmissionId">
-</div>
+        <div class="mb-5">
 
-        <div class="row">
+          <label class="font-semibold">
+            Course Name
+          </label>
 
-            <div class="col">
-                <label>Time Taken (Minutes)</label>
-                <input
-                    type="number"
-                    formControlName="timeTaken">
-            </div>
-
-            <div class="col">
-
-                <label>Passed</label>
-
-                <select formControlName="isPassed">
-                    <option [ngValue]="true">Yes</option>
-                    <option [ngValue]="false">No</option>
-                </select>
-
-            </div>
+          <input
+            type="text"
+            formControlName="courseName"
+            class="mt-2 w-full border rounded-lg p-3">
 
         </div>
 
-        <div class="buttons">
+        <!-- Assignment Title -->
 
-            <button type="submit">
-                {{ editMode ? 'Update' : 'Create' }}
-            </button>
+        <div class="mb-5">
 
-            <button
-                type="button"
-                (click)="cancel()">
-                Reset
-            </button>
+          <label class="font-semibold">
+            Assignment Title
+          </label>
+
+          <input
+            type="text"
+            formControlName="assignmentTitle"
+            class="mt-2 w-full border rounded-lg p-3">
 
         </div>
 
-    </form>
+        <!-- Status -->
 
-    <hr>
+        <div class="mb-5">
 
-    <h2>Student Assignments</h2>
+          <label class="font-semibold">
+            Status
+          </label>
 
-    <table border="1" width="100%">
+          <select
+            formControlName="status"
+            class="mt-2 w-full border rounded-lg p-3">
 
-        <thead>
+            <option value="">Select Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Started">Started</option>
+            <option value="Completed">Completed</option>
+
+          </select>
+
+        </div>
+
+        <!-- Score -->
+
+        <div class="mb-5">
+
+          <label class="font-semibold">
+            Score
+          </label>
+
+          <input
+            type="number"
+            formControlName="score"
+            class="mt-2 w-full border rounded-lg p-3">
+
+        </div>
+
+        <!-- Attempts -->
+
+        <div class="mb-5">
+
+          <label class="font-semibold">
+            Attempts
+          </label>
+
+          <input
+            type="number"
+            formControlName="attempts"
+            class="mt-2 w-full border rounded-lg p-3">
+
+        </div>
+
+        <!-- Time Taken -->
+
+        <div class="mb-5">
+
+          <label class="font-semibold">
+            Time Taken (Minutes)
+          </label>
+
+          <input
+            type="number"
+            formControlName="timeTaken"
+            class="mt-2 w-full border rounded-lg p-3">
+
+        </div>
+
+        <!-- Passed -->
+
+        <div class="mb-6">
+
+          <label class="flex items-center gap-3">
+
+            <input
+              type="checkbox"
+              formControlName="isPassed">
+
+            Passed
+
+          </label>
+
+        </div>
+
+        <!-- Buttons -->
+
+        <div class="flex gap-3">
+
+          <button
+            *ngIf="auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT')"
+            type="submit"
+            class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-lg">
+
+            Update
+
+          </button>
+
+          <button
+            type="button"
+            (click)="cancel()"
+            class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg">
+
+            Cancel
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+    <!-- ================= IDLE PANEL (no edit selected) ================= -->
+
+    <div
+      *ngIf="!editMode"
+      class="bg-white rounded-2xl shadow-lg p-6 flex items-center justify-center text-center text-gray-400">
+
+      Select "Edit" on a record to update its score or status.
+
+    </div>
+
+    <!-- ================= TABLE ================= -->
+
+    <div
+      class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden"
+      *ngIf="auth.hasPermission('VIEW_STUDENT_ASSIGNMENT')">
+
+      <div class="bg-[#2F3E46] text-white px-6 py-4">
+
+        <h2 class="text-xl font-bold">
+
+          Student Assignment Records
+
+        </h2>
+
+      </div>
+
+      <div class="overflow-x-auto">
+
+        <table class="min-w-full">
+
+          <thead class="bg-gray-100">
 
             <tr>
-                <th>ID</th>
-                <th>Email</th>
-                <th>Course</th>
-                <th>Assignment</th>
-                <th>Status</th>
-                <th>Score</th>
-                <th>Attempts</th>
-                <th>Time</th>
-                <th>Passed</th>
-                <th>Actions</th>
+
+              <th class="px-4 py-3 text-left">#</th>
+              <th class="px-4 py-3 text-left">Student</th>
+              <th class="px-4 py-3 text-left">Course</th>
+              <th class="px-4 py-3 text-left">Assignment</th>
+              <th class="px-4 py-3 text-left">Status</th>
+              <th class="px-4 py-3 text-center">Score</th>
+              <th class="px-4 py-3 text-center">Attempts</th>
+              <th class="px-4 py-3 text-center">Time</th>
+              <th class="px-4 py-3 text-center">Passed</th>
+              <th class="px-4 py-3 text-center">Actions</th>
+
             </tr>
 
-        </thead>
+          </thead>
 
-        <tbody>
+          <tbody>
 
-            <tr *ngFor="let item of assignments">
+            <tr
+              *ngFor="let item of assignments; let i=index"
+              class="border-b hover:bg-gray-50">
 
-                <td>{{ item.id }}</td>
-                <td>{{ item.studentEmail }}</td>
-                <td>{{ item.courseName }}</td>
-                <td>{{ item.assignmentTitle }}</td>
-                <td>{{ item.status }}</td>
-                <td>{{ item.score }}</td>
-                <td>{{ item.attempts }}</td>
-                <td>{{ item.timeTaken }}</td>
-                <td>{{ item.isPassed ? 'Yes' : 'No' }}</td>
+              <td class="px-4 py-3">{{ i + 1 }}</td>
+              <td class="px-4 py-3 font-semibold">{{ item.studentEmail }}</td>
+              <td class="px-4 py-3">{{ item.courseName }}</td>
+              <td class="px-4 py-3">{{ item.assignmentTitle }}</td>
+              <td class="px-4 py-3">{{ item.status }}</td>
+              <td class="px-4 py-3 text-center font-semibold">{{ item.score }}</td>
+              <td class="px-4 py-3 text-center">{{ item.attempts }}</td>
+              <td class="px-4 py-3 text-center">{{ item.timeTaken }}</td>
 
-                <td>
+              <td class="px-4 py-3 text-center">
 
-                    <button
-                        type="button"
-                        (click)="edit(item.id)">
-                        Edit
-                    </button>
+                <span
+                  class="px-3 py-1 rounded-full text-white text-xs font-semibold"
+                  [ngClass]="item.isPassed ? 'bg-green-600' : 'bg-red-600'">
 
-                    <button
-                        type="button"
-                        (click)="delete(item.id)">
-                        Delete
-                    </button>
+                  {{ item.isPassed ? 'Passed' : 'Failed' }}
 
-                </td>
+                </span>
+
+              </td>
+
+              <td class="px-4 py-3">
+
+                <div class="flex justify-center gap-2">
+
+                  <button
+                    *ngIf="auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT')"
+                    (click)="edit(item.id)"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+
+                    Edit
+
+                  </button>
+
+                  <button
+                    *ngIf="auth.hasPermission('DELETE_STUDENT_ASSIGNMENT')"
+                    (click)="delete(item.id)"
+                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+
+                    Delete
+
+                  </button>
+
+                </div>
+
+              </td>
 
             </tr>
 
             <tr *ngIf="assignments.length === 0">
-                <td colspan="10" align="center">
-                    No Assignments Found
-                </td>
+
+              <td colspan="10" class="text-center py-8 text-gray-500">
+
+                No Student Assignment Records Found
+
+              </td>
+
             </tr>
 
-        </tbody>
+          </tbody>
 
-    </table>
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </div>

@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 
 import { Studentassignment } from '../../../features/services/studentassignment/studentassignment';
+import { Auth } from '../../../core/auth/auth';
 
 @Component({
   selector: 'app-student-assignment',
@@ -26,7 +27,8 @@ export class StudentAssignment implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private studentService: Studentassignment
+    private studentService: Studentassignment,
+    public auth: Auth
   ) {}
 
   ngOnInit(): void {
@@ -89,6 +91,11 @@ export class StudentAssignment implements OnInit {
 
 update(): void {
 
+  if (!this.auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT')) {
+    alert('Permission Denied');
+    return;
+  }
+
   if (this.assignmentForm.invalid) {
     this.assignmentForm.markAllAsTouched();
     return;
@@ -134,6 +141,11 @@ update(): void {
   // Delete
   delete(id: number): void {
 
+    if (!this.auth.hasPermission('DELETE_STUDENT_ASSIGNMENT')) {
+      alert('Permission Denied');
+      return;
+    }
+
     if (!confirm('Are you sure you want to delete this assignment?')) {
       return;
     }
@@ -148,15 +160,6 @@ update(): void {
         error: (err) => console.error(err)
       });
 
-  }
-
-  // Save (Create or Update)
-  save(): void {
-    if (this.editMode) {
-      this.update();
-    } else{
-
-    }
   }
 
   // Reset Form

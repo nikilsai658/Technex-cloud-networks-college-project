@@ -52,6 +52,8 @@ export class ReplyTicketComponent
 
   readonly maxMessageLength = 1000;
 
+  private forceScrollOnNextLoad = false;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -173,6 +175,9 @@ export class ReplyTicketComponent
             return;
           }
 
+          const previousLength =
+            this.messages.length;
+
 
           /*
            * Add only new messages.
@@ -193,6 +198,10 @@ export class ReplyTicketComponent
               );
             }
           }
+
+          const addedMessages =
+            this.messages.length >
+            previousLength;
 
 
           /*
@@ -219,14 +228,35 @@ export class ReplyTicketComponent
 
 
           /*
-           * Scroll after Angular
-           * renders messages.
+           * Only auto-scroll when new
+           * messages actually arrived,
+           * and only if the user hasn't
+           * scrolled up to read history
+           * (unless it's the first load
+           * or their own message just sent).
            */
-          setTimeout(() => {
+          const shouldScroll =
+            addedMessages &&
+            (
+              previousLength === 0 ||
+              this.forceScrollOnNextLoad ||
+              this.isNearBottom()
+            );
 
-            this.scrollToBottom();
+          this.forceScrollOnNextLoad = false;
 
-          });
+          if (shouldScroll) {
+
+            /*
+             * Scroll after Angular
+             * renders messages.
+             */
+            setTimeout(() => {
+
+              this.scrollToBottom();
+
+            });
+          }
 
         },
 
@@ -316,6 +346,8 @@ export class ReplyTicketComponent
     }
 
     this.sending = true;
+
+    this.forceScrollOnNextLoad = true;
 
     this.ticketService
       .replyTicket(
@@ -437,6 +469,32 @@ export class ReplyTicketComponent
 
     container.scrollTop =
       container.scrollHeight;
+  }
+
+
+  // ==========================================
+  // NEAR BOTTOM CHECK
+  // ==========================================
+
+  private isNearBottom(): boolean {
+
+    const container =
+      document.querySelector(
+        '.chat-messages'
+      ) as HTMLElement | null;
+
+    if (!container) {
+      return true;
+    }
+
+    const threshold = 80;
+
+    return (
+      container.scrollHeight -
+        container.scrollTop -
+        container.clientHeight <
+      threshold
+    );
   }
 
 

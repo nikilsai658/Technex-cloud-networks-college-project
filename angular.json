@@ -35,6 +35,9 @@
             "styles": [
               "src/styles.css"
             ],
+            "loader": {
+              ".ttf": "file"
+            },
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {

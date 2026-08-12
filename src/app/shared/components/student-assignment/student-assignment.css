@@ -110,7 +110,8 @@
     @apply w-full lg:w-3/5
            flex flex-col
            bg-[#1E1E1E]
-           min-h-[400px];
+           min-h-[400px]
+           overflow-y-auto;
 }
 
 .problem-content {
@@ -190,6 +191,46 @@
 
 .constraint-list strong {
     @apply text-black;
+}
+
+/* ===========================
+   Output Panel
+=========================== */
+
+.output-panel {
+    @apply border-t border-gray-700
+           bg-[#252526];
+}
+
+.output-header {
+    @apply px-4 py-2
+           text-xs
+           font-semibold
+           uppercase
+           tracking-wide
+           text-gray-400
+           border-b border-gray-700;
+}
+
+.output-body {
+    @apply p-4
+           text-sm
+           text-gray-300
+           max-h-48
+           overflow-y-auto;
+}
+
+.custom-input-box {
+    @apply w-full
+           rounded-lg
+           border border-gray-700
+           bg-[#1E1E1E]
+           text-gray-200
+           text-sm
+           p-2
+           resize-none
+           outline-none
+           focus:border-cyan-500;
 }
 
 /* ===========================

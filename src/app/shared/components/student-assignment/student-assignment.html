@@ -19,7 +19,7 @@
 
         <p class="problem-id">
 
-          Assignment ID : {{ assignment.assignmentId }}
+          Assignment ID : {{ assignment?.assignmentId }}
 
         </p>
 
@@ -35,7 +35,7 @@
 
         <span class="header-value">
 
-          {{ assignment.score }}
+          {{ assignment?.score }}
 
         </span>
 
@@ -48,12 +48,12 @@
         <span
           class="difficulty-badge"
           [ngClass]="{
-            'easy': assignment.difficulty=='Easy',
-            'medium': assignment.difficulty=='Medium',
-            'hard': assignment.difficulty=='Hard'
+            'easy': assignment?.difficulty=='Easy',
+            'medium': assignment?.difficulty=='Medium',
+            'hard': assignment?.difficulty=='Hard'
           }">
 
-          {{assignment.difficulty}}
+          {{assignment?.difficulty}}
 
         </span>
 
@@ -85,7 +85,7 @@
 
           <p class="section-text">
 
-            {{ assignment.description }}
+            {{ assignment?.description }}
 
           </p>
 
@@ -107,7 +107,7 @@
 
               <label>Platform</label>
 
-              <span>{{assignment.platform}}</span>
+              <span>{{assignment?.platform}}</span>
 
             </div>
 
@@ -115,7 +115,7 @@
 
               <label>Contest</label>
 
-              <span>{{assignment.contestId}}</span>
+              <span>{{assignment?.contestId}}</span>
 
             </div>
 
@@ -123,7 +123,7 @@
 
               <label>Question ID</label>
 
-              <span>{{assignment.questionId}}</span>
+              <span>{{assignment?.questionId}}</span>
 
             </div>
 
@@ -131,7 +131,7 @@
 
               <label>Created</label>
 
-              <span>{{assignment.createdAt | date:'mediumDate'}}</span>
+              <span>{{assignment?.createdAt | date:'mediumDate'}}</span>
 
             </div>
 
@@ -154,14 +154,14 @@
             <li>
 
               Time Limit :
-              <strong>{{assignment.timeLimit}} Seconds</strong>
+              <strong>{{assignment?.timeLimit}} Seconds</strong>
 
             </li>
 
             <li>
 
               Memory Limit :
-              <strong>{{assignment.memoryLimit}} MB</strong>
+              <strong>{{assignment?.memoryLimit}} MB</strong>
 
             </li>
 
@@ -182,7 +182,7 @@
           <div class="language-list">
 
             <span
-              *ngFor="let lang of assignment.languageSupport?.split(',')"
+              *ngFor="let lang of assignment?.languageSupport?.split(',')"
               class="language-chip">
 
               {{lang}}
@@ -204,69 +204,13 @@
           </h3>
 
           <a
-            [href]="assignment.challengeUrl"
+            [href]="assignment?.challengeUrl"
             target="_blank"
             class="challenge-link">
 
-            {{assignment.challengeUrl}}
+            {{assignment?.challengeUrl}}
 
           </a>
-
-        </section>
-
-        <!-- Sample Input -->
-
-        <section class="problem-section">
-
-          <h3 class="section-heading">
-
-            Sample Input
-
-          </h3>
-
-          <pre class="code-block">
-
-5
-2 8 4 10 6
-
-          </pre>
-
-        </section>
-
-        <!-- Sample Output -->
-
-        <section class="problem-section">
-
-          <h3 class="section-heading">
-
-            Sample Output
-
-          </h3>
-
-          <pre class="code-block">
-
-10
-
-          </pre>
-
-        </section>
-
-        <!-- Explanation -->
-
-        <section class="problem-section">
-
-          <h3 class="section-heading">
-
-            Explanation
-
-          </h3>
-
-          <p class="section-text">
-
-            The maximum element in the array is
-            <strong>10</strong>.
-
-          </p>
 
         </section>
 
@@ -282,27 +226,37 @@
 
       <div class="editor-container">
 
-        <app-code-editor></app-code-editor>
+        <app-code-editor
+          [isRunning]="isRunning"
+          [isSubmitting]="isSubmitting"
+          [runResult]="runResult"
+          [submitResult]="submitResult"
+          [runError]="runError"
+          [submitError]="submitError"
+          (run)="onRunCode($event)"
+          (submit)="onSubmitCode($event)">
+        </app-code-editor>
 
       </div>
 
-      <!-- Output -->
+      <!-- Custom Input -->
 
       <div class="output-panel">
 
         <div class="output-header">
 
-          Output
+          Custom Input (optional)
 
         </div>
 
         <div class="output-body">
 
-          <p>
-
-            Run your code to see the output...
-
-          </p>
+          <textarea
+            [(ngModel)]="customInput"
+            rows="3"
+            placeholder="stdin for your code..."
+            class="custom-input-box">
+          </textarea>
 
         </div>
 

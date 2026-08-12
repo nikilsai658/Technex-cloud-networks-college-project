@@ -2,16 +2,26 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Inject,
+  Input,
+  Output,
   PLATFORM_ID,
   ViewChild
 } from '@angular/core';
 
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+
+export interface CodeSubmission {
+  code: string;
+  language: string;
+  languageId: number;
+}
 
 @Component({
   selector: 'app-code-editor',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './code-editor.html',
   styleUrls: ['./code-editor.css']
 })
@@ -20,10 +30,31 @@ export class CodeEditorComponent implements AfterViewInit {
   @ViewChild('editorContainer', { static: true })
   editorContainer!: ElementRef<HTMLDivElement>;
 
+  @Input() isRunning = false;
+  @Input() isSubmitting = false;
+
+  @Input() runResult: any = null;
+  @Input() submitResult: any = null;
+  @Input() runError: string | null = null;
+  @Input() submitError: string | null = null;
+
+  @Output() run = new EventEmitter<CodeSubmission>();
+  @Output() submit = new EventEmitter<CodeSubmission>();
+
   editor: any;
   monaco: any;
 
   selectedLanguage = 'python';
+
+  // Judge0 language IDs (from this backend's live /languages endpoint),
+  // not sequential — Judge0's own id=1 is archived Bash, not Python.
+  readonly languageIds: Record<string, number> = {
+    python: 71,
+    javascript: 63,
+    java: 62,
+    cpp: 54,
+    csharp: 51
+  };
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -33,7 +64,23 @@ export class CodeEditorComponent implements AfterViewInit {
       return;
     }
 
-    this.monaco = await import('monaco-editor');
+    this.configureMonacoWorkers();
+
+    // Import only the editor core plus plain syntax-highlighting
+    // (Monarch grammar, no worker involved) for the languages this
+    // judge platform supports. The full 'monaco-editor' barrel also
+    // auto-registers the TypeScript language *service*, which needs
+    // a worker-side module loader this ESM/Vite setup doesn't provide
+    // and throws even when the active language is something else.
+    this.monaco = await import('monaco-editor/esm/vs/editor/editor.api');
+
+    await Promise.all([
+      import('monaco-editor/esm/vs/basic-languages/python/python.contribution'),
+      import('monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution'),
+      import('monaco-editor/esm/vs/basic-languages/java/java.contribution'),
+      import('monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution'),
+      import('monaco-editor/esm/vs/basic-languages/csharp/csharp.contribution')
+    ]);
 
     this.editor = this.monaco.editor.create(
       this.editorContainer.nativeElement,
@@ -49,6 +96,23 @@ export class CodeEditorComponent implements AfterViewInit {
     );
   }
 
+  private configureMonacoWorkers(): void {
+
+    // None of the languages we register (Python/JS/Java/C++/C#) use
+    // anything beyond plain Monarch tokenization, so the generic
+    // editor worker (bracket matching, folding, etc.) is the only
+    // one ever requested.
+    (window as any).MonacoEnvironment = {
+
+      getWorker: () =>
+        new Worker(
+          new URL('../../../../../node_modules/monaco-editor/esm/vs/editor/editor.worker.js', import.meta.url),
+          { type: 'module' }
+        )
+
+    };
+  }
+
   changeLanguage(language: string) {
 
     this.selectedLanguage = language;
@@ -59,6 +123,31 @@ export class CodeEditorComponent implements AfterViewInit {
     );
 
     this.editor.setValue(this.getDefaultCode(language));
+  }
+
+  resetCode(): void {
+
+    this.editor.setValue(
+      this.getDefaultCode(this.selectedLanguage)
+    );
+  }
+
+  onRunClick(): void {
+
+    this.run.emit({
+      code: this.editor.getValue(),
+      language: this.selectedLanguage,
+      languageId: this.languageIds[this.selectedLanguage]
+    });
+  }
+
+  onSubmitClick(): void {
+
+    this.submit.emit({
+      code: this.editor.getValue(),
+      language: this.selectedLanguage,
+      languageId: this.languageIds[this.selectedLanguage]
+    });
   }
 
   getDefaultCode(language: string): string {

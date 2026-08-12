@@ -18,4 +18,10 @@ export class Student {
   getstudentassignmentId(assignmentId:number){
     return this.api.GET(`Student/assignment/${assignmentId}`)
   }
+  runCode(sourceCode:string, languageId:number, stdin:string|null){
+    return this.api.POST('Student/run', { sourceCode, languageId, stdin });
+  }
+  submitCode(assignmentId:number, sourceCode:string, languageId:number, stdin:string|null){
+    return this.api.POST('Student/submit', { assignmentId, sourceCode, languageId, stdin });
+  }
 }

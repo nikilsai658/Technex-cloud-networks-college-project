@@ -50,8 +50,100 @@
 
 .editor-container{
     @apply flex-1;
-    min-height:650px;
+    min-height:300px;
     border:1px solid #d1d5db;
+}
+
+/* Output */
+
+.output-panel {
+    @apply border-t border-gray-700
+           bg-[#252526];
+}
+
+.output-header {
+    @apply px-4 py-2
+           text-xs
+           font-semibold
+           uppercase
+           tracking-wide
+           text-gray-400
+           border-b border-gray-700;
+}
+
+.output-body {
+    @apply p-4
+           text-sm
+           text-gray-300
+           max-h-48
+           overflow-y-auto;
+}
+
+.code-block {
+    @apply whitespace-pre-wrap
+           break-words
+           font-mono
+           text-sm
+           text-gray-200;
+}
+
+.status-badge {
+    @apply inline-block
+           px-3 py-1
+           mb-2
+           rounded-full
+           text-xs
+           font-semibold;
+}
+
+.status-badge.passed {
+    @apply bg-green-600 text-white;
+}
+
+.status-badge.failed {
+    @apply bg-red-600 text-white;
+}
+
+.output-error {
+    @apply text-red-400;
+}
+
+.verdict-banner {
+    @apply mb-3
+           flex items-center gap-3
+           rounded-lg
+           border
+           px-4 py-3;
+}
+
+.verdict-banner.passed {
+    @apply border-green-700
+           bg-green-950
+           text-green-400;
+}
+
+.verdict-banner.failed {
+    @apply border-red-700
+           bg-red-950
+           text-red-400;
+}
+
+.verdict-icon {
+    @apply text-2xl font-bold;
+}
+
+.verdict-title {
+    @apply text-sm font-semibold;
+}
+
+.verdict-subtitle {
+    @apply text-xs text-gray-400;
+}
+
+.output-meta {
+    @apply mt-2
+           text-xs
+           text-gray-400;
 }
 
 /* Responsive */
@@ -68,7 +160,7 @@
     }
 
     .editor-container{
-        min-height:450px;
+        min-height:250px;
     }
 
 }

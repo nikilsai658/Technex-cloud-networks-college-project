@@ -245,10 +245,27 @@
 
 
     <!-- ====================================== -->
+    <!-- TICKET CLOSED NOTICE -->
+    <!-- ====================================== -->
+
+    <div
+      *ngIf="ticket?.status?.toLowerCase() === 'closed'"
+      class="border-t border-gray-200
+             bg-gray-50 px-5 py-5
+             text-center text-sm
+             text-gray-500">
+
+      This ticket is closed. You can no longer send replies.
+
+    </div>
+
+
+    <!-- ====================================== -->
     <!-- REPLY INPUT -->
     <!-- ====================================== -->
 
     <div
+      *ngIf="ticket?.status?.toLowerCase() !== 'closed'"
       class="border-t border-gray-200
              bg-white px-5 py-5">
 

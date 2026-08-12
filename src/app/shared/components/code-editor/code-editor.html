@@ -23,7 +23,9 @@
 
             <button
                 class="reset-btn"
-                >
+                type="button"
+                [disabled]="isRunning || isSubmitting"
+                (click)="resetCode()">
 
                 Reset
 
@@ -31,17 +33,21 @@
 
             <button
                 class="run-btn"
-            >
+                type="button"
+                [disabled]="isRunning || isSubmitting"
+                (click)="onRunClick()">
 
-                Run Code
+                {{ isRunning ? 'Running...' : 'Run Code' }}
 
             </button>
 
             <button
                 class="submit-btn"
-                >
+                type="button"
+                [disabled]="isRunning || isSubmitting"
+                (click)="onSubmitClick()">
 
-                Submit
+                {{ isSubmitting ? 'Submitting...' : 'Submit' }}
 
             </button>
 
@@ -54,6 +60,116 @@
     <div
         #editorContainer
         class="editor-container">
+    </div>
+
+    <!-- Output -->
+
+    <div class="output-panel">
+
+        <div class="output-header">
+
+            Output
+
+        </div>
+
+        <div class="output-body">
+
+            <!-- Idle -->
+            <p *ngIf="!isRunning && !isSubmitting && !runResult && !submitResult && !runError && !submitError">
+
+                Run your code to see the output...
+
+            </p>
+
+            <!-- Loading -->
+            <p *ngIf="isRunning">
+
+                Running your code...
+
+            </p>
+
+            <p *ngIf="isSubmitting">
+
+                Submitting your code...
+
+            </p>
+
+            <!-- Transport-level error -->
+            <p class="output-error" *ngIf="runError">
+
+                {{ runError }}
+
+            </p>
+
+            <p class="output-error" *ngIf="submitError">
+
+                {{ submitError }}
+
+            </p>
+
+            <!-- Run result -->
+            <div *ngIf="!isRunning && runResult">
+
+                <span
+                    class="status-badge"
+                    [ngClass]="{
+                        'passed': runResult.status === 'Accepted',
+                        'failed': runResult.status !== 'Accepted'
+                    }">
+
+                    {{ runResult.status }}
+
+                </span>
+
+                <pre class="code-block">{{ runResult.output }}</pre>
+
+                <pre class="code-block output-error" *ngIf="runResult.error">{{ runResult.error }}</pre>
+
+                <p class="output-meta">
+                    Time: {{ runResult.time }}s &nbsp;|&nbsp; Memory: {{ runResult.memory }} KB
+                </p>
+
+            </div>
+
+            <!-- Submit result -->
+            <div *ngIf="!isSubmitting && submitResult">
+
+                <div
+                    class="verdict-banner"
+                    [ngClass]="{
+                        'passed': submitResult.isAccepted,
+                        'failed': !submitResult.isAccepted
+                    }">
+
+                    <span class="verdict-icon">
+                        {{ submitResult.isAccepted ? '✓' : '✗' }}
+                    </span>
+
+                    <div>
+                        <div class="verdict-title">
+                            {{ submitResult.isAccepted ? 'Correct!' : 'Wrong Answer' }}
+                        </div>
+                        <div class="verdict-subtitle">
+                            {{ submitResult.passedTestCases }}/{{ submitResult.totalTestCases }} test cases passed
+                        </div>
+                    </div>
+
+                </div>
+
+                <pre class="code-block">{{ submitResult.output }}</pre>
+
+                <pre class="code-block output-error" *ngIf="submitResult.error">{{ submitResult.error }}</pre>
+
+                <p class="output-meta">
+                    Score: {{ submitResult.score }}
+                    &nbsp;|&nbsp; Time: {{ submitResult.time }}s
+                    &nbsp;|&nbsp; Memory: {{ submitResult.memory }} KB
+                </p>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
