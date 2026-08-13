@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Student } from '../../../features/services/student/student';
 import { Router } from '@angular/router';
 
@@ -18,10 +18,12 @@ export class StudentDomain implements OnInit {
   constructor(
     private api: Student,
     private cd: ChangeDetectorRef,
-    private router:Router
+    private router:Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.loadstudentdomain();
   }
 

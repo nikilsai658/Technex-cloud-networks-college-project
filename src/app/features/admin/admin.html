@@ -6,24 +6,24 @@
 </div>
 <div class="p-6" >
 <div *ngIf="auth.hasPermission('VIEW_COLLEGE_DEPARTMENT')"  >
-    <app-collegedepartment></app-collegedepartment>
+    <app-collegedepartment ngSkipHydration></app-collegedepartment>
 </div>
 <div *ngIf="auth.hasPermission('VIEW_DEPARTMENT_BRANCH')">
-    <app-departmentbranch></app-departmentbranch>
+    <app-departmentbranch ngSkipHydration></app-departmentbranch>
 </div>
 <div *ngIf="auth.hasPermission('VIEW_DOMAIN_COURSE_MAP')">
-  <app-domaincoursemap></app-domaincoursemap>
+  <app-domaincoursemap ngSkipHydration></app-domaincoursemap>
 </div>
 <div *ngIf="auth.hasPermission('VIEW_COURSE_ASSIGNMENT_MAP')">
-    <app-courseassignmentmap></app-courseassignmentmap>
+    <app-courseassignmentmap ngSkipHydration></app-courseassignmentmap>
 </div>
 <div *ngIf="auth.hasPermission('VIEW_STUDENT_DOMAIN_COURSE_MAP')">
-    <app-studentdomainmap></app-studentdomainmap>
+    <app-studentdomainmap ngSkipHydration></app-studentdomainmap>
 </div>
 <div *ngIf="auth.hasPermission('VIEW_ROLE_PERMISSION')">
-    <app-rolepermission></app-rolepermission>
+    <app-rolepermission ngSkipHydration></app-rolepermission>
 </div>
 <div *ngIf="auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT')">
-    <app-student-assignment></app-student-assignment>
+    <app-student-assignment ngSkipHydration></app-student-assignment>
 </div>
 </div>

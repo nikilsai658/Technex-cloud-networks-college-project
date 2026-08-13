@@ -10,62 +10,54 @@
       </button>
 
       <div>
-
         <h2 class="problem-name">
-
           {{ assignment?.title }}
-
         </h2>
 
         <p class="problem-id">
-
           Assignment ID : {{ assignment?.assignmentId }}
-
         </p>
-
       </div>
 
     </div>
 
     <div class="header-right">
 
+      <!-- Score -->
       <div class="header-box">
-
         <span class="header-label">Score</span>
 
         <span class="header-value">
-
           {{ assignment?.score }}
-
         </span>
-
       </div>
 
+      <!-- Difficulty -->
       <div class="header-box">
-
         <span class="header-label">Difficulty</span>
 
         <span
           class="difficulty-badge"
           [ngClass]="{
-            'easy': assignment?.difficulty=='Easy',
-            'medium': assignment?.difficulty=='Medium',
-            'hard': assignment?.difficulty=='Hard'
+            'easy': assignment?.difficulty === 'Easy',
+            'medium': assignment?.difficulty === 'Medium',
+            'hard': assignment?.difficulty === 'Hard'
           }">
 
-          {{assignment?.difficulty}}
+          {{ assignment?.difficulty }}
 
         </span>
-
       </div>
 
     </div>
 
   </header>
 
+
   <!-- ================= BODY ================= -->
 
   <div class="platform-body">
+
 
     <!-- ================= LEFT PANEL ================= -->
 
@@ -73,65 +65,85 @@
 
       <div class="problem-content">
 
-        <!-- Description -->
+
+        <!-- ================= DESCRIPTION ================= -->
 
         <section class="problem-section">
 
           <h3 class="section-heading">
-
             Problem Description
-
           </h3>
 
           <p class="section-text">
-
             {{ assignment?.description }}
-
           </p>
 
         </section>
 
-        <!-- Information -->
+
+
+        <!-- ================= CONSTRAINTS ================= -->
 
         <section class="problem-section">
 
           <h3 class="section-heading">
-
-            Information
-
+            Constraints
           </h3>
 
-          <div class="info-grid">
+          <ul class="constraint-list">
 
-            <div class="info-item">
+            <li>
+              Time Limit :
+              <strong>
+                {{ assignment?.timeLimit }} Seconds
+              </strong>
+            </li>
 
-              <label>Platform</label>
 
-              <span>{{assignment?.platform}}</span>
+          </ul>
+
+        </section>
+
+
+        <!-- ================= SAMPLE TEST CASE ================= -->
+
+        <section
+          class="problem-section"
+          *ngIf="sampleTestCases?.length">
+
+          <h3 class="section-heading">
+            Sample Test Case
+          </h3>
+
+
+          <!-- ONLY FIRST SAMPLE TEST CASE -->
+          <div class="testcase-card">
+
+            <div class="testcase-card-title">
+              Example 1
+            </div>
+
+
+            <!-- INPUT -->
+            <div class="testcase-block">
+
+              <label>
+                Input
+              </label>
+
+              <pre>{{ sampleTestCases[0]?.input }}</pre>
 
             </div>
 
-            <div class="info-item">
 
-              <label>Contest</label>
+            <!-- EXPECTED OUTPUT -->
+            <div class="testcase-block">
 
-              <span>{{assignment?.contestId}}</span>
+              <label>
+                Expected Output
+              </label>
 
-            </div>
-
-            <div class="info-item">
-
-              <label>Question ID</label>
-
-              <span>{{assignment?.questionId}}</span>
-
-            </div>
-
-            <div class="info-item">
-
-              <label>Created</label>
-
-              <span>{{assignment?.createdAt | date:'mediumDate'}}</span>
+              <pre>{{ sampleTestCases[0]?.expectedOutput }}</pre>
 
             </div>
 
@@ -139,53 +151,25 @@
 
         </section>
 
-        <!-- Constraints -->
+
+        <!-- ================= SUPPORTED LANGUAGES ================= -->
 
         <section class="problem-section">
 
           <h3 class="section-heading">
-
-            Constraints
-
-          </h3>
-
-          <ul class="constraint-list">
-
-            <li>
-
-              Time Limit :
-              <strong>{{assignment?.timeLimit}} Seconds</strong>
-
-            </li>
-
-            <li>
-
-              Memory Limit :
-              <strong>{{assignment?.memoryLimit}} MB</strong>
-
-            </li>
-
-          </ul>
-
-        </section>
-
-        <!-- Languages -->
-
-        <section class="problem-section">
-
-          <h3 class="section-heading">
-
             Supported Languages
-
           </h3>
+
 
           <div class="language-list">
 
             <span
-              *ngFor="let lang of assignment?.languageSupport?.split(',')"
+              *ngFor="
+                let lang of assignment?.languageSupport?.split(',')
+              "
               class="language-chip">
 
-              {{lang}}
+              {{ lang.trim() }}
 
             </span>
 
@@ -193,36 +177,38 @@
 
         </section>
 
-        <!-- Challenge Link -->
 
-        <section class="problem-section">
+        <!-- ================= CHALLENGE LINK ================= -->
+
+        <section
+          class="problem-section"
+          *ngIf="assignment?.challengeUrl">
 
           <h3 class="section-heading">
-
             Challenge Link
-
           </h3>
 
           <a
             [href]="assignment?.challengeUrl"
             target="_blank"
+            rel="noopener noreferrer"
             class="challenge-link">
 
-            {{assignment?.challengeUrl}}
+            {{ assignment?.challengeUrl }}
 
           </a>
 
         </section>
 
+
       </div>
 
     </div>
 
+
     <!-- ================= RIGHT PANEL ================= -->
 
     <div class="editor-panel">
-
-      <!-- Editor -->
 
       <div class="editor-container">
 
@@ -233,32 +219,12 @@
           [submitResult]="submitResult"
           [runError]="runError"
           [submitError]="submitError"
+          [defaultStdin]="sampleTestCases[0]?.input ?? null"
+
           (run)="onRunCode($event)"
           (submit)="onSubmitCode($event)">
+
         </app-code-editor>
-
-      </div>
-
-      <!-- Custom Input -->
-
-      <div class="output-panel">
-
-        <div class="output-header">
-
-          Custom Input (optional)
-
-        </div>
-
-        <div class="output-body">
-
-          <textarea
-            [(ngModel)]="customInput"
-            rows="3"
-            placeholder="stdin for your code..."
-            class="custom-input-box">
-          </textarea>
-
-        </div>
 
       </div>
 

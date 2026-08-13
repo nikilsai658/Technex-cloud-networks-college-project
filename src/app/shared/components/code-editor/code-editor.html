@@ -62,6 +62,38 @@
         class="editor-container">
     </div>
 
+    <!-- Custom Input (stdin) -->
+
+    <div class="output-panel">
+
+        <button
+            type="button"
+            class="output-header custom-input-toggle"
+            (click)="showCustomInput = !showCustomInput">
+
+            <span>Custom Input (optional)</span>
+
+            <span
+                class="toggle-icon"
+                [class.open]="showCustomInput">
+                ▸
+            </span>
+
+        </button>
+
+        <div class="output-body" *ngIf="showCustomInput">
+
+            <textarea
+                [ngModel]="stdin"
+                (ngModelChange)="onStdinChange($event)"
+                rows="3"
+                placeholder="stdin for your code..."
+                class="custom-input-box"></textarea>
+
+        </div>
+
+    </div>
+
     <!-- Output -->
 
     <div class="output-panel">
@@ -163,7 +195,6 @@
                 <p class="output-meta">
                     Score: {{ submitResult.score }}
                     &nbsp;|&nbsp; Time: {{ submitResult.time }}s
-                    &nbsp;|&nbsp; Memory: {{ submitResult.memory }} KB
                 </p>
 
             </div>

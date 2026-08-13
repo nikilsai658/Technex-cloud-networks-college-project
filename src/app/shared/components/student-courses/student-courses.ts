@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from '@angular/core';
 import { Student } from '../../../features/services/student/student';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -17,10 +17,12 @@ export class StudentCourses {
   constructor(
     private api: Student,
     private cd: ChangeDetectorRef,
-    private router:Router
+    private router:Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.loadstudentcourse();
   }
 

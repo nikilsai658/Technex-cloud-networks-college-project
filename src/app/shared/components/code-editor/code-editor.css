@@ -79,6 +79,25 @@
            overflow-y-auto;
 }
 
+.custom-input-toggle {
+    @apply w-full
+           flex items-center justify-between
+           bg-transparent
+           cursor-pointer
+           hover:text-gray-200
+           transition-colors;
+}
+
+.toggle-icon {
+    @apply inline-block
+           transition-transform
+           duration-150;
+}
+
+.toggle-icon.open {
+    @apply rotate-90;
+}
+
 .code-block {
     @apply whitespace-pre-wrap
            break-words
@@ -106,6 +125,19 @@
 
 .output-error {
     @apply text-red-400;
+}
+
+.custom-input-box {
+    @apply w-full
+           rounded-lg
+           border border-gray-700
+           bg-[#1E1E1E]
+           text-gray-200
+           text-sm
+           p-2
+           resize-none
+           outline-none
+           focus:border-cyan-500;
 }
 
 .verdict-banner {
@@ -160,7 +192,7 @@
     }
 
     .editor-container{
-        min-height:250px;
+        min-height:200px;
     }
 
 }

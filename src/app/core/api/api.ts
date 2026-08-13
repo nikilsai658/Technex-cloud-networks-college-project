@@ -1,17 +1,22 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable, throwError ,catchError} from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { isPlatformBrowser } from '@angular/common';
 @Injectable({
   providedIn: 'root',
 })
 export class Api {
-  constructor(private http: HttpClient,private cookie:CookieService,private router:Router){
- 
+  constructor(private http: HttpClient,private cookie:CookieService,private router:Router, @Inject(PLATFORM_ID) private platformId: Object){
+
   }
   private getHeaders(): HttpHeaders {
+
+  if (!isPlatformBrowser(this.platformId)) {
+    return new HttpHeaders();
+  }
 
   const token = this.cookie.get('token');
 

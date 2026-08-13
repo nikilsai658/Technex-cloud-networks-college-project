@@ -1,15 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Student } from '../../../features/services/student/student';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CodeEditorComponent, CodeSubmission } from '../code-editor/code-editor';
 import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-student-assignment',
   standalone:true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, CodeEditorComponent, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, CodeEditorComponent, RouterLink],
   templateUrl: './student-assignment.html',
   styleUrl: './student-assignment.css',
 })
@@ -17,7 +17,9 @@ export class StudentAssignment implements OnInit{
   assignmentId!:number;
   assignment: any = null;
 
-  customInput = '';
+  get sampleTestCases(): any[] {
+    return (this.assignment?.testCases ?? []).filter((tc: any) => tc.isSample);
+  }
 
   isRunning = false;
   isSubmitting = false;
@@ -28,11 +30,12 @@ export class StudentAssignment implements OnInit{
   runError: string | null = null;
   submitError: string | null = null;
 
-  constructor(private route:ActivatedRoute, private router:Router,private api:Student,private cd:ChangeDetectorRef,private location:Location){}
+  constructor(private route:ActivatedRoute, private router:Router,private api:Student,private cd:ChangeDetectorRef,private location:Location, @Inject(PLATFORM_ID) private platformId: Object){}
   ngOnInit(): void {
-     this.assignmentId = history.state.Id;
-    this.loadAssignment();
-
+    if (isPlatformBrowser(this.platformId)) {
+      this.assignmentId = history.state.Id;
+      this.loadAssignment();
+    }
   }
   loadAssignment():void{
     this.api.getstudentassignmentId(this.assignmentId).subscribe({
@@ -62,9 +65,10 @@ export class StudentAssignment implements OnInit{
 
     this.api
       .runCode(
-        submission.code,
+        submission.sourceCode,
         submission.languageId,
-        this.customInput.trim() ? this.customInput : null
+        submission.stdin,
+        this.assignment?.questionId
       )
       .subscribe({
 
@@ -103,9 +107,10 @@ export class StudentAssignment implements OnInit{
     this.api
       .submitCode(
         this.assignmentId,
-        submission.code,
+        submission.sourceCode,
         submission.languageId,
-        this.customInput.trim() ? this.customInput : null
+        submission.stdin,
+        this.assignment?.questionId
       )
       .subscribe({
 

@@ -14,6 +14,7 @@ import {
 import {
   FormBuilder,
   FormGroup,
+  FormArray,
   Validators,
   ReactiveFormsModule
 } from '@angular/forms';
@@ -66,7 +67,7 @@ export class AssignmentComponent implements OnInit {
 
       questionId: ['', Validators.required],
 
-      Platform: ['Technex', Validators.required],
+      platform: ['', Validators.required],
 
       difficulty: ['', Validators.required],
 
@@ -80,7 +81,13 @@ export class AssignmentComponent implements OnInit {
 
       memoryLimit: [1, Validators.required],
 
-      isActive: [true]
+      isActive: [true],
+
+      contestId: [null],
+
+      challengeUrl: [''],
+
+      testCases: this.fb.array([this.createTestCase(true)])
 
     });
 
@@ -96,6 +103,39 @@ export class AssignmentComponent implements OnInit {
     if (this.auth.hasPermission('VIEW_ASSIGNMENT')) {
       this.loadAssignments();
     }
+
+  }
+
+  //=========================
+  // TEST CASES
+  //=========================
+
+  createTestCase(isSample: boolean = false): FormGroup {
+
+    return this.fb.group({
+      input: ['', Validators.required],
+      expectedOutput: ['', Validators.required],
+      isSample: [isSample]
+    });
+
+  }
+
+  get testCases(): FormArray {
+    return this.assignmentForm.get('testCases') as FormArray;
+  }
+
+  addTestCase(): void {
+    this.testCases.push(this.createTestCase());
+  }
+
+  removeTestCase(index: number): void {
+
+    if (this.testCases.length === 1) {
+      alert('At least one test case is required');
+      return;
+    }
+
+    this.testCases.removeAt(index);
 
   }
 
@@ -196,9 +236,11 @@ export class AssignmentComponent implements OnInit {
       description: item.description,
 
       questionId: item.questionId,
-       Platform: item.platform ?? 'Technex',
+
+      platform: item.platform ?? '',
+
       difficulty: item.difficulty,
-     
+
       score: item.score,
 
       languageSupport: item.languageSupport,
@@ -209,8 +251,26 @@ export class AssignmentComponent implements OnInit {
 
       memoryLimit: item.memoryLimit,
 
-      isActive: item.isActive
+      isActive: item.isActive,
 
+      contestId: item.contestId ?? null,
+
+      challengeUrl: item.challengeUrl ?? ''
+
+    });
+
+    this.testCases.clear();
+
+    const cases = Array.isArray(item.testCases) && item.testCases.length
+      ? item.testCases
+      : [{ input: '', expectedOutput: '', isSample: true }];
+
+    cases.forEach((tc: any) => {
+      this.testCases.push(this.fb.group({
+        input: [tc.input ?? '', Validators.required],
+        expectedOutput: [tc.expectedOutput ?? '', Validators.required],
+        isSample: [tc.isSample ?? false]
+      }));
     });
 
   }
@@ -295,15 +355,21 @@ export class AssignmentComponent implements OnInit {
     title: '',
     description: '',
     questionId: '',
-    Platform: 'Technex',   // <-- Add this
+    platform: '',
     difficulty: '',
     score: 1,
     languageSupport: '',
     iframeUrl: '',
     timeLimit: 1,
     memoryLimit: 1,
-    isActive: true
+    isActive: true,
+    contestId: null,
+    challengeUrl: ''
   });
+
+  this.testCases.clear();
+  this.testCases.push(this.createTestCase(true));
+
 }
 
 }

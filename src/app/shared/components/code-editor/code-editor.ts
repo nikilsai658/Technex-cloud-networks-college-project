@@ -5,27 +5,30 @@ import {
   EventEmitter,
   Inject,
   Input,
+  OnChanges,
   Output,
   PLATFORM_ID,
+  SimpleChanges,
   ViewChild
 } from '@angular/core';
 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 export interface CodeSubmission {
-  code: string;
-  language: string;
   languageId: number;
+  sourceCode: string;
+  stdin: string | null;
 }
 
 @Component({
   selector: 'app-code-editor',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './code-editor.html',
   styleUrls: ['./code-editor.css']
 })
-export class CodeEditorComponent implements AfterViewInit {
+export class CodeEditorComponent implements AfterViewInit, OnChanges {
 
   @ViewChild('editorContainer', { static: true })
   editorContainer!: ElementRef<HTMLDivElement>;
@@ -38,6 +41,15 @@ export class CodeEditorComponent implements AfterViewInit {
   @Input() runError: string | null = null;
   @Input() submitError: string | null = null;
 
+  // Seeds stdin with the assignment's sample test-case input, so a
+  // student can Run/Submit without typing anything. Only applied while
+  // stdin is still untouched — never overwrites what the student typed.
+  @Input() defaultStdin: string | null = null;
+
+  private stdinTouched = false;
+
+  showCustomInput = false;
+
   @Output() run = new EventEmitter<CodeSubmission>();
   @Output() submit = new EventEmitter<CodeSubmission>();
 
@@ -45,6 +57,8 @@ export class CodeEditorComponent implements AfterViewInit {
   monaco: any;
 
   selectedLanguage = 'python';
+
+  stdin = '';
 
   // Judge0 language IDs (from this backend's live /languages endpoint),
   // not sequential — Judge0's own id=1 is archived Bash, not Python.
@@ -57,6 +71,23 @@ export class CodeEditorComponent implements AfterViewInit {
   };
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+
+    if (
+      changes['defaultStdin'] &&
+      !this.stdinTouched &&
+      this.defaultStdin
+    ) {
+      this.stdin = this.defaultStdin;
+    }
+
+  }
+
+  onStdinChange(value: string): void {
+    this.stdin = value;
+    this.stdinTouched = true;
+  }
 
   async ngAfterViewInit() {
 
@@ -135,18 +166,18 @@ export class CodeEditorComponent implements AfterViewInit {
   onRunClick(): void {
 
     this.run.emit({
-      code: this.editor.getValue(),
-      language: this.selectedLanguage,
-      languageId: this.languageIds[this.selectedLanguage]
+      languageId: this.languageIds[this.selectedLanguage],
+      sourceCode: this.editor.getValue(),
+      stdin: this.stdin.trim() ? this.stdin : null
     });
   }
 
   onSubmitClick(): void {
 
     this.submit.emit({
-      code: this.editor.getValue(),
-      language: this.selectedLanguage,
-      languageId: this.languageIds[this.selectedLanguage]
+      languageId: this.languageIds[this.selectedLanguage],
+      sourceCode: this.editor.getValue(),
+      stdin: this.stdin.trim() ? this.stdin : null
     });
   }
 

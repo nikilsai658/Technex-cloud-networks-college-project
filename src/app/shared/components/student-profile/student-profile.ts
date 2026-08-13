@@ -1,5 +1,5 @@
-import { Component, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 import { UserStore } from '../../../core/store/user';
 
@@ -12,25 +12,29 @@ import { UserStore } from '../../../core/store/user';
 })
 export class StudentProfile {
    user:any;
-  constructor(private userStore: UserStore) {
+  private isBrowser: boolean;
+
+  constructor(private userStore: UserStore, @Inject(PLATFORM_ID) platformId: Object) {
     this.user = this.userStore.user;
+    this.isBrowser = isPlatformBrowser(platformId);
+
+    this.selectedImage = this.isBrowser ? localStorage.getItem('profileImage') : null;
+    this.resumeName = this.isBrowser ? localStorage.getItem('resumeName') : null;
+    this.resumeUrl = this.isBrowser ? localStorage.getItem('resumeUrl') : null;
   }
   // ===========================
   // PROFILE IMAGE
   // ===========================
 
-  selectedImage: string | null =
-    localStorage.getItem('profileImage');
+  selectedImage: string | null;
 
   // ===========================
   // RESUME
   // ===========================
 
-  resumeName: string | null =
-    localStorage.getItem('resumeName');
+  resumeName: string | null;
 
-  resumeUrl: string | null =
-    localStorage.getItem('resumeUrl');
+  resumeUrl: string | null;
 
   // ===========================
   // IMAGE UPLOAD

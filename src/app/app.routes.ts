@@ -14,7 +14,6 @@ import { DomainComponent } from './shared/components/domain/domain';
 import { Course } from './shared/components/course/course';
 import { Year } from './shared/components/year/year';
 import { UserComponent } from './shared/components/user/user';
-import { RolePermissionComponent } from './shared/components/rolepermission/rolepermission';
 import { Permission } from './shared/components/permissions/permissions';
 import { AssignmentComponent } from './shared/components/assignment/assignment';
 import {  StudentProfile } from './shared/components/student-profile/student-profile';
@@ -116,10 +115,9 @@ export const routes: Routes = [
       {
         path:'alltickets',component:AllTicketsComponent
       },
-     {
-  path: 'support-ticket-details/:id',
-  component: SupportTicketDetailsComponent
-}
+      {
+        path: 'support-ticket-details/:id',component: SupportTicketDetailsComponent
+      }  
     ]
   },
 

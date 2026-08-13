@@ -74,8 +74,7 @@
           <textarea
             rows="3"
             formControlName="description"
-            class="mt-2 w-full border rounded-lg p-3">
-          </textarea>
+            class="mt-2 w-full border rounded-lg p-3"></textarea>
 
         </div>
 
@@ -90,6 +89,52 @@
           <input
             type="text"
             formControlName="questionId"
+            class="mt-2 w-full border rounded-lg p-3">
+
+        </div>
+
+        <!-- Platform -->
+
+        <div class="mb-5">
+
+          <label class="font-semibold">
+            Platform
+          </label>
+
+          <input
+            type="text"
+            formControlName="platform"
+            placeholder="Technex, LeetCode, HackerRank..."
+            class="mt-2 w-full border rounded-lg p-3">
+
+        </div>
+
+        <!-- Contest Id -->
+
+        <div class="mb-5">
+
+          <label class="font-semibold">
+            Contest Id
+          </label>
+
+          <input
+            type="text"
+            formControlName="contestId"
+            class="mt-2 w-full border rounded-lg p-3">
+
+        </div>
+
+        <!-- Challenge URL -->
+
+        <div class="mb-5">
+
+          <label class="font-semibold">
+            Challenge URL
+          </label>
+
+          <input
+            type="text"
+            formControlName="challengeUrl"
             class="mt-2 w-full border rounded-lg p-3">
 
         </div>
@@ -204,6 +249,85 @@
             Active
 
           </label>
+
+        </div>
+
+        <!-- Test Cases -->
+
+        <div class="mb-6" formArrayName="testCases">
+
+          <div class="flex justify-between items-center mb-3">
+
+            <label class="font-semibold">
+              Test Cases
+            </label>
+
+            <button
+              type="button"
+              (click)="addTestCase()"
+              class="text-sm bg-[#24c0c5] hover:bg-[#1ca7ab] text-white px-3 py-1 rounded-lg">
+              + Add Test Case
+            </button>
+
+          </div>
+
+          <div
+            *ngFor="let tc of testCases.controls; let i = index"
+            [formGroupName]="i"
+            class="border rounded-lg p-4 mb-3 bg-gray-50">
+
+            <div class="flex justify-between items-center mb-3">
+
+              <span class="font-semibold text-sm text-gray-600">
+                Test Case #{{ i + 1 }}
+              </span>
+
+              <button
+                type="button"
+                (click)="removeTestCase(i)"
+                class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+                Remove
+              </button>
+
+            </div>
+
+            <div class="mb-3">
+
+              <label class="text-sm font-medium">
+                Input
+              </label>
+
+              <textarea
+                rows="2"
+                formControlName="input"
+                class="mt-1 w-full border rounded-lg p-2"></textarea>
+
+            </div>
+
+            <div class="mb-3">
+
+              <label class="text-sm font-medium">
+                Expected Output
+              </label>
+
+              <textarea
+                rows="2"
+                formControlName="expectedOutput"
+                class="mt-1 w-full border rounded-lg p-2"></textarea>
+
+            </div>
+
+            <label class="flex items-center gap-2 text-sm">
+
+              <input
+                type="checkbox"
+                formControlName="isSample">
+
+              Sample Test Case
+
+            </label>
+
+          </div>
 
         </div>
 
