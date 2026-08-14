@@ -13,45 +13,62 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class StudentCourses {
    courses: any[] = [];
   loading = false;
-  domainId!: number;
+  domainId!: number ;
 
   constructor(
     private api: Student,
     private cd: ChangeDetectorRef,
     private router:Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: object
   ) {}
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
+
     this.domainId = history.state.domainId;
+
+    if (this.domainId == null) {
+      this.router.navigate(['/main/student-domain']);
+      return;
+    }
+
     this.loadstudentcourse();
   }
 
   loadstudentcourse(): void {
-
-    this.loading = true;
-
-    this.api.getstudentcourse(this.domainId).subscribe({
-
-      next: (res: any) => {
-
-        this.courses = res?.data ?? [];
-        this.loading = false;
-        this.cd.detectChanges();
-
-      },
-
-      error: () => {
-
-        this.courses = [];
-        this.loading = false;
-
-      }
-
-    });
-
+  if (this.domainId == null) {
+    return;
   }
+
+  this.loading = true;
+
+  this.api.getstudentcourse(this.domainId).subscribe({
+
+    next: (res: any) => {
+      const allCourses = res?.data ?? [];
+
+      const hasDomainField = allCourses.some(
+        (c: any) => c.domainId !== undefined && c.domainId !== null
+      );
+
+      this.courses = hasDomainField
+        ? allCourses.filter((c: any) => c.domainId === this.domainId)
+        : allCourses;
+
+      this.loading = false;
+      this.cd.detectChanges();
+    },
+
+    error: (err) => {
+      console.error('Courses API error:', err);
+
+      this.courses = [];
+      this.loading = false;
+      this.cd.detectChanges();
+    }
+
+  });
+}
   view(courseId: number): void {
   this.router.navigate(['/main/student-assignments'], {
     state: { courseId }
