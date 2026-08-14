@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class StudentCourses {
    courses: any[] = [];
   loading = false;
+  domainId!: number;
 
   constructor(
     private api: Student,
@@ -23,6 +24,7 @@ export class StudentCourses {
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
+    this.domainId = history.state.domainId;
     this.loadstudentcourse();
   }
 
@@ -30,7 +32,7 @@ export class StudentCourses {
 
     this.loading = true;
 
-    this.api.getstudentcourse().subscribe({
+    this.api.getstudentcourse(this.domainId).subscribe({
 
       next: (res: any) => {
 

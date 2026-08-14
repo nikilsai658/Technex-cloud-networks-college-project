@@ -9,8 +9,8 @@ export class Student {
   getstudentdomain(){
     return this.api.GET('Student/domain');
   }
-  getstudentcourse(){
-    return this.api.GET('Student/courses');
+  getstudentcourse(domainId?:number){
+    return this.api.GET('Student/courses', domainId ? { domainId } : undefined);
   }
   getstudentcourseById(courseId:number){
     return this.api.GET(`Student/course/${courseId}/assignments`);

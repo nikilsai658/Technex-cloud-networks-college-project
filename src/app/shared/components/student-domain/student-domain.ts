@@ -51,7 +51,7 @@ export class StudentDomain implements OnInit {
     });
 
   }
-  view():void{
-    this.router.navigate(['/main/student-courses']);
+  view(domainId: number):void{
+    this.router.navigate(['/main/student-courses'], { state: { domainId } });
   }
 }

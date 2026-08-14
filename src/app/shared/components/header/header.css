@@ -1,6 +1,6 @@
 @import "tailwindcss";
 .overlay{
-  @apply fixed inset-0 bg-black/40 z-40 lg:hidden;
+  @apply fixed inset-0 bg-black/40 z-40;
 }
 
 /* Sidebar */
