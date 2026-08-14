@@ -8,8 +8,7 @@
 </div>
 <aside
     class="sidebar"
-    [class.-translate-x-full]="!sidebarOpen"
-    [class.translate-x-0]="sidebarOpen">
+    [class.sidebar-open]="sidebarOpen">
 
     <!-- Fixed Header -->
     <div class="sidebar-header">
@@ -88,107 +87,242 @@
        Tickets
 
       </a>
-       <a
-        *ngIf="this.auth.hasPermission('UPDATE_COLLEGE')"
-        routerLink="/main/college-management"
-        routerLinkActive="active-link"
-        (click)="toggleSidebar()"
-        class="nav-link">
-        College Management
-      </a>
-      
-      <a
-      *ngIf="this.auth.hasPermission('VIEW_DEPARTMENT')"
-        routerLink="/main/department-management"
-        routerLinkActive="active-link"
-        (click)="toggleSidebar()"
-        class="nav-link">
+       <div class="nav-group" *ngIf="hasAnyManagementPermission()">
 
-        Department Management
+        <button
+          type="button"
+          (click)="toggleManagement()"
+          class="nav-link nav-group-toggle">
 
-      </a>
-      <a
-      *ngIf="this.auth.hasPermission('UPDATE_BRANCH')"
-        routerLink="/main/branch-management"
-        routerLinkActive="active-link"
-        (click)="toggleSidebar()"
-        class="nav-link">
+          <span>Management</span>
 
-        Branch Management
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="chevron-icon"
+            [class.rotate-180]="managementOpen"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
 
-      </a>
-      <a
-      *ngIf="this.auth.hasPermission('VIEW_DOMAIN')"
-        routerLink="/main/domain"
-        routerLinkActive="active-link"
-        (click)="toggleSidebar()"
-        class="nav-link">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"/>
 
-        Domain Management
+          </svg>
 
-      </a>
+        </button>
 
-      <a
-      *ngIf="this.auth.hasPermission('VIEW_COURSE')"
-        routerLink="/main/course"
-        routerLinkActive="active-link"
-        (click)="toggleSidebar()"
-        class="nav-link">
+        <div class="nav-submenu" *ngIf="managementOpen">
 
-        Course Management
+          <a
+            *ngIf="this.auth.hasPermission('UPDATE_COLLEGE')"
+            routerLink="/main/college-management"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+            College Management
+          </a>
 
-      </a>
-      <a
-      *ngIf="this.auth.hasPermission('VIEW_COURSE')"
-        routerLink="/main/user"
-        routerLinkActive="active-link"
-        (click)="toggleSidebar()"
-        class="nav-link">
+          <a
+            *ngIf="this.auth.hasPermission('VIEW_DEPARTMENT')"
+            routerLink="/main/department-management"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
 
-       User Management
+            Department Management
 
-      </a>
-      <a
-      *ngIf="this.auth.hasPermission('VIEW_ROLE')"
-        routerLink="/main/role"
-        routerLinkActive="active-link"
-        (click)="toggleSidebar()"
-        class="nav-link">
+          </a>
+          <a
+            *ngIf="this.auth.hasPermission('UPDATE_BRANCH')"
+            routerLink="/main/branch-management"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
 
-        Role Management
+            Branch Management
 
-      </a>
-      <a
-      *ngIf="this.auth.hasPermission('VIEW_PERMISSION')"
-        routerLink="/main/permission"
-        routerLinkActive="active-link"
-        (click)="toggleSidebar()"
-        class="nav-link">
+          </a>
+          <a
+            *ngIf="this.auth.hasPermission('VIEW_DOMAIN')"
+            routerLink="/main/domain"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
 
-        Permission Management
+            Domain Management
 
-      </a>
-       <a
-      *ngIf="this.auth.hasPermission('VIEW_YEAR')"
-        routerLink="/main/year"
-        routerLinkActive="active-link"
-        (click)="toggleSidebar()"
-        class="nav-link">
+          </a>
 
-        Year Management
+          <a
+            *ngIf="this.auth.hasPermission('VIEW_COURSE')"
+            routerLink="/main/course"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
 
-      </a>
-      <a
-      *ngIf="this.auth.hasPermission('UPDATE_ASSIGNMENT')"
-        routerLink="/main/assignment"
-        routerLinkActive="active-link"
-        (click)="toggleSidebar()"
-        class="nav-link">
+            Course Management
 
-        Assignment Management
+          </a>
+          <a
+            *ngIf="this.auth.hasPermission('VIEW_COURSE')"
+            routerLink="/main/user"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
 
-      </a>
+           User Management
 
+          </a>
+          <a
+            *ngIf="this.auth.hasPermission('VIEW_ROLE')"
+            routerLink="/main/role"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Role Management
+
+          </a>
+          <a
+            *ngIf="this.auth.hasPermission('VIEW_PERMISSION')"
+            routerLink="/main/permission"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Permission Management
+
+          </a>
+          <a
+            *ngIf="this.auth.hasPermission('VIEW_YEAR')"
+            routerLink="/main/year"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Year Management
+
+          </a>
+          <a
+            *ngIf="this.auth.hasPermission('UPDATE_ASSIGNMENT')"
+            routerLink="/main/assignment"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Assignment Management
+
+          </a>
+
+        </div>
+
+      </div>
+         <div class="nav-group" *ngIf="hasAnyMappingPermission()">
+
+        <button
+          type="button"
+          (click)="toggleMapping()"
+          class="nav-link nav-group-toggle">
+
+          <span>Mapping</span>
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="chevron-icon"
+            [class.rotate-180]="mappingOpen"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"/>
+
+          </svg>
+
+        </button>
+
+        <div class="nav-submenu" *ngIf="mappingOpen">
+
+          <a
+            *ngIf="auth.hasPermission('VIEW_COLLEGE_DEPARTMENT')"
+            routerLink="/main/college-department-mapping"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            College Department Mapping
+
+          </a>
+          <a
+           *ngIf="auth.hasPermission('VIEW_DEPARTMENT_BRANCH')"
+            routerLink="/main/department-branch-mapping"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Department Branch Mapping
+
+          </a>
+          <a
+           *ngIf="auth.hasPermission('VIEW_DOMAIN_COURSE_MAP')"
+            routerLink="/main/domain-course-mapping"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Domain Course Mapping
+
+          </a>
+          <a
+            *ngIf="auth.hasPermission('VIEW_COURSE_ASSIGNMENT_MAP')"
+            routerLink="/main/course-assignment-mapping"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Course Assignment Mapping
+
+          </a>
+          <a
+            *ngIf="auth.hasPermission('VIEW_STUDENT_DOMAIN_COURSE_MAP')"
+            routerLink="/main/student-domain-course-mapping"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Student Domain Course Mapping
+
+          </a>
+          <a
+            *ngIf="auth.hasPermission('VIEW_ROLE_PERMISSION')"
+            routerLink="/main/role-permission-mapping"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Role Permission Mapping
+
+          </a>
+
+        </div>
+
+      </div>
+          <a
+             *ngIf="auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT')"
+            routerLink="/main/student-assignment-scores"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-link">
+
+            Student Assignment Scores 
+
+          </a>
         </nav>
 
     </div>

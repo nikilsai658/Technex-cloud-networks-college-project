@@ -70,8 +70,13 @@
 
           <div class="info-item">
             <span>Status</span>
-            <strong class="pending">
-              Pending
+            <strong
+              [ngClass]="{
+                'pending': (assignment.status || 'Pending') == 'Pending',
+                'started': assignment.status == 'Started',
+                'completed': assignment.status == 'Completed'
+              }">
+              {{ assignment.status || 'Pending' }}
             </strong>
           </div>
 

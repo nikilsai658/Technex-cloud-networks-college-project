@@ -1,0 +1,582 @@
+/* =====================================================
+   PAGE HEADER
+   ===================================================== */
+@import "tailwindcss";
+.mytickets-container{
+    @apply p-10
+}
+.page-header {
+  @apply mb-7;
+}
+
+.header-content {
+  @apply flex flex-col lg:flex-row
+         lg:items-end lg:justify-between
+         gap-5;
+}
+
+.header-title-wrapper {
+  @apply flex items-center gap-3;
+}
+
+.header-icon {
+  @apply w-11 h-11
+         rounded-xl
+         bg-cyan-50
+         text-cyan-600
+         flex items-center justify-center
+         text-xl;
+}
+
+.page-title {
+  @apply text-2xl sm:text-3xl
+         font-bold
+         tracking-tight
+         text-gray-900;
+}
+
+.page-subtitle {
+  @apply text-sm
+         text-gray-500
+         mt-1;
+}
+
+
+/* =====================================================
+   HEADER ACTIONS
+   ===================================================== */
+
+.header-actions {
+  @apply flex flex-col
+         sm:flex-row
+         sm:items-center
+         gap-3;
+}
+
+.ticket-count {
+  @apply px-4 py-2.5
+         rounded-xl
+         bg-white
+         border border-gray-200
+         shadow-sm;
+}
+
+.count-label {
+  @apply text-xs
+         text-gray-400;
+}
+
+.count-value {
+  @apply text-lg
+         font-bold
+         text-gray-900;
+}
+
+
+/* =====================================================
+   STATUS FILTER
+   ===================================================== */
+
+.filter-wrapper {
+  @apply relative;
+}
+
+.status-select {
+  @apply appearance-none
+         w-full sm:w-44
+         px-4 py-2.5 pr-10
+         rounded-xl
+         border border-gray-200
+         bg-white
+         text-sm
+         font-medium
+         text-gray-700
+         shadow-sm
+         cursor-pointer
+         focus:outline-none
+         focus:ring-2
+         focus:ring-cyan-100
+         focus:border-cyan-500;
+}
+
+.filter-icon {
+  @apply absolute
+         right-3
+         top-1/2
+         -translate-y-1/2
+         w-4 h-4
+         text-gray-400
+         pointer-events-none;
+}
+
+
+/* =====================================================
+   LOADING
+   ===================================================== */
+
+.loading-container {
+  @apply bg-white
+         border border-gray-200
+         rounded-2xl
+         p-12
+         flex flex-col
+         items-center
+         justify-center
+         shadow-sm;
+}
+
+.loading-spinner {
+  @apply w-10 h-10
+         border-4
+         border-gray-200
+         border-t-cyan-600
+         rounded-full
+         animate-spin;
+}
+
+.loading-text {
+  @apply mt-4
+         text-sm
+         text-gray-500;
+}
+
+
+/* =====================================================
+   ERROR
+   ===================================================== */
+
+.error-container {
+  @apply rounded-2xl
+         border border-red-200
+         bg-red-50
+         p-5
+         flex items-start
+         gap-4;
+}
+
+.error-icon {
+  @apply w-10 h-10
+         shrink-0
+         rounded-lg
+         bg-red-100
+         text-red-600
+         flex items-center
+         justify-center
+         font-bold;
+}
+
+.error-content {
+  @apply flex-1;
+}
+
+.error-content h3 {
+  @apply font-semibold
+         text-red-800;
+}
+
+.error-content p {
+  @apply text-sm
+         text-red-600
+         mt-1;
+}
+
+.retry-button {
+  @apply mt-3
+         text-sm
+         font-semibold
+         text-red-700
+         hover:text-red-900
+         underline;
+}
+
+
+/* =====================================================
+   EMPTY STATE
+   ===================================================== */
+
+.empty-container {
+  @apply bg-white
+         rounded-2xl
+         border border-gray-200
+         shadow-sm
+         p-10 sm:p-14
+         text-center;
+}
+
+.empty-icon {
+  @apply mx-auto
+         w-20 h-20
+         rounded-2xl
+         bg-cyan-50
+         text-cyan-600
+         flex items-center
+         justify-center
+         text-3xl;
+}
+
+.empty-container h2 {
+  @apply mt-6
+         text-xl
+         font-bold
+         text-gray-900;
+}
+
+.empty-container p {
+  @apply mt-2
+         max-w-md
+         mx-auto
+         text-sm
+         leading-6
+         text-gray-500;
+}
+
+.raise-ticket-button {
+  @apply mt-6
+         inline-flex
+         items-center
+         justify-center
+         gap-2
+         px-5 py-2.5
+         rounded-xl
+         bg-cyan-600
+         text-white
+         text-sm
+         font-semibold
+         shadow-sm
+         hover:bg-cyan-700
+         hover:shadow-md
+         transition;
+}
+
+.raise-ticket-button span {
+  @apply text-base;
+}
+
+
+/* =====================================================
+   FILTER EMPTY
+   ===================================================== */
+
+.filter-empty {
+  @apply p-10;
+}
+
+.filter-empty-icon {
+  @apply mx-auto
+         w-14 h-14
+         rounded-full
+         bg-gray-100
+         flex items-center
+         justify-center
+         text-gray-400
+         text-xl;
+}
+
+
+/* =====================================================
+   TICKET LIST
+   ===================================================== */
+
+.ticket-list {
+  @apply space-y-4;
+}
+
+
+/* =====================================================
+   TICKET CARD
+   ===================================================== */
+
+.ticket-card {
+  @apply relative
+         overflow-hidden
+         bg-white
+         rounded-2xl
+         border border-gray-200
+         shadow-sm
+         transition-all
+         duration-200;
+
+  &:hover {
+    @apply shadow-lg
+           border-cyan-200;
+  }
+}
+
+
+/* =====================================================
+   STATUS LINE
+   ===================================================== */
+
+.status-line {
+  @apply absolute
+         left-0
+         top-0
+         bottom-0
+         w-1;
+}
+
+.status-open-line {
+  @apply bg-blue-500;
+}
+
+.status-pending-line {
+  @apply bg-yellow-500;
+}
+
+.status-resolved-line {
+  @apply bg-green-500;
+}
+
+.status-closed-line {
+  @apply bg-gray-400;
+}
+
+
+/* =====================================================
+   TICKET CONTENT
+   ===================================================== */
+
+.ticket-content {
+  @apply p-5 sm:p-6 lg:p-7;
+}
+
+.ticket-main {
+  @apply flex flex-col
+         lg:flex-row
+         lg:items-start
+         lg:justify-between
+         gap-5;
+}
+
+.ticket-information {
+  @apply flex-1
+         min-w-0;
+}
+
+
+/* =====================================================
+   SUBJECT
+   ===================================================== */
+
+.subject-row {
+  @apply flex flex-wrap
+         items-center
+         gap-3;
+}
+
+.ticket-subject {
+  @apply text-lg sm:text-xl
+         font-bold
+         text-gray-900
+         truncate
+         max-w-full;
+}
+
+
+/* =====================================================
+   STATUS BADGE
+   ===================================================== */
+
+.status-badge {
+  @apply inline-flex
+         items-center
+         gap-1.5
+         px-3 py-1
+         rounded-full
+         text-xs
+         font-bold
+         whitespace-nowrap;
+}
+
+.status-open {
+  @apply bg-blue-50
+         text-blue-700;
+}
+
+.status-pending {
+  @apply bg-yellow-50
+         text-yellow-700;
+}
+
+.status-resolved {
+  @apply bg-green-50
+         text-green-700;
+}
+
+.status-closed {
+  @apply bg-gray-100
+         text-gray-600;
+}
+
+
+/* =====================================================
+   STATUS DOT
+   ===================================================== */
+
+.status-dot {
+  @apply w-1.5 h-1.5
+         rounded-full;
+}
+
+.dot-open {
+  @apply bg-blue-500;
+}
+
+.dot-pending {
+  @apply bg-yellow-500;
+}
+
+.dot-resolved {
+  @apply bg-green-500;
+}
+
+.dot-closed {
+  @apply bg-gray-400;
+}
+
+
+/* =====================================================
+   TICKET META
+   ===================================================== */
+
+.ticket-meta {
+  @apply flex flex-wrap
+         items-center
+         gap-x-5
+         gap-y-2
+         mt-2
+         text-xs
+         font-medium
+         text-gray-400;
+}
+
+.created-date {
+  @apply flex
+         items-center
+         gap-1.5;
+}
+
+.calendar-icon {
+  @apply w-3.5 h-3.5;
+}
+
+
+/* =====================================================
+   DIVIDER
+   ===================================================== */
+
+.ticket-divider {
+  @apply border-t
+         border-gray-100
+         my-5;
+}
+
+
+/* =====================================================
+   DESCRIPTION
+   ===================================================== */
+
+.ticket-description {
+  @apply text-sm
+         leading-6
+         text-gray-600
+         line-clamp-2;
+}
+
+
+/* =====================================================
+   ACTION
+   ===================================================== */
+
+.ticket-action {
+  @apply lg:pt-1
+         shrink-0;
+}
+
+
+/* =====================================================
+   REPLY BUTTON
+   ===================================================== */
+
+.reply-button {
+  @apply w-full lg:w-auto
+         inline-flex
+         items-center
+         justify-center
+         gap-2
+         min-w-[120px]
+         px-5 py-3
+         rounded-xl
+         bg-cyan-600
+         text-white
+         text-sm
+         font-semibold
+         shadow-sm
+         hover:bg-cyan-700
+         hover:shadow-md
+         active:scale-[0.98]
+         transition;
+}
+
+
+/* =====================================================
+   VIEW BUTTON
+   ===================================================== */
+
+.view-button {
+  @apply w-full lg:w-auto
+         inline-flex
+         items-center
+         justify-center
+         gap-2
+         min-w-[120px]
+         px-5 py-3
+         rounded-xl
+         border border-gray-200
+         bg-gray-50
+         text-gray-600
+         text-sm
+         font-semibold
+         hover:bg-gray-100
+         hover:border-gray-300
+         transition;
+}
+
+
+/* =====================================================
+   BUTTON ARROW
+   ===================================================== */
+
+.button-arrow {
+  @apply w-4 h-4;
+}
+
+
+/* =====================================================
+   MOBILE RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 640px) {
+
+  .ticket-card {
+    @apply rounded-xl;
+  }
+
+  .ticket-content {
+    @apply p-4;
+  }
+
+  .ticket-subject {
+    @apply text-base;
+  }
+
+  .ticket-action {
+    @apply w-full;
+  }
+
+  .reply-button,
+  .view-button {
+    @apply w-full;
+  }
+
+}

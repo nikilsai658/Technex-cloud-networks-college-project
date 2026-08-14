@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -29,11 +29,14 @@ export class StudentAssignment implements OnInit {
     private fb: FormBuilder,
     private studentService: Studentassignment,
     public auth: Auth
-  ) {}
+  ) {
+    afterNextRender(() => {
+      this.getAssignments();
+    });
+  }
 
   ngOnInit(): void {
     this.initializeForm();
-    this.getAssignments();
   }
 
   initializeForm(): void {

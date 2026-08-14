@@ -26,6 +26,13 @@ import { MyTicketComponent } from './shared/components/mytickets/mytickets';
 import { ReplyTicketComponent } from './shared/components/replyticket/replyticket';
 import { AllTicketsComponent } from './shared/components/alltickets/alltickets';
 import { SupportTicketDetailsComponent } from './shared/components/support-ticket-details/support-ticket-details';
+import { CollegeDepartmentComponent } from './shared/components/collegedepartment/collegedepartment';
+import { DepartmentBranchComponent } from './shared/components/departmentbranch/departmentbranch';
+import { DomainCourseMapComponent } from './shared/components/domaincourse/domaincourse';
+import { CourseAssignmentMapComponent } from './shared/components/courseassignment/courseassignment';
+import { RolePermissionComponent } from './shared/components/rolepermission/rolepermission';
+import { StudentAssignment as StudentAssignmentscore } from './shared/components/studentassignment/studentassignment';
+import { StudentDomainMapComponent } from './shared/components/studentdomaincourse/studentdomaincourse';
 export const routes: Routes = [
 
   {
@@ -117,7 +124,28 @@ export const routes: Routes = [
       },
       {
         path: 'support-ticket-details/:id',component: SupportTicketDetailsComponent
-      }  
+      },
+      {
+        path:'college-department-mapping',component:CollegeDepartmentComponent
+      },
+      {
+        path:'department-branch-mapping',component:DepartmentBranchComponent
+      },
+      {
+        path:'domain-course-mapping',component:DomainCourseMapComponent
+      },
+      {
+        path:'course-assignment-mapping',component:CourseAssignmentMapComponent
+      },
+      {
+        path:'student-domain-course-mapping',component:StudentDomainMapComponent
+      },
+      {
+        path:'role-permission-mapping',component:RolePermissionComponent
+      },
+      {
+        path:'student-assignment-scores',component:StudentAssignmentscore
+      }
     ]
   },
 

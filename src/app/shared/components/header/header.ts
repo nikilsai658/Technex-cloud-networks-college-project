@@ -60,8 +60,45 @@ colleges = [
   }
   }
   sidebarOpen = false;
-  
+
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  managementOpen = false;
+
+  toggleManagement() {
+    this.managementOpen = !this.managementOpen;
+  }
+
+  hasAnyManagementPermission(): boolean {
+    return [
+      'UPDATE_COLLEGE',
+      'VIEW_DEPARTMENT',
+      'UPDATE_BRANCH',
+      'VIEW_DOMAIN',
+      'VIEW_COURSE',
+      'VIEW_ROLE',
+      'VIEW_PERMISSION',
+      'VIEW_YEAR',
+      'UPDATE_ASSIGNMENT',
+    ].some(permission => this.auth.hasPermission(permission));
+  }
+
+  mappingOpen = false;
+
+  toggleMapping() {
+    this.mappingOpen = !this.mappingOpen;
+  }
+
+  hasAnyMappingPermission(): boolean {
+    return [
+      'VIEW_COLLEGE_DEPARTMENT',
+      'VIEW_DEPARTMENT_BRANCH',
+      'VIEW_DOMAIN_COURSE_MAP',
+      'VIEW_COURSE_ASSIGNMENT_MAP',
+      'VIEW_STUDENT_DOMAIN_COURSE_MAP',
+      'VIEW_ROLE_PERMISSION',
+    ].some(permission => this.auth.hasPermission(permission));
   }
 }

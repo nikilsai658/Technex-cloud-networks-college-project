@@ -79,9 +79,9 @@
 
             <option
               *ngFor="let role of roles"
-              [value]="role.id">
+              [value]="role.name">
 
-              {{ role.roleName }}
+              {{ role.name }}
 
             </option>
 
@@ -176,7 +176,7 @@
 
             <option [ngValue]="null">Select Semester</option>
 
-            <option *ngFor="let s of [1,2,3,4,5,6,7,8]"
+            <option *ngFor="let s of [1,2]"
                     [ngValue]="s">
 
               {{ s }}

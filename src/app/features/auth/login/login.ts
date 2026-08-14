@@ -22,17 +22,18 @@ export class Login implements OnInit{
   Form !:FormGroup;
   collegecode:any;
    constructor(private fb: FormBuilder, private router:Router,private cookie:CookieService,private auth:AuthServices,private userStore:UserStore,@Inject(PLATFORM_ID) private platformId: Object){
-    this.Form=this.fb.group({
-      userNameOrEmail: ['',Validators.required],
-      password: ['',Validators.required],
-      collegeCode: ["HECT", Validators.required]
-    });
-    
-   }
-    ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.collegecode = localStorage.getItem('collegecode');
     }
+
+    this.Form=this.fb.group({
+      userNameOrEmail: ['',Validators.required],
+      password: ['',Validators.required],
+      collegeCode: [this.collegecode || "HECT", Validators.required]
+    });
+
+   }
+    ngOnInit(): void {
   }
      
    onSubmit(){

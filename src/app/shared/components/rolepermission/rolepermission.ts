@@ -55,6 +55,13 @@ export class RolePermissionComponent implements OnInit {
 
   searchText = '';
 
+  //=====================================
+  // PAGINATION
+  //=====================================
+
+  currentPage = 1;
+  pageSize = 10;
+
   constructor(
     private fb: FormBuilder,
     public auth: Auth,
@@ -161,6 +168,8 @@ export class RolePermissionComponent implements OnInit {
           this.mappings = res.data || [];
 
           this.filteredMappings = [...this.mappings];
+
+          this.currentPage = 1;
 
           this.cd.detectChanges();
 
@@ -325,6 +334,60 @@ export class RolePermissionComponent implements OnInit {
       x.permissionCode.toLowerCase().includes(value)
 
     );
+
+    this.currentPage = 1;
+
+  }
+
+  //=====================================
+  // PAGINATION
+  //=====================================
+
+  get totalPages(): number {
+
+    return Math.ceil(
+      this.filteredMappings.length / this.pageSize
+    ) || 1;
+
+  }
+
+  get pageNumbers(): number[] {
+
+    return Array.from(
+      { length: this.totalPages },
+      (_, i) => i + 1
+    );
+
+  }
+
+  get pagedMappings(): any[] {
+
+    const start = (this.currentPage - 1) * this.pageSize;
+
+    return this.filteredMappings.slice(
+      start,
+      start + this.pageSize
+    );
+
+  }
+
+  goToPage(page: number): void {
+
+    if (page < 1 || page > this.totalPages) return;
+
+    this.currentPage = page;
+
+  }
+
+  prevPage(): void {
+
+    this.goToPage(this.currentPage - 1);
+
+  }
+
+  nextPage(): void {
+
+    this.goToPage(this.currentPage + 1);
 
   }
 

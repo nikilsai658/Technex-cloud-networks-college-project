@@ -1,344 +1,73 @@
-<!-- ===================================================== -->
-<!-- PAGE HEADER -->
-<!-- ===================================================== -->
+<div class="mytickets-container">
+  <!-- PAGE HEADER -->
+<div class="page-header">
 
-<div class="mb-6">
+  <div class="header-content">
 
-  <h1
-    class="text-2xl sm:text-3xl
-           font-bold
-           text-gray-900">
+    <div class="header-title-wrapper">
 
-    My Tickets
+      <div>
+        <h1 class="page-title">
+          My Tickets
+        </h1>
 
-  </h1>
+        <p class="page-subtitle">
+          Track and manage your support requests
+        </p>
+      </div>
 
-  <p
-    class="text-sm
-           text-gray-500
-           mt-1">
+    </div>
 
-    View your raised support tickets
 
-  </p>
+    <div class="header-actions">
 
-</div>
+      <!-- Total Tickets -->
+      <div class="ticket-count">
 
-
-<!-- ===================================================== -->
-<!-- LOADING -->
-<!-- ===================================================== -->
-
-<div
-  *ngIf="loading"
-  class="flex justify-center py-12">
-
-  <div
-    class="w-8 h-8
-           border-4
-           border-gray-200
-           border-t-cyan-600
-           rounded-full
-           animate-spin">
-  </div>
-
-</div>
-
-
-<!-- ===================================================== -->
-<!-- ERROR -->
-<!-- ===================================================== -->
-
-<div
-  *ngIf="!loading && errorMessage"
-  class="p-4
-         rounded-xl
-         bg-red-50
-         border border-red-200
-         text-red-600">
-
-  {{ errorMessage }}
-
-  <button
-    type="button"
-    (click)="getMyTickets()"
-    class="ml-3
-           font-semibold
-           underline">
-
-    Retry
-
-  </button>
-
-</div>
-
-
-<!-- ===================================================== -->
-<!-- NO TICKETS -->
-<!-- ===================================================== -->
-
-<div
-  *ngIf="
-    !loading &&
-    !errorMessage &&
-    tickets.length === 0
-  "
-  class="bg-white
-         rounded-xl
-         border border-gray-200
-         p-10
-         text-center">
-
-  <div
-    class="w-14 h-14
-           mx-auto
-           rounded-full
-           bg-cyan-50
-           flex items-center
-           justify-center
-           text-cyan-600
-           text-2xl">
-
-    🎫
-
-  </div>
-
-  <h2
-    class="mt-4
-           text-lg
-           font-semibold
-           text-gray-800">
-
-    No tickets found
-
-  </h2>
-
-  <p
-    class="mt-1
-           text-sm
-           text-gray-500">
-
-    You haven't raised any tickets yet.
-
-  </p>
-
-  <button
-    type="button"
-    routerLink="/main/ticket"
-    class="mt-5
-           px-5 py-2.5
-           rounded-lg
-           bg-cyan-600
-           text-white
-           text-sm
-           font-semibold
-           hover:bg-cyan-700
-           transition">
-
-    Raise Your First Ticket
-
-  </button>
-
-</div>
-
-
-<!-- ===================================================== -->
-<!-- TICKET LIST -->
-<!-- ===================================================== -->
-
-<div
-  *ngIf="
-    !loading &&
-    !errorMessage &&
-    tickets.length > 0
-  "
-  class="space-y-5">
-
-
-  <!-- ================================================= -->
-  <!-- TICKET CARD -->
-  <!-- ================================================= -->
-
-  <div
-    *ngFor="let ticket of tickets"
-    class="bg-white
-           rounded-xl
-           border border-gray-200
-           p-5 sm:p-7
-           shadow-sm
-           hover:shadow-md
-           hover:border-cyan-200
-           transition">
-
-
-    <!-- Main Row -->
-
-    <div
-      class="flex flex-col
-             sm:flex-row
-             sm:items-start
-             sm:justify-between
-             gap-5">
-
-
-      <!-- ============================================= -->
-      <!-- TICKET INFORMATION -->
-      <!-- ============================================= -->
-
-      <div
-        class="flex-1
-               min-w-0">
-
-
-        <!-- Subject + Status -->
-
-        <div
-          class="flex flex-wrap
-                 items-center
-                 gap-3">
-
-
-          <!-- Subject -->
-
-          <h3
-            class="text-lg
-                   sm:text-xl
-                   font-semibold
-                   text-gray-900">
-
-            {{ ticket.subject }}
-
-          </h3>
-
-
-          <!-- Status -->
-
-          <span
-            class="px-3 py-1
-                   rounded-full
-                   text-xs
-                   font-semibold"
-            [ngClass]="{
-
-              'bg-blue-50 text-blue-700':
-                ticket.status?.toLowerCase() === 'open',
-
-              'bg-yellow-50 text-yellow-700':
-                ticket.status?.toLowerCase() === 'pending',
-
-              'bg-green-50 text-green-700':
-                ticket.status?.toLowerCase() === 'resolved',
-
-              'bg-gray-100 text-gray-600':
-                ticket.status?.toLowerCase() === 'closed'
-
-            }">
-
-            {{ ticket.status || 'Open' }}
-
-          </span>
-
-        </div>
-
-
-        <!-- Ticket ID -->
-
-        <p
-          class="text-sm
-                 text-gray-500
-                 mt-2">
-
-          Ticket #{{ ticket.id }}
-
+        <p class="count-label">
+          Total Tickets
         </p>
 
-
-        <!-- Description -->
-
-        <p
-          class="text-sm
-                 text-gray-600
-                 mt-4
-                 leading-relaxed">
-
-          {{ ticket.description }}
-
-        </p>
-
-
-        <!-- Created Date -->
-
-        <p
-          *ngIf="ticket.createdAt"
-          class="text-xs
-                 text-gray-400
-                 mt-5">
-
-          Created:
-          {{ ticket.createdAt | date:'dd MMM yyyy, hh:mm a' }}
-
+        <p class="count-value">
+          {{ tickets.length }}
         </p>
 
       </div>
 
 
-      <!-- ============================================= -->
-      <!-- VIEW TICKET BUTTON -->
-      <!-- ============================================= -->
+      <!-- Status Filter -->
+      <div class="filter-wrapper">
 
-      <div
-        class="shrink-0">
+        <select
+          [(ngModel)]="selectedStatus"
+          (ngModelChange)="onStatusChange()"
+          name="statusFilter"
+          class="status-select">
 
+          <option
+            *ngFor="let status of statusOptions"
+            [value]="status">
 
-        <!-- Open / Pending / Resolved -->
+            {{ status }}
 
-        <button
-          *ngIf="
-            ticket.status?.toLowerCase() !== 'closed'
-          "
-          type="button"
-          (click)="openTicket(ticket.id)"
-          class="w-full sm:w-auto
-                 min-w-[95px]
-                 px-5 py-3
-                 rounded-lg
-                 bg-cyan-600
-                 text-white
-                 text-sm
-                 font-semibold
-                 hover:bg-cyan-700
-                 active:bg-cyan-800
-                 transition
-                 shadow-sm">
+          </option>
 
-          Reply
+        </select>
 
-        </button>
+        <svg
+          class="filter-icon"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24">
 
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="m19 9-7 7-7-7">
+          </path>
 
-        <!-- Closed -->
-
-        <button
-          *ngIf="
-            ticket.status?.toLowerCase() === 'closed'
-          "
-          type="button"
-          (click)="openTicket(ticket.id)"
-          class="w-full sm:w-auto
-                 min-w-[95px]
-                 px-5 py-3
-                 rounded-lg
-                 border border-gray-200
-                 bg-gray-50
-                 text-gray-600
-                 text-sm
-                 font-semibold
-                 hover:bg-gray-100
-                 transition">
-
-          View Ticket
-
-        </button>
+        </svg>
 
       </div>
 
@@ -346,4 +75,336 @@
 
   </div>
 
+</div>
+
+
+<!-- LOADING -->
+<div
+  *ngIf="loading"
+  class="loading-container">
+
+  <div class="loading-spinner"></div>
+
+  <p class="loading-text">
+    Loading your tickets...
+  </p>
+
+</div>
+
+
+<!-- ERROR -->
+<div
+  *ngIf="!loading && errorMessage"
+  class="error-container">
+
+  <div class="error-icon">
+    !
+  </div>
+
+  <div class="error-content">
+
+    <h3>
+      Unable to load tickets
+    </h3>
+
+    <p>
+      {{ errorMessage }}
+    </p>
+
+    <button
+      type="button"
+      (click)="getMyTickets()"
+      class="retry-button">
+
+      Try Again
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- NO TICKETS -->
+<div
+  *ngIf="
+    !loading &&
+    !errorMessage &&
+    tickets.length === 0
+  "
+  class="empty-container">
+
+  <div class="empty-icon">
+    🎫
+  </div>
+
+  <h2>
+    No tickets yet
+  </h2>
+
+  <p>
+    You haven't raised any support tickets.
+    If you need help, create a new ticket and our support team will assist you.
+  </p>
+
+  <button
+    type="button"
+    routerLink="/main/ticket"
+    class="raise-ticket-button">
+
+    <span>+</span>
+
+    Raise a Ticket
+
+  </button>
+
+</div>
+
+
+<!-- NO FILTER RESULTS -->
+<div
+  *ngIf="
+    !loading &&
+    !errorMessage &&
+    tickets.length > 0 &&
+    filteredTickets.length === 0
+  "
+  class="empty-container filter-empty">
+
+  <div class="filter-empty-icon">
+    🔍
+  </div>
+
+  <h2>
+    No {{ selectedStatus }} tickets
+  </h2>
+
+  <p>
+    There are no tickets matching this status.
+  </p>
+
+</div>
+
+
+<!-- TICKET LIST -->
+<div
+  *ngIf="
+    !loading &&
+    !errorMessage &&
+    filteredTickets.length > 0
+  "
+  class="ticket-list">
+
+
+  <!-- TICKET CARD -->
+  <div
+    *ngFor="let ticket of filteredTickets"
+    class="ticket-card">
+
+
+    <!-- Status Line -->
+    <div
+      class="status-line"
+      [ngClass]="{
+
+        'status-open-line':
+          ticket.status?.toLowerCase() === 'open',
+
+        'status-pending-line':
+          ticket.status?.toLowerCase() === 'pending',
+
+        'status-resolved-line':
+          ticket.status?.toLowerCase() === 'resolved',
+
+        'status-closed-line':
+          ticket.status?.toLowerCase() === 'closed'
+
+      }">
+    </div>
+
+
+    <!-- CARD CONTENT -->
+    <div class="ticket-content">
+
+
+      <div class="ticket-main">
+
+
+        <!-- LEFT -->
+        <div class="ticket-information">
+
+
+          <!-- SUBJECT + STATUS -->
+          <div class="subject-row">
+
+            <h3 class="ticket-subject">
+              {{ ticket.subject }}
+            </h3>
+
+
+            <!-- STATUS -->
+            <span
+              class="status-badge"
+              [ngClass]="{
+
+                'status-open':
+                  ticket.status?.toLowerCase() === 'open',
+
+                'status-pending':
+                  ticket.status?.toLowerCase() === 'pending',
+
+                'status-resolved':
+                  ticket.status?.toLowerCase() === 'resolved',
+
+                'status-closed':
+                  ticket.status?.toLowerCase() === 'closed'
+
+              }">
+
+              <span
+                class="status-dot"
+                [ngClass]="{
+
+                  'dot-open':
+                    ticket.status?.toLowerCase() === 'open',
+
+                  'dot-pending':
+                    ticket.status?.toLowerCase() === 'pending',
+
+                  'dot-resolved':
+                    ticket.status?.toLowerCase() === 'resolved',
+
+                  'dot-closed':
+                    ticket.status?.toLowerCase() === 'closed'
+
+                }">
+              </span>
+
+              {{ ticket.status || 'Open' }}
+
+            </span>
+
+          </div>
+
+
+          <!-- META -->
+          <div class="ticket-meta">
+
+            <span>
+              Ticket #{{ ticket.id }}
+            </span>
+
+            <span
+              *ngIf="ticket.createdAt"
+              class="created-date">
+
+              <svg
+                class="calendar-icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                </path>
+
+              </svg>
+
+              {{ ticket.createdAt | date:'dd MMM yyyy, hh:mm a' }}
+
+            </span>
+
+          </div>
+
+
+          <!-- DIVIDER -->
+          <div class="ticket-divider"></div>
+
+
+          <!-- DESCRIPTION -->
+          <p class="ticket-description">
+            {{ ticket.description }}
+          </p>
+
+
+        </div>
+
+
+        <!-- RIGHT ACTION -->
+        <div class="ticket-action">
+
+
+          <!-- REPLY -->
+          <button
+            *ngIf="
+              ticket.status?.toLowerCase() !== 'closed'
+            "
+            type="button"
+            (click)="openTicket(ticket.id)"
+            class="reply-button">
+
+            <span>
+              Reply
+            </span>
+
+            <svg
+              class="button-arrow"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7">
+              </path>
+
+            </svg>
+
+          </button>
+
+
+          <!-- VIEW CLOSED -->
+          <button
+            *ngIf="
+              ticket.status?.toLowerCase() === 'closed'
+            "
+            type="button"
+            (click)="openTicket(ticket.id)"
+            class="view-button">
+
+            <span>
+              View Ticket
+            </span>
+
+            <svg
+              class="button-arrow"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7">
+              </path>
+
+            </svg>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 </div>

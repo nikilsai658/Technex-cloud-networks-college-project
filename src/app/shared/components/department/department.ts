@@ -44,8 +44,7 @@ export class Department {
 
     this.departmentForm = this.fb.group({
       name: ['', Validators.required],
-      code: ['', Validators.required],
-      collegeId: ['', Validators.required]
+      code: ['', Validators.required]
     });
 
     // Check login

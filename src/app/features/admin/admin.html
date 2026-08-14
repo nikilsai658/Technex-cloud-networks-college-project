@@ -4,26 +4,3 @@
 <div>
    <router-outlet></router-outlet>
 </div>
-<div class="p-6" >
-<div *ngIf="auth.hasPermission('VIEW_COLLEGE_DEPARTMENT')"  >
-    <app-collegedepartment ngSkipHydration></app-collegedepartment>
-</div>
-<div *ngIf="auth.hasPermission('VIEW_DEPARTMENT_BRANCH')">
-    <app-departmentbranch ngSkipHydration></app-departmentbranch>
-</div>
-<div *ngIf="auth.hasPermission('VIEW_DOMAIN_COURSE_MAP')">
-  <app-domaincoursemap ngSkipHydration></app-domaincoursemap>
-</div>
-<div *ngIf="auth.hasPermission('VIEW_COURSE_ASSIGNMENT_MAP')">
-    <app-courseassignmentmap ngSkipHydration></app-courseassignmentmap>
-</div>
-<div *ngIf="auth.hasPermission('VIEW_STUDENT_DOMAIN_COURSE_MAP')">
-    <app-studentdomainmap ngSkipHydration></app-studentdomainmap>
-</div>
-<div *ngIf="auth.hasPermission('VIEW_ROLE_PERMISSION')">
-    <app-rolepermission ngSkipHydration></app-rolepermission>
-</div>
-<div *ngIf="auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT')">
-    <app-student-assignment ngSkipHydration></app-student-assignment>
-</div>
-</div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component ,ChangeDetectionStrategy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,7 +9,8 @@ import { TicketService } from '../../../features/services/ticket/ticket-service'
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './ticket.html',
-  styleUrl: './ticket.css'
+  styleUrl: './ticket.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TicketComponent {
 
@@ -20,7 +21,8 @@ export class TicketComponent {
   constructor(
     private fb: FormBuilder,
     private ticketService: TicketService,
-    public router: Router
+    public router: Router,
+    private cdr: ChangeDetectorRef
   ) {
 
     this.ticketForm = this.fb.group({
@@ -46,6 +48,7 @@ export class TicketComponent {
 
         alert('Ticket Raised Successfully');
         this.router.navigate(['/main/mytickets']);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.loading = false;

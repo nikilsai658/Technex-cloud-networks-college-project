@@ -42,6 +42,11 @@ export class MyTicketComponent implements OnInit {
 
   errorMessage = '';
 
+  selectedStatus: string = 'All';
+
+  statusOptions: string[] =
+    ['All', 'Open', 'Pending', 'Resolved', 'Closed'];
+
 
   constructor(
     private ticketService: TicketService,
@@ -126,6 +131,33 @@ export class MyTicketComponent implements OnInit {
 
       });
 
+  }
+
+
+  // =====================================
+  // FILTERED TICKETS
+  // =====================================
+
+  get filteredTickets(): any[] {
+
+    if (!this.selectedStatus || this.selectedStatus === 'All') {
+      return this.tickets;
+    }
+
+    return this.tickets.filter(ticket =>
+      (ticket.status || 'Open').toLowerCase() ===
+      this.selectedStatus.toLowerCase()
+    );
+
+  }
+
+
+  // =====================================
+  // STATUS FILTER CHANGE
+  // =====================================
+
+  onStatusChange(): void {
+    this.cdr.markForCheck();
   }
 
 

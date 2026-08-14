@@ -2,6 +2,7 @@ import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 import { UserStore } from '../../../core/store/user';
+import { Auth } from '../../../core/auth/auth';
 
 @Component({
   selector: 'app-student-profile',
@@ -14,7 +15,7 @@ export class StudentProfile {
    user:any;
   private isBrowser: boolean;
 
-  constructor(private userStore: UserStore, @Inject(PLATFORM_ID) platformId: Object) {
+  constructor(private userStore: UserStore, @Inject(PLATFORM_ID) platformId: Object, public auth:Auth) {
     this.user = this.userStore.user;
     this.isBrowser = isPlatformBrowser(platformId);
 

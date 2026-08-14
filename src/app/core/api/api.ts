@@ -29,7 +29,31 @@ export class Api {
     Authorization: `Bearer ${token}`
   });
 }
-   
+
+private showAlert(message: string): void {
+  if (isPlatformBrowser(this.platformId)) {
+    alert(message);
+  }
+}
+
+private handleError(err: any) {
+  if (err.status === 400) {
+    this.showAlert(err.error.message);
+  } else if (err.status === 401) {
+    this.showAlert('Unauthorized');
+  } else if (err.status === 403) {
+    this.showAlert('Forbidden');
+  } else if (err.status === 404) {
+    this.showAlert('Not Found');
+  } else if (err.status === 500) {
+    this.showAlert('Internal Server Error');
+  } else {
+    this.showAlert('Something went wrong');
+  }
+
+  return throwError(() => err);
+}
+
  POST(url: string, payload: any) {
 
   return this.http.post(
@@ -38,25 +62,7 @@ export class Api {
     { headers: this.getHeaders() }
   ).pipe(
 
-    catchError((err) => {
-
-      if (err.status === 400) {
-        alert(err.error.message);
-      } else if (err.status === 401) {
-        alert('Unauthorized');
-      } else if (err.status === 403) {
-        alert('Forbidden');
-      } else if (err.status === 404) {
-        alert('Not Found');
-      } else if (err.status === 500) {
-        alert('Internal Server Error');
-      } else {
-        alert('Something went wrong');
-      }
-
-      return throwError(() => err);
-
-    })
+    catchError((err) => this.handleError(err))
 
   );
 
@@ -66,68 +72,19 @@ GET(url: string, params?: any) {
     headers: this.getHeaders(),
     params: params
   }).pipe(
-    catchError((err) => {
-
-      if (err.status === 400) {
-        alert(err.error.message);
-      } else if (err.status === 401) {
-        alert('Unauthorized');
-      } else if (err.status === 403) {
-        alert('Forbidden');
-      } else if (err.status === 404) {
-        alert('Not Found');
-      } else if (err.status === 500) {
-        alert('Internal Server Error');
-      } else {
-        alert('Something went wrong');
-      }
-
-      return throwError(() => err);
-    })
+    catchError((err) => this.handleError(err))
   );
 }
   PUT(url: string, payload: any) {
     return this.http.put(`http://localhost:5000/api/${url}`,payload,{  headers: this.getHeaders()  }).pipe(
-      catchError((err)=>{
-        if (err.status === 400) {
-        alert(err.error.message);
-      } else if (err.status === 401) {
-        alert('Unauthorized');
-      } else if (err.status === 403) {
-        alert('Forbidden');
-      } else if (err.status === 404) {
-        alert('Not Found');
-      } else if (err.status === 500) {
-        alert('Internal Server Error');
-      } else {
-        alert('Something went wrong');
-      }
-
-      return throwError(() => err);
-      })
+      catchError((err) => this.handleError(err))
     )
   }
-  
+
   DELETE(url: string) {
     return this.http.delete(`http://localhost:5000/api/${url}`,{  headers: this.getHeaders()  }).pipe(
-      catchError((err)=>{
-        if (err.status === 400) {
-        alert(err.error.message);
-      } else if (err.status === 401) {
-        alert('Unauthorized');
-      } else if (err.status === 403) {
-        alert('Forbidden');
-      } else if (err.status === 404) {
-        alert('Not Found');
-      } else if (err.status === 500) {
-        alert('Internal Server Error');
-      } else {
-        alert('Something went wrong');
-      }
-
-      return throwError(() => err);
-      })
+      catchError((err) => this.handleError(err))
     )
-     
+
   }
 }

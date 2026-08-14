@@ -116,34 +116,40 @@
           </h3>
 
 
-          <!-- ONLY FIRST SAMPLE TEST CASE -->
-          <div class="testcase-card">
+          <!-- UP TO TWO SAMPLE TEST CASES -->
+          <div class="testcase-list">
 
-            <div class="testcase-card-title">
-              Example 1
-            </div>
+            <div
+              class="testcase-card"
+              *ngFor="let testCase of sampleTestCases | slice:0:2; let i = index">
 
-
-            <!-- INPUT -->
-            <div class="testcase-block">
-
-              <label>
-                Input
-              </label>
-
-              <pre>{{ sampleTestCases[0]?.input }}</pre>
-
-            </div>
+              <div class="testcase-card-title">
+                Example {{ i + 1 }}
+              </div>
 
 
-            <!-- EXPECTED OUTPUT -->
-            <div class="testcase-block">
+              <!-- INPUT -->
+              <div class="testcase-block">
 
-              <label>
-                Expected Output
-              </label>
+                <label>
+                  Input
+                </label>
 
-              <pre>{{ sampleTestCases[0]?.expectedOutput }}</pre>
+                <pre>{{ testCase?.input }}</pre>
+
+              </div>
+
+
+              <!-- EXPECTED OUTPUT -->
+              <div class="testcase-block">
+
+                <label>
+                  Expected Output
+                </label>
+
+                <pre>{{ testCase?.expectedOutput }}</pre>
+
+              </div>
 
             </div>
 
