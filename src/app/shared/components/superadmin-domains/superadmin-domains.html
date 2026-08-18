@@ -1,0 +1,154 @@
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">
+          Domains
+        </h1>
+
+        <p class="text-sm text-gray-500 mt-1">
+          Manage college domains
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- Loading -->
+    <div
+      *ngIf="loading"
+      class="flex justify-center items-center py-16"
+    >
+      <div class="text-gray-500 text-sm">
+        Loading domains...
+      </div>
+    </div>
+
+
+    <!-- No Domains -->
+    <div
+      *ngIf="!loading && domains.length === 0"
+      class="bg-white border border-gray-200 rounded-xl p-10 text-center"
+    >
+
+      <div class="text-gray-400 text-4xl mb-3">
+        📚
+      </div>
+
+      <h2 class="text-lg font-semibold text-gray-700">
+        No Domains Found
+      </h2>
+
+      <p class="text-sm text-gray-500 mt-1">
+        There are no domains available for this college.
+      </p>
+
+    </div>
+
+
+    <!-- Domain Cards -->
+    <div
+      *ngIf="!loading && domains.length > 0"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+
+      <div
+        *ngFor="let domain of domains"
+        class="bg-white rounded-xl border border-gray-200 p-6
+               hover:shadow-lg transition-shadow duration-200"
+      >
+
+        <!-- Top -->
+        <div class="flex items-start justify-between gap-3 mb-5">
+
+          <div>
+
+            <h2 class="text-xl font-bold text-gray-900">
+              {{ domain.domainName }}
+            </h2>
+
+            <p class="text-xs text-gray-400 mt-1">
+              Domain ID: {{ domain.domainId }}
+            </p>
+
+          </div>
+
+          <!-- Status -->
+          <span
+            class="px-3 py-1 text-xs font-medium
+                   rounded-full bg-cyan-50 text-cyan-600"
+          >
+            Active
+          </span>
+
+        </div>
+
+
+        <!-- Description -->
+        <div class="mb-6">
+
+          <p class="text-sm text-gray-500 leading-6">
+            {{ domain.description || 'No description available' }}
+          </p>
+
+        </div>
+
+
+        <!-- Students -->
+        <div
+          class="flex items-center justify-between
+                 bg-gray-50 rounded-lg px-4 py-3 mb-5"
+        >
+
+          <div class="flex items-center gap-3">
+
+            <div
+              class="w-10 h-10 rounded-lg
+                     bg-cyan-100 flex items-center justify-center"
+            >
+              <span class="text-cyan-600 text-lg">
+                👨‍🎓
+              </span>
+            </div>
+
+            <div>
+
+              <p class="text-xs text-gray-500">
+                Total Students
+              </p>
+
+              <p class="text-lg font-bold text-gray-900">
+                {{ domain.totalStudents }}
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- View Button -->
+        <button
+          type="button"
+          (click)="viewDomain(domain)"
+          class="w-full bg-[#24c0c5] text-white
+                 py-2.5 px-4 rounded-lg
+                 font-medium text-sm
+                 hover:bg-[#1eabb0]
+                 transition duration-200"
+        >
+          View Domain
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

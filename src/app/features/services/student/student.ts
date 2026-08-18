@@ -12,16 +12,16 @@ export class Student {
   getstudentcourse(domainId:number){
     return this.api.GET(`Student/domain/${domainId}/courses`);
   }
-  getstudentcourseById(courseId:number){
-    return this.api.GET(`Student/course/${courseId}/assignments`);
+  getstudentcourseById(domainId:number,courseId:number){
+    return this.api.GET(`Student/domain/${domainId}/course/${courseId}/assignments`);
   }
   getstudentassignmentId(assignmentId:number){
     return this.api.GET(`Student/assignment/${assignmentId}`)
   }
-  runCode(sourceCode:string, languageId:number, stdin:string|null, questionId:number){
-    return this.api.POST('Student/run', { sourceCode, languageId, stdin, questionId });
+  runCode(sourceCode:string, languageId:number, stdin:string|null){
+    return this.api.POST('Student/run', { sourceCode, languageId, stdin });
   }
-  submitCode(assignmentId:number, sourceCode:string, languageId:number, stdin:string|null, questionId:number){
-    return this.api.POST('Student/submit', { assignmentId, sourceCode, languageId, stdin, questionId });
+  submitCode(assignmentId:number, sourceCode:string, languageId:number, stdin:string|null){
+    return this.api.POST('Student/submit', { assignmentId, sourceCode, languageId, stdin });
   }
 }

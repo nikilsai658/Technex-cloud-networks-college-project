@@ -71,7 +71,7 @@ export class StudentCourses {
 }
   view(courseId: number): void {
   this.router.navigate(['/main/student-assignments'], {
-    state: { courseId }
+    state: { domainId: this.domainId, courseId }
   });
 }
 }

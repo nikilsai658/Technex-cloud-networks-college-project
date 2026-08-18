@@ -321,3 +321,30 @@
     }
 
 }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navigation-btn {
+  padding: 9px 16px;
+  border: 1px solid #24c0c5;
+  border-radius: 8px;
+  background: transparent;
+  color: #24c0c5;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.navigation-btn:hover:not(:disabled) {
+  background: #24c0c5;
+  color: #ffffff;
+}
+
+.navigation-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

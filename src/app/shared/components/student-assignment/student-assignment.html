@@ -1,58 +1,280 @@
 <div class="coding-platform">
 
   <!-- ================= HEADER ================= -->
-  <header class="platform-header">
+ <div class="coding-platform">
 
-    <div class="header-left">
+  <!-- ================= HEADER ================= -->
+ <!-- ================= HEADER ================= -->
+<header class="platform-header">
 
-      <button class="back-btn" (click)="goBack()">
-        ←
-      </button>
+  <div class="header-left">
 
-      <div>
-        <h2 class="problem-name">
-          {{ assignment?.title }}
-        </h2>
+    <button class="back-btn" (click)="goBack()">
+      ←
+    </button>
 
-        <p class="problem-id">
-          Assignment ID : {{ assignment?.assignmentId }}
-        </p>
+    <div>
+      
+      <h2 class="problem-name">
+        {{ assignment?.title }}
+      </h2>
+
+      <p class="problem-id">
+        Assignment ID : {{ assignment?.assignmentId }}
+      </p>
+    </div>
+
+  </div>
+
+
+  <div class="header-right">
+
+    <!-- Previous Button -->
+    <button
+      class="navigation-btn"
+      (click)="previous()"
+      [disabled]="!canGoPrevious">
+
+      ← Previous
+
+    </button>
+
+
+    <!-- Next Button -->
+    <button
+      class="navigation-btn"
+      (click)="next()"
+      [disabled]="!canGoNext">
+
+      Next →
+
+    </button>
+
+
+    <!-- Score -->
+    <div class="header-box">
+
+      <span class="header-label">
+        Score
+      </span>
+
+      <span class="header-value">
+        {{ assignment?.score }}
+      </span>
+
+    </div>
+
+
+    <!-- Difficulty -->
+    <div class="header-box">
+
+      <span class="header-label">
+        Difficulty
+      </span>
+
+      <span
+        class="difficulty-badge"
+        [ngClass]="{
+          'easy': assignment?.difficulty === 'Easy',
+          'medium': assignment?.difficulty === 'Medium',
+          'hard': assignment?.difficulty === 'Hard'
+        }">
+
+        {{ assignment?.difficulty }}
+
+      </span>
+
+    </div>
+
+  </div>
+
+</header>
+
+  <!-- ================= BODY ================= -->
+
+  <div class="platform-body">
+
+
+    <!-- ================= LEFT PANEL ================= -->
+
+    <div class="problem-panel">
+
+      <div class="problem-content">
+
+
+        <!-- ================= DESCRIPTION ================= -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+            Problem Description
+          </h3>
+
+          <p class="section-text">
+            {{ assignment?.description }}
+          </p>
+
+        </section>
+
+
+
+        <!-- ================= CONSTRAINTS ================= -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+            Constraints
+          </h3>
+
+          <ul class="constraint-list">
+
+            <li>
+              Time Limit :
+              <strong>
+                {{ assignment?.timeLimit }} Seconds
+              </strong>
+            </li>
+
+
+          </ul>
+
+        </section>
+
+
+        <!-- ================= SAMPLE TEST CASE ================= -->
+
+        <section
+          class="problem-section"
+          *ngIf="sampleTestCases?.length">
+
+          <h3 class="section-heading">
+            Sample Test Case
+          </h3>
+
+
+          <!-- UP TO TWO SAMPLE TEST CASES -->
+          <div class="testcase-list">
+
+            <div
+              class="testcase-card"
+              *ngFor="let testCase of sampleTestCases | slice:0:2; let i = index">
+
+              <div class="testcase-card-title">
+                Example {{ i + 1 }}
+              </div>
+
+
+              <!-- INPUT -->
+              <div class="testcase-block">
+
+                <label>
+                  Input
+                </label>
+
+                <pre>{{ testCase?.input }}</pre>
+
+              </div>
+
+
+              <!-- EXPECTED OUTPUT -->
+              <div class="testcase-block">
+
+                <label>
+                  Expected Output
+                </label>
+
+                <pre>{{ testCase?.expectedOutput }}</pre>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ================= SUPPORTED LANGUAGES ================= -->
+
+        <section class="problem-section">
+
+          <h3 class="section-heading">
+            Supported Languages
+          </h3>
+
+
+          <div class="language-list">
+
+            <span
+              *ngFor="
+                let lang of assignment?.languageSupport?.split(',')
+              "
+              class="language-chip">
+
+              {{ lang.trim() }}
+
+            </span>
+
+          </div>
+
+        </section>
+
+
+        <!-- ================= CHALLENGE LINK ================= -->
+
+        <section
+          class="problem-section"
+          *ngIf="assignment?.challengeUrl">
+
+          <h3 class="section-heading">
+            Challenge Link
+          </h3>
+
+          <a
+            [href]="assignment?.challengeUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="challenge-link">
+
+            {{ assignment?.challengeUrl }}
+
+          </a>
+
+        </section>
+
+
       </div>
 
     </div>
 
-    <div class="header-right">
 
-      <!-- Score -->
-      <div class="header-box">
-        <span class="header-label">Score</span>
+    <!-- ================= RIGHT PANEL ================= -->
 
-        <span class="header-value">
-          {{ assignment?.score }}
-        </span>
-      </div>
+    <div class="editor-panel">
 
-      <!-- Difficulty -->
-      <div class="header-box">
-        <span class="header-label">Difficulty</span>
+      <div class="editor-container">
 
-        <span
-          class="difficulty-badge"
-          [ngClass]="{
-            'easy': assignment?.difficulty === 'Easy',
-            'medium': assignment?.difficulty === 'Medium',
-            'hard': assignment?.difficulty === 'Hard'
-          }">
+        <app-code-editor
+          [isRunning]="isRunning"
+          [isSubmitting]="isSubmitting"
+          [runResult]="runResult"
+          [submitResult]="submitResult"
+          [runError]="runError"
+          [submitError]="submitError"
+          [defaultStdin]="sampleTestCases[0]?.input ?? null"
 
-          {{ assignment?.difficulty }}
+          (run)="onRunCode($event)"
+          (submit)="onSubmitCode($event)">
 
-        </span>
+        </app-code-editor>
+
       </div>
 
     </div>
 
-  </header>
+  </div>
 
+</div>
 
   <!-- ================= BODY ================= -->
 

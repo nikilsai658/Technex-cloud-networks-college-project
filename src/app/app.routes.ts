@@ -33,6 +33,10 @@ import { CourseAssignmentMapComponent } from './shared/components/courseassignme
 import { RolePermissionComponent } from './shared/components/rolepermission/rolepermission';
 import { StudentAssignment as StudentAssignmentscore } from './shared/components/studentassignment/studentassignment';
 import { StudentDomainMapComponent } from './shared/components/studentdomaincourse/studentdomaincourse';
+import { SuperAdmin } from './shared/components/superadmin/superadmin';
+import { SuperadminDomains } from './shared/components/superadmin-domains/superadmin-domains';
+import { SuperadminDomainStudents } from './shared/components/superadmin-domain-students/superadmin-domain-students';
+import { SuperadminStudentAssignments } from './shared/components/superadmin-student-assignments/superadmin-student-assignments';
 export const routes: Routes = [
 
   {
@@ -145,6 +149,18 @@ export const routes: Routes = [
       },
       {
         path:'student-assignment-scores',component:StudentAssignmentscore
+      },
+      {
+        path:'superamin-colleges', component:SuperAdmin
+      },
+      {
+        path:'superadmin-domains', component:SuperadminDomains
+      },
+      {
+        path:'superadmin-domain-students', component:SuperadminDomainStudents
+      },
+      {
+        path:'superadmin-student-assignments',component:SuperadminStudentAssignments
       }
     ]
   },

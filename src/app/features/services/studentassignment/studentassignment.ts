@@ -22,11 +22,4 @@ export class Studentassignment {
   deletestudentassignmnet(id: number) {
     return this.api.DELETE(`StudentAssignment/${id}`);
   }
-
-   runCode(sourceCode:string, languageId:number, stdin:string|null){
-    return this.api.POST('Student/run', { sourceCode, languageId, stdin });
-  }
-  submitCode(assignmentId:number, sourceCode:string, languageId:number, stdin:string|null){
-    return this.api.POST('Student/submit', { assignmentId, sourceCode, languageId, stdin });
-  }
 }

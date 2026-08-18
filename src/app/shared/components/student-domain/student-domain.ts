@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Student } from '../../../features/services/student/student';
 import { Router } from '@angular/router';
 
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   imports: [CommonModule],
   templateUrl: './student-domain.html',
   styleUrl: './student-domain.css',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class StudentDomain implements OnInit {
 
@@ -37,7 +38,7 @@ export class StudentDomain implements OnInit {
 
         this.domain = res?.data ?? [];
         this.loading = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
 
       },
 
@@ -52,6 +53,8 @@ export class StudentDomain implements OnInit {
 
   }
   view(domainId: number):void{
-    this.router.navigate(['/main/student-courses'], { state: { domainId } });
+    this.router.navigate(['/main/student-courses'], 
+      { state: { domainId } }
+    );
   }
 }

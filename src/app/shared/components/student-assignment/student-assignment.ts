@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Student } from '../../../features/services/student/student';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -14,8 +14,19 @@ import { Location } from '@angular/common';
   styleUrl: './student-assignment.css',
 })
 export class StudentAssignment implements OnInit{
-  assignmentId!:number;
+  assignmentId!: number;
+  assignmentIds: number[] = [];
   assignment: any = null;
+
+  get canGoPrevious(): boolean {
+    const index = this.assignmentIds.indexOf(this.assignmentId);
+    return index > 0;
+  }
+
+  get canGoNext(): boolean {
+    const index = this.assignmentIds.indexOf(this.assignmentId);
+    return index > -1 && index < this.assignmentIds.length - 1;
+  }
 
   get sampleTestCases(): any[] {
     return (this.assignment?.testCases ?? []).filter((tc: any) => tc.isSample);
@@ -33,9 +44,16 @@ export class StudentAssignment implements OnInit{
   constructor(private route:ActivatedRoute, private router:Router,private api:Student,private cd:ChangeDetectorRef,private location:Location, @Inject(PLATFORM_ID) private platformId: Object){}
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.assignmentId = history.state.Id;
-      this.loadAssignment();
+      this.loadFromState(history.state);
     }
+  }
+
+  private loadFromState(state: any): void {
+    this.assignmentId = state.Id;
+    if (state.assignmentIds) {
+      this.assignmentIds = state.assignmentIds;
+    }
+    this.loadAssignment();
   }
   loadAssignment():void{
     this.api.getstudentassignmentId(this.assignmentId).subscribe({
@@ -68,7 +86,6 @@ export class StudentAssignment implements OnInit{
         submission.sourceCode,
         submission.languageId,
         submission.stdin,
-        this.assignment?.questionId
       )
       .subscribe({
 
@@ -110,7 +127,6 @@ export class StudentAssignment implements OnInit{
         submission.sourceCode,
         submission.languageId,
         submission.stdin,
-        this.assignment?.questionId
       )
       .subscribe({
 
@@ -138,5 +154,26 @@ export class StudentAssignment implements OnInit{
 
       });
   }
+  next(){
+    if (!this.canGoNext) {
+      return;
+    }
+    const index = this.assignmentIds.indexOf(this.assignmentId);
+    this.goToAssignment(this.assignmentIds[index + 1]);
+  }
+  previous(){
+    if (!this.canGoPrevious) {
+      return;
+    }
+    const index = this.assignmentIds.indexOf(this.assignmentId);
+    this.goToAssignment(this.assignmentIds[index - 1]);
+  }
 
+  private goToAssignment(id: number): void {
+    const state = { Id: id, assignmentIds: this.assignmentIds };
+    // Router.navigate() ignores navigation to the same URL, so the same-route
+    // "next/previous" case is driven straight off state instead of a route/query param.
+    history.pushState(state, '', this.router.url);
+    this.loadFromState(state);
+  }
 }

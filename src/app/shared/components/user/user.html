@@ -75,11 +75,11 @@
 
           <select formControlName="roleId">
 
-            <option value="">Select Role</option>
+            <option [ngValue]="''">Select Role</option>
 
             <option
               *ngFor="let role of roles"
-              [value]="role.name">
+              [ngValue]="role.id">
 
               {{ role.name }}
 

@@ -323,6 +323,14 @@
             Student Assignment Scores 
 
           </a>
+          <a
+             *ngIf="auth.hasPermission('VIEW_SUPERADMIN_COLLEGES')"
+            routerLink="/main/superamin-colleges"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-link">
+            Tracking College Student Scores 
+          </a>
         </nav>
 
     </div>

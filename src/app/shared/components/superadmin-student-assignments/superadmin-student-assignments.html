@@ -1,0 +1,485 @@
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+
+      <div>
+
+        <h1 class="text-2xl font-bold text-gray-900">
+          Student Assignments
+        </h1>
+
+        <p class="text-sm text-gray-500 mt-1">
+          View assignment progress and performance
+        </p>
+
+      </div>
+
+      <!-- Student Info -->
+      <div
+        class="bg-white border border-gray-200 rounded-xl
+               px-5 py-3"
+      >
+
+        <div class="flex items-center gap-3">
+
+          <div
+            class="w-10 h-10 rounded-full
+                   bg-cyan-100 text-cyan-700
+                   flex items-center justify-center
+                   font-bold"
+          >
+            {{ studentName?.charAt(0)?.toUpperCase() }}
+          </div>
+
+          <div>
+
+            <p class="font-semibold text-gray-900">
+              {{ studentName || 'Student' }}
+            </p>
+
+            <p class="text-sm text-gray-500">
+              {{ studentEmail }}
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Domain Information -->
+    <div
+      class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6"
+    >
+
+      <!-- College -->
+      <div
+        class="bg-white border border-gray-200
+               rounded-xl p-5"
+      >
+
+        <p class="text-xs font-medium text-gray-500 uppercase">
+          College ID
+        </p>
+
+        <p class="text-xl font-bold text-gray-900 mt-1">
+          {{ collegeId }}
+        </p>
+
+      </div>
+
+
+      <!-- Domain -->
+      <div
+        class="bg-white border border-gray-200
+               rounded-xl p-5"
+      >
+
+        <p class="text-xs font-medium text-gray-500 uppercase">
+          Domain
+        </p>
+
+        <p class="text-xl font-bold text-gray-900 mt-1">
+          {{ domainName || 'Domain' }}
+        </p>
+
+      </div>
+
+
+      <!-- Total Assignments -->
+      <div
+        class="bg-white border border-gray-200
+               rounded-xl p-5"
+      >
+
+        <p class="text-xs font-medium text-gray-500 uppercase">
+          Total Assignments
+        </p>
+
+        <p class="text-xl font-bold text-gray-900 mt-1">
+          {{ assignments.length }}
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- Loading -->
+    <div
+      *ngIf="loading"
+      class="bg-white border border-gray-200
+             rounded-xl p-12 text-center"
+    >
+
+      <div class="animate-pulse">
+
+        <div
+          class="h-4 bg-gray-200 rounded w-40 mx-auto mb-3"
+        ></div>
+
+        <div
+          class="h-3 bg-gray-200 rounded w-56 mx-auto"
+        ></div>
+
+      </div>
+
+      <p class="text-sm text-gray-500 mt-4">
+        Loading assignments...
+      </p>
+
+    </div>
+
+
+    <!-- No Assignments -->
+    <div
+      *ngIf="!loading && assignments.length === 0"
+      class="bg-white border border-gray-200
+             rounded-xl p-12 text-center"
+    >
+
+      <div class="text-4xl mb-4">
+        📚
+      </div>
+
+      <h2 class="text-lg font-semibold text-gray-700">
+        No Assignments Found
+      </h2>
+
+      <p class="text-sm text-gray-500 mt-1">
+        This student has no assignments in this domain.
+      </p>
+
+    </div>
+
+
+    <!-- Assignments -->
+    <div
+      *ngIf="!loading && assignments.length > 0"
+      class="space-y-4"
+    >
+
+      <div
+        *ngFor="let assignment of assignments"
+        class="bg-white border border-gray-200
+               rounded-xl overflow-hidden
+               hover:shadow-md transition"
+      >
+
+        <!-- Assignment Header -->
+        <div
+          class="px-6 py-5
+                 border-b border-gray-200
+                 flex flex-col lg:flex-row
+                 lg:items-center
+                 lg:justify-between gap-4"
+        >
+
+          <div>
+
+            <div class="flex items-center gap-3">
+
+              <h2 class="text-lg font-bold text-gray-900">
+                {{ assignment.title }}
+              </h2>
+
+              <!-- Status -->
+              <span
+                *ngIf="assignment.status === 'Accepted'"
+                class="px-3 py-1 rounded-full
+                       text-xs font-semibold
+                       bg-green-50 text-green-600"
+              >
+                Accepted
+              </span>
+
+              <span
+                *ngIf="assignment.status !== 'Accepted'"
+                class="px-3 py-1 rounded-full
+                       text-xs font-semibold
+                       bg-orange-50 text-orange-600"
+              >
+                {{ assignment.status }}
+              </span>
+
+            </div>
+
+            <p class="text-sm text-gray-500 mt-1">
+              {{ assignment.courseName }}
+            </p>
+
+          </div>
+
+
+          <!-- Score -->
+          <div class="text-left lg:text-right">
+
+            <p class="text-xs text-gray-500">
+              Score
+            </p>
+
+            <p class="text-2xl font-bold text-cyan-600">
+              {{ assignment.score }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- Assignment Details -->
+        <div class="p-6">
+
+          <div
+            class="grid grid-cols-2
+                   md:grid-cols-3
+                   lg:grid-cols-6 gap-4"
+          >
+
+            <!-- Started -->
+            <div>
+
+              <p class="text-xs text-gray-500 mb-1">
+                Started
+              </p>
+
+              <p
+                class="text-sm font-medium text-gray-800"
+                *ngIf="assignment.isStarted"
+              >
+                {{ assignment.startedOn | date:'dd MMM yyyy' }}
+              </p>
+
+              <p
+                class="text-sm text-gray-400"
+                *ngIf="!assignment.isStarted"
+              >
+                Not Started
+              </p>
+
+            </div>
+
+
+            <!-- Completed -->
+            <div>
+
+              <p class="text-xs text-gray-500 mb-1">
+                Completed
+              </p>
+
+              <p
+                class="text-sm font-medium text-gray-800"
+                *ngIf="assignment.completedOn"
+              >
+                {{ assignment.completedOn | date:'dd MMM yyyy' }}
+              </p>
+
+              <p
+                class="text-sm text-gray-400"
+                *ngIf="!assignment.completedOn"
+              >
+                Pending
+              </p>
+
+            </div>
+
+
+            <!-- Attempts -->
+            <div>
+
+              <p class="text-xs text-gray-500 mb-1">
+                Attempts
+              </p>
+
+              <p class="text-sm font-bold text-gray-900">
+                {{ assignment.attempts }}
+              </p>
+
+            </div>
+
+
+            <!-- Time Taken -->
+            <div>
+
+              <p class="text-xs text-gray-500 mb-1">
+                Time Taken
+              </p>
+
+              <p class="text-sm font-bold text-gray-900">
+                {{ assignment.timeTaken }} sec
+              </p>
+
+            </div>
+
+
+            <!-- Passed -->
+            <div>
+
+              <p class="text-xs text-gray-500 mb-1">
+                Result
+              </p>
+
+              <span
+                *ngIf="assignment.isPassed"
+                class="inline-flex px-3 py-1
+                       rounded-full
+                       bg-green-50 text-green-600
+                       text-xs font-semibold"
+              >
+                Passed
+              </span>
+
+              <span
+                *ngIf="!assignment.isPassed"
+                class="inline-flex px-3 py-1
+                       rounded-full
+                       bg-red-50 text-red-600
+                       text-xs font-semibold"
+              >
+                Not Passed
+              </span>
+
+            </div>
+
+
+            <!-- Started Status -->
+            <div>
+
+              <p class="text-xs text-gray-500 mb-1">
+                Progress
+              </p>
+
+              <span
+                *ngIf="assignment.isStarted"
+                class="inline-flex px-3 py-1
+                       rounded-full
+                       bg-blue-50 text-blue-600
+                       text-xs font-semibold"
+              >
+                Started
+              </span>
+
+              <span
+                *ngIf="!assignment.isStarted"
+                class="inline-flex px-3 py-1
+                       rounded-full
+                       bg-gray-100 text-gray-500
+                       text-xs font-semibold"
+              >
+                Not Started
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- Submission Information -->
+          <div
+            *ngIf="assignment.bestSubmissionId"
+            class="mt-6 pt-5
+                   border-t border-gray-100"
+          >
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <!-- Best Submission -->
+              <div>
+
+                <p class="text-xs text-gray-500 mb-1">
+                  Best Submission ID
+                </p>
+
+                <p
+                  class="text-xs font-mono
+                         text-gray-700
+                         bg-gray-50
+                         rounded-lg px-3 py-2
+                         break-all"
+                >
+                  {{ assignment.bestSubmissionId }}
+                </p>
+
+              </div>
+
+
+              <!-- Last Submission -->
+              <div>
+
+                <p class="text-xs text-gray-500 mb-1">
+                  Last Submission ID
+                </p>
+
+                <p
+                  class="text-xs font-mono
+                         text-gray-700
+                         bg-gray-50
+                         rounded-lg px-3 py-2
+                         break-all"
+                >
+                  {{ assignment.lastSubmissionId }}
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- Date & Time -->
+          <div
+            class="mt-5 pt-4
+                   border-t border-gray-100
+                   flex flex-col sm:flex-row
+                   gap-3 sm:gap-8"
+          >
+
+            <div>
+
+              <span class="text-xs text-gray-500">
+                Started On:
+              </span>
+
+              <span
+                class="text-xs text-gray-700 ml-2"
+                *ngIf="assignment.startedOn"
+              >
+                {{ assignment.startedOn | date:'dd MMM yyyy, hh:mm a' }}
+              </span>
+
+            </div>
+
+
+            <div>
+
+              <span class="text-xs text-gray-500">
+                Completed On:
+              </span>
+
+              <span
+                class="text-xs text-gray-700 ml-2"
+                *ngIf="assignment.completedOn"
+              >
+                {{ assignment.completedOn | date:'dd MMM yyyy, hh:mm a' }}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

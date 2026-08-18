@@ -12,18 +12,20 @@ import { Student } from '../../../features/services/student/student';
 })
 export class StudentAssignments implements OnInit {
 
+  domainId!: number;
   courseId!: number;
   assignments:any[]=[];
   constructor(private route: ActivatedRoute,private api:Student,private cd:ChangeDetectorRef, private router:Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+      this.domainId = history.state.domainId;
       this.courseId = history.state.courseId;
       this.loadAssignments();
     }
   }
   loadAssignments():void{
-   this.api.getstudentcourseById(this.courseId).subscribe({
+   this.api.getstudentcourseById(this.domainId, this.courseId).subscribe({
     next:(res:any)=>{
       console.log(res.data)
         this.assignments=res?.data??[];
@@ -34,9 +36,19 @@ export class StudentAssignments implements OnInit {
     }
    })
   }
-  startAssignment(Id:number):void{
-  this.router.navigate([`/main/student-assignment`],{state:{Id}});
-  }
+  startAssignment(id: number): void {
+  const assignmentIds = this.assignments.map(a => a.assignmentId);
+
+  this.router.navigate(
+    ['/main/student-assignment'],
+    {
+      state: {
+        Id: id,
+        assignmentIds: assignmentIds
+      }
+    }
+  );
+}
 
 
 
