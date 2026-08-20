@@ -93,5 +93,70 @@ export class SuperadminDomainStudents implements OnInit {
     }
   );
 }
+printContent(): void {
+  const printContent = document.getElementById('print-section');
 
+  if (!printContent) {
+    console.error('Print section not found');
+    return;
+  }
+
+  const printWindow = window.open('', '_blank', 'width=900,height=700');
+
+  if (!printWindow) {
+    alert('Please allow popups for this website.');
+    return;
+  }
+
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>User Details</title>
+
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            color: #222;
+          }
+
+          h2 {
+            margin-bottom: 20px;
+          }
+
+          p {
+            margin: 10px 0;
+            font-size: 15px;
+          }
+
+          strong {
+            display: inline-block;
+            width: 120px;
+          }
+
+          @media print {
+            body {
+              padding: 20px;
+            }
+          }
+        </style>
+
+      </head>
+
+      <body>
+
+        ${printContent.innerHTML}
+
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+
+  printWindow.onload = () => {
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
+}
 }

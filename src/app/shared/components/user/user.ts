@@ -41,7 +41,7 @@ import { RoleService } from '../../../features/services/role/role-service';
   styleUrls: ['./user.css']
 })
 export class UserComponent implements OnInit {
-
+  Math = Math;
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -56,16 +56,16 @@ export class UserComponent implements OnInit {
   ) {}
 
   // ==========================
-  // Forms
+  // Form
   // ==========================
 
   userForm!: FormGroup;
+  filterForm!: FormGroup;
 
   // ==========================
-  // Data Sources
+  // Data
   // ==========================
 
-  // FIX: Initialize as empty array
   users: any[] = [];
 
   colleges: any[] = [];
@@ -131,6 +131,8 @@ export class UserComponent implements OnInit {
 
     this.initializeForm();
 
+    this.initializeFilterForm();
+
     this.loadPermissions();
 
     this.loadColleges();
@@ -145,27 +147,7 @@ export class UserComponent implements OnInit {
 
     if (isPlatformBrowser(this.platformId)) {
 
-      this.userForm.get('roleName')?.valueChanges.subscribe(() => {
-        this.loadUsers();
-      });
-
-      this.userForm.get('collegeName')?.valueChanges.subscribe(() => {
-        this.loadUsers();
-      });
-
-      this.userForm.get('departmentName')?.valueChanges.subscribe(() => {
-        this.loadUsers();
-      });
-
-      this.userForm.get('branchName')?.valueChanges.subscribe(() => {
-        this.loadUsers();
-      });
-
-      this.userForm.get('yearNumber')?.valueChanges.subscribe(() => {
-        this.loadUsers();
-      });
-
-      this.userForm.get('isActive')?.valueChanges.subscribe(() => {
+      this.filterForm.valueChanges.subscribe(() => {
         this.loadUsers();
       });
 
@@ -188,19 +170,30 @@ export class UserComponent implements OnInit {
 
     this.userForm = this.fb.group({
 
-      fullName: ['', Validators.required],
+      fullName: [
+        '',
+        Validators.required
+      ],
 
-      email: ['', [
-        Validators.required,
-        Validators.email
-      ]],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
 
-      password: ['', Validators.required],
+      password: [
+        '',
+        Validators.required
+      ],
 
-      roleId: ['', Validators.required],
-
-      // FIX: Added missing filter controls
-      roleName: [''],
+      // IMPORTANT:
+      // Backend expects roleName
+      roleName: [
+        '',
+        Validators.required
+      ],
 
       collegeName: [null],
 
@@ -216,7 +209,30 @@ export class UserComponent implements OnInit {
 
       registerNumber: [null],
 
-      // FIX: Added missing status control
+      isActive: [true]
+
+    });
+
+  }
+
+  // ==========================
+  // Initialize Filter Form
+  // ==========================
+
+  initializeFilterForm(): void {
+
+    this.filterForm = this.fb.group({
+
+      roleName: [''],
+
+      collegeName: [''],
+
+      departmentName: [''],
+
+      branchName: [''],
+
+      yearNumber: [null],
+
       isActive: [true]
 
     });
@@ -232,22 +248,22 @@ export class UserComponent implements OnInit {
     this.loading = true;
 
     const roleName =
-      this.userForm?.get('roleName')?.value || '';
+      this.filterForm?.get('roleName')?.value || '';
 
     const collegeName =
-      this.userForm?.get('collegeName')?.value || '';
+      this.filterForm?.get('collegeName')?.value || '';
 
     const departmentName =
-      this.userForm?.get('departmentName')?.value || '';
+      this.filterForm?.get('departmentName')?.value || '';
 
     const branchName =
-      this.userForm?.get('branchName')?.value || '';
+      this.filterForm?.get('branchName')?.value || '';
 
     const yearNumber =
-      this.userForm?.get('yearNumber')?.value;
+      this.filterForm?.get('yearNumber')?.value;
 
     const isActive =
-      this.userForm?.get('isActive')?.value;
+      this.filterForm?.get('isActive')?.value;
 
     this.userService
       .getUsers(
@@ -261,13 +277,17 @@ export class UserComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.loading = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({
 
         next: (res: any) => {
 
-          console.log('Users Response:', res);
+          console.log(
+            'Users Response:',
+            res
+          );
 
           if (Array.isArray(res)) {
 
@@ -290,26 +310,32 @@ export class UserComponent implements OnInit {
 
           }
 
-          this.totalRecords = this.users.length;
+          this.totalRecords =
+            this.users.length;
 
-          // Reset page if current page becomes invalid
           const maxPage =
             Math.max(
               1,
-              Math.ceil(this.totalRecords / this.pageSize)
+              Math.ceil(
+                this.totalRecords /
+                this.pageSize
+              )
             );
 
           if (this.page > maxPage) {
-            this.page = maxPage;
-          }
 
-          this.cdr.detectChanges();
+            this.page = maxPage;
+
+          }
 
         },
 
         error: (err) => {
 
-          console.error('Load Users Error:', err);
+          console.error(
+            'Load Users Error:',
+            err
+          );
 
           this.users = [];
 
@@ -327,26 +353,33 @@ export class UserComponent implements OnInit {
 
   loadColleges(): void {
 
-    this.collegeService.getcollege().subscribe({
+    this.collegeService
+      .getcollege()
+      .subscribe({
 
-      next: (res: any) => {
+        next: (res: any) => {
 
-        this.colleges =
-          Array.isArray(res?.data)
-            ? res.data
-            : [];
+          this.colleges =
+            Array.isArray(res?.data)
+              ? res.data
+              : Array.isArray(res)
+                ? res
+                : [];
 
-      },
+        },
 
-      error: (err) => {
+        error: (err) => {
 
-        console.error('Load Colleges Error:', err);
+          console.error(
+            'Load Colleges Error:',
+            err
+          );
 
-        this.colleges = [];
+          this.colleges = [];
 
-      }
+        }
 
-    });
+      });
 
   }
 
@@ -365,13 +398,18 @@ export class UserComponent implements OnInit {
           this.departments =
             Array.isArray(res?.data)
               ? res.data
-              : [];
+              : Array.isArray(res)
+                ? res
+                : [];
 
         },
 
         error: (err) => {
 
-          console.error('Load Departments Error:', err);
+          console.error(
+            'Load Departments Error:',
+            err
+          );
 
           this.departments = [];
 
@@ -396,13 +434,18 @@ export class UserComponent implements OnInit {
           this.branches =
             Array.isArray(res?.data)
               ? res.data
-              : [];
+              : Array.isArray(res)
+                ? res
+                : [];
 
         },
 
         error: (err) => {
 
-          console.error('Load Branches Error:', err);
+          console.error(
+            'Load Branches Error:',
+            err
+          );
 
           this.branches = [];
 
@@ -416,32 +459,63 @@ export class UserComponent implements OnInit {
   // Load Roles
   // ==========================
 
- loadRoles(): void {
-  this.roleService.getRoles().subscribe({
+  loadRoles(): void {
 
-    next: (res: any) => {
+    this.roleService
+      .getRoles()
+      .subscribe({
 
-      setTimeout(() => {
-        this.roles = Array.isArray(res?.data)
-          ? res.data
-          : [];
+        next: (res: any) => {
 
-        this.cdr.detectChanges();
-      }, 0);
+          console.log(
+            'Roles Response:',
+            res
+          );
 
-    },
+          if (Array.isArray(res)) {
 
-    error: (err) => {
-      console.error('Load Roles Error:', err);
+            this.roles = res;
 
-      setTimeout(() => {
-        this.roles = [];
-        this.cdr.detectChanges();
-      }, 0);
-    }
+          }
+          else if (Array.isArray(res?.data)) {
 
-  });
-}
+            this.roles = res.data;
+
+          }
+          else if (Array.isArray(res?.items)) {
+
+            this.roles = res.items;
+
+          }
+          else {
+
+            this.roles = [];
+
+          }
+
+          console.log(
+            'Roles:',
+            this.roles
+          );
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Load Roles Error:',
+            err
+          );
+
+          this.roles = [];
+
+        }
+
+      });
+
+  }
 
   // ==========================
   // Load Permissions
@@ -458,9 +532,13 @@ export class UserComponent implements OnInit {
   // Permission Check
   // ==========================
 
-  hasPermission(permission: string): boolean {
+  hasPermission(
+    permission: string
+  ): boolean {
 
-    return this.permissions.includes(permission);
+    return this.permissions.includes(
+      permission
+    );
 
   }
 
@@ -477,6 +555,7 @@ export class UserComponent implements OnInit {
       this.userForm.markAllAsTouched();
 
       return;
+
     }
 
     if (this.editMode) {
@@ -503,22 +582,77 @@ export class UserComponent implements OnInit {
       this.userForm.markAllAsTouched();
 
       return;
+
     }
 
     this.loading = true;
 
-    const payload = this.buildUserPayload();
+    const formValue =
+      this.userForm.value;
+
+    /*
+     * Backend payload
+     */
+
+    const payload = {
+
+      fullName:
+        formValue.fullName,
+
+      email:
+        formValue.email,
+
+      password:
+        formValue.password,
+
+      roleName:
+        formValue.roleName,
+
+      collegeName:
+        formValue.collegeName,
+
+      departmentName:
+        formValue.departmentName,
+
+      branchName:
+        formValue.branchName,
+
+      yearNumber:
+        formValue.yearNumber,
+
+      semester:
+        formValue.semester,
+
+      phoneNumber:
+        formValue.phoneNumber,
+
+      registerNumber:
+        formValue.registerNumber
+
+    };
+
+    console.log(
+      'Create User Payload:',
+      payload
+    );
 
     this.userService
       .createUser(payload)
       .pipe(
         finalize(() => {
+
           this.loading = false;
+
         })
       )
       .subscribe({
 
         next: (res: any) => {
+
+          console.log(
+            'Create User Response:',
+            res
+          );
 
           alert(
             res?.message ||
@@ -533,48 +667,19 @@ export class UserComponent implements OnInit {
 
         error: (err) => {
 
-          console.error('Create User Error:', err);
+          console.error(
+            'Create User Error:',
+            err
+          );
+
+          alert(
+            err?.error?.message ||
+            'Unable to create user.'
+          );
 
         }
 
       });
-
-  }
-
-  // ==========================
-  // Build Payload
-  // ==========================
-
-  private buildUserPayload(): any {
-
-    const raw = this.userForm.value;
-
-    return {
-      ...raw,
-      roleId: this.resolveRoleId(raw.roleId)
-    };
-
-  }
-
-  private resolveRoleId(value: any): number | null {
-
-    if (value === null || value === undefined || value === '') {
-      return null;
-    }
-
-    const numeric = Number(value);
-
-    if (!Number.isNaN(numeric)) {
-      return numeric;
-    }
-
-    // Fallback for a stale role-name string (e.g. leftover from an older
-    // build where the Role select was keyed by name instead of id).
-    const match = this.roles.find(
-      (role: any) => role.name === value
-    );
-
-    return match ? match.id : null;
 
   }
 
@@ -584,40 +689,78 @@ export class UserComponent implements OnInit {
 
   editUser(user: any): void {
 
-    this.selectedUserId = user.id;
+    console.log(
+      'Editing User:',
+      user
+    );
+
+    this.selectedUserId =
+      user?.id ??
+      user?.userId ??
+      null;
 
     this.editMode = true;
 
+    /*
+     * Get role name safely.
+     */
+
+    const roleName =
+      user?.roleName ??
+      user?.role?.name ??
+      user?.role?.roleName ??
+      '';
+
     this.userForm.patchValue({
 
-      fullName: user.fullName,
+      fullName:
+        user?.fullName ?? '',
 
-      email: user.email,
+      email:
+        user?.email ?? '',
+
+      /*
+       * Password stays empty
+       * during edit.
+       */
 
       password: '',
 
-      roleId: user.roleId,
+      roleName:
+        roleName,
 
-      roleName: user.roleName || '',
+      collegeName:
+        user?.collegeName ?? null,
 
-      collegeName: user.collegeName,
+      departmentName:
+        user?.departmentName ?? null,
 
-      departmentName: user.departmentName,
+      branchName:
+        user?.branchName ?? null,
 
-      branchName: user.branchName,
+      yearNumber:
+        user?.yearNumber ?? null,
 
-      yearNumber: user.yearNumber,
+      semester:
+        user?.semester ?? null,
 
-      semester: user.semester,
+      phoneNumber:
+        user?.phoneNumber ?? null,
 
-      phoneNumber: user.phoneNumber,
-
-      registerNumber: user.registerNumber,
+      registerNumber:
+        user?.registerNumber ?? null,
 
       isActive:
-        user.isActive ?? true
+        user?.isActive ?? true
 
     });
+
+    console.log(
+      'Edit Role Name:',
+      roleName
+    );
+
+    this.cdr.detectChanges();
 
   }
 
@@ -627,20 +770,106 @@ export class UserComponent implements OnInit {
 
   updateUser(): void {
 
-    if (this.selectedUserId == null) {
+    if (
+      this.selectedUserId === null
+    ) {
+
+      console.error(
+        'Selected User ID is missing'
+      );
+
       return;
+
     }
+
+    const formValue =
+      this.userForm.value;
+
+    /*
+     * Same structure as create.
+     */
+
+    const payload: any = {
+
+      fullName:
+        formValue.fullName,
+
+      email:
+        formValue.email,
+
+      roleName:
+        formValue.roleName,
+
+      collegeName:
+        formValue.collegeName,
+
+      departmentName:
+        formValue.departmentName,
+
+      branchName:
+        formValue.branchName,
+
+      yearNumber:
+        formValue.yearNumber,
+
+      semester:
+        formValue.semester,
+
+      phoneNumber:
+        formValue.phoneNumber,
+
+      registerNumber:
+        formValue.registerNumber
+
+    };
+
+    /*
+     * Only send password when
+     * user entered a new password.
+     */
+
+    if (
+      formValue.password &&
+      formValue.password.trim() !== ''
+    ) {
+
+      payload.password =
+        formValue.password;
+
+    }
+
+    console.log(
+      'Update User Payload:',
+      payload
+    );
+
+    this.loading = true;
 
     this.userService
       .updateUser(
         this.selectedUserId,
-        this.buildUserPayload()
+        payload
+      )
+      .pipe(
+        finalize(() => {
+
+          this.loading = false;
+
+        })
       )
       .subscribe({
 
-        next: () => {
+        next: (res: any) => {
 
-          alert('Updated Successfully');
+          console.log(
+            'Update User Response:',
+            res
+          );
+
+          alert(
+            res?.message ||
+            'Updated Successfully'
+          );
 
           this.resetForm();
 
@@ -653,6 +882,11 @@ export class UserComponent implements OnInit {
           console.error(
             'Update User Error:',
             err
+          );
+
+          alert(
+            err?.error?.message ||
+            'Unable to update user.'
           );
 
         }
@@ -683,7 +917,9 @@ export class UserComponent implements OnInit {
       .deleteUser(id)
       .pipe(
         finalize(() => {
+
           this.loading = false;
+
         })
       )
       .subscribe({
@@ -731,8 +967,6 @@ export class UserComponent implements OnInit {
 
       password: '',
 
-      roleId: '',
-
       roleName: '',
 
       collegeName: null,
@@ -778,7 +1012,9 @@ export class UserComponent implements OnInit {
   searchUsers(): void {
 
     const search =
-      this.searchText?.trim().toLowerCase();
+      this.searchText
+        ?.trim()
+        .toLowerCase();
 
     if (!search) {
 
@@ -788,31 +1024,37 @@ export class UserComponent implements OnInit {
 
     }
 
-    this.users = (this.users ?? []).filter(
-      (x: any) =>
+    this.users =
+      (this.users ?? []).filter(
+        (x: any) =>
 
-        x.firstName
-          ?.toLowerCase()
-          .includes(search) ||
+          x?.firstName
+            ?.toLowerCase()
+            .includes(search) ||
 
-        x.lastName
-          ?.toLowerCase()
-          .includes(search) ||
+          x?.lastName
+            ?.toLowerCase()
+            .includes(search) ||
 
-        x.userName
-          ?.toLowerCase()
-          .includes(search) ||
+          x?.fullName
+            ?.toLowerCase()
+            .includes(search) ||
 
-        x.email
-          ?.toLowerCase()
-          .includes(search) ||
+          x?.userName
+            ?.toLowerCase()
+            .includes(search) ||
 
-        x.roleName
-          ?.toLowerCase()
-          .includes(search)
-    );
+          x?.email
+            ?.toLowerCase()
+            .includes(search) ||
 
-    this.totalRecords = this.users.length;
+          x?.roleName
+            ?.toLowerCase()
+            .includes(search)
+      );
+
+    this.totalRecords =
+      this.users.length;
 
     this.page = 1;
 
@@ -824,7 +1066,9 @@ export class UserComponent implements OnInit {
 
   sort(column: string): void {
 
-    if (this.sortColumn === column) {
+    if (
+      this.sortColumn === column
+    ) {
 
       this.sortDirection =
         this.sortDirection === 'asc'
@@ -840,15 +1084,17 @@ export class UserComponent implements OnInit {
 
     }
 
-    // FIX: Protect against undefined
-    this.users = this.users ?? [];
+    this.users =
+      this.users ?? [];
 
     this.users.sort(
       (a: any, b: any) => {
 
-        const valueA = a?.[column];
+        const valueA =
+          a?.[column];
 
-        const valueB = b?.[column];
+        const valueB =
+          b?.[column];
 
         if (valueA < valueB) {
 
@@ -883,7 +1129,6 @@ export class UserComponent implements OnInit {
       (this.page - 1) *
       this.pageSize;
 
-    // FIX: Prevent slice() on undefined
     return (this.users ?? []).slice(
       start,
       start + this.pageSize
@@ -926,6 +1171,11 @@ export class UserComponent implements OnInit {
 
     const college =
       this.userForm.value.collegeName;
+
+    console.log(
+      'Selected College:',
+      college
+    );
 
     this.departmentService
       .getDepartments()
@@ -974,6 +1224,11 @@ export class UserComponent implements OnInit {
     const department =
       this.userForm.value.departmentName;
 
+    console.log(
+      'Selected Department:',
+      department
+    );
+
     this.branchService
       .getBranches()
       .subscribe({
@@ -1018,7 +1273,8 @@ export class UserComponent implements OnInit {
 
       ...user,
 
-      isActive: !user.isActive
+      isActive:
+        !user.isActive
 
     };
 
@@ -1080,7 +1336,7 @@ export class UserComponent implements OnInit {
 
   clearFilters(): void {
 
-    this.userForm.patchValue({
+    this.filterForm.reset({
 
       roleName: '',
 
@@ -1108,7 +1364,11 @@ export class UserComponent implements OnInit {
 
   logout(): void {
 
-    if (isPlatformBrowser(this.platformId)) {
+    if (
+      isPlatformBrowser(
+        this.platformId
+      )
+    ) {
 
       localStorage.removeItem(
         'accessToken'
@@ -1120,7 +1380,9 @@ export class UserComponent implements OnInit {
 
     }
 
-    this.router.navigate(['/login']);
+    this.router.navigate([
+      '/login'
+    ]);
 
   }
 
@@ -1170,7 +1432,9 @@ export class UserComponent implements OnInit {
     this.loading = true;
 
     this.userService
-      .uploadUsers(this.selectedFile)
+      .uploadUsers(
+        this.selectedFile
+      )
       .subscribe({
 
         next: (res: any) => {

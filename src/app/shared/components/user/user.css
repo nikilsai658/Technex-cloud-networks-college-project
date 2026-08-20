@@ -1,128 +1,400 @@
-@import  "tailwindcss";
-
-.page{
-    @apply max-w-7xl mx-auto p-6 space-y-6 bg-slate-100 min-h-screen;
+@import 'tailwindcss'; 
+.user-page {
+  @apply min-h-screen p-6 bg-gray-50;
 }
 
-.card{
-    @apply bg-white rounded-xl shadow-lg p-6;
+/* ==========================
+   HEADER
+========================== */
+
+.page-header {
+  @apply flex items-center justify-between mb-6;
 }
 
-.card-header{
-    @apply border-b pb-3 mb-5;
+.page-header h1 {
+  @apply text-2xl font-bold text-gray-800;
 }
 
-.card-header h2{
-    @apply text-2xl font-bold text-[#2F3E46];
+.page-header p {
+  @apply mt-1 text-sm text-gray-500;
 }
 
-/* Upload */
-
-.upload-section{
-    @apply flex flex-col md:flex-row items-center gap-4;
+.refresh-btn {
+  @apply px-4 py-2 rounded-lg bg-[#2F3E46] text-white
+    font-medium transition-all duration-200
+    hover:bg-[#243238] disabled:opacity-50;
 }
 
-.file-input{
-    @apply w-full border rounded-lg p-3 bg-gray-50;
+/* ==========================
+   COMMON CARDS
+========================== */
+
+.form-card,
+.upload-card,
+.filter-card,
+.search-card,
+.table-card {
+  @apply bg-white rounded-xl shadow-sm border border-gray-200 mb-6;
 }
 
-.btn-upload{
-    @apply bg-[#24c0c5] text-white px-6 py-3 rounded-lg hover:bg-[#1aa6aa] transition;
+/* ==========================
+   FORM HEADER
+========================== */
+
+.form-header,
+.upload-header,
+.filter-header,
+.table-header {
+  @apply flex items-center justify-between
+    px-6 py-5 border-b border-gray-200;
 }
 
-/* Form */
-
-.form-grid{
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5;
+.form-header h2,
+.upload-header h2,
+.filter-header h2,
+.table-header h2 {
+  @apply text-lg font-semibold text-gray-800;
 }
 
-.field{
-    @apply flex flex-col gap-2;
+.form-header p,
+.upload-header p,
+.filter-header p {
+  @apply mt-1 text-sm text-gray-500;
 }
 
-.field label{
-    @apply font-semibold text-gray-700;
+/* ==========================
+   FORM
+========================== */
+
+.form-card form {
+  @apply p-6;
 }
 
-.field input,
-.field select{
-    @apply border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none;
+.form-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5;
 }
 
-.button-group{
-    @apply flex justify-end gap-4 mt-8;
+.form-group {
+  @apply flex flex-col;
 }
 
-.btn-save{
-    @apply bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg;
+.form-group label,
+.filter-group label {
+  @apply mb-2 text-sm font-medium text-gray-700;
 }
 
-.btn-reset{
-    @apply bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg;
+.form-group label span {
+  @apply text-red-500 ml-1;
 }
 
-/* Search */
-
-.table-header{
-    @apply flex justify-end mb-5;
+.form-group input,
+.form-group select,
+.filter-group input,
+.filter-group select,
+.search-card input {
+  @apply w-full px-3 py-2.5 rounded-lg
+    border border-gray-300
+    bg-white text-gray-800
+    text-sm outline-none
+    transition-all duration-200
+    focus:border-[#24c0c5]
+    focus:ring-2 focus:ring-[#24c0c5]/20;
 }
 
-.search-box{
-    @apply w-full md:w-80 border rounded-lg p-3;
+.form-group input::placeholder,
+.search-card input::placeholder {
+  @apply text-gray-400;
 }
 
-/* Table */
-
-.table-wrapper{
-    @apply overflow-x-auto;
+.form-group input:disabled,
+.form-group select:disabled {
+  @apply bg-gray-100 cursor-not-allowed;
 }
 
-table{
-    @apply w-full border-collapse;
+/* ==========================
+   ERROR
+========================== */
+
+.error {
+  @apply mt-1 text-xs text-red-500;
 }
 
-thead{
-    @apply bg-[#2F3E46] text-white;
+/* ==========================
+   FORM ACTIONS
+========================== */
+
+.form-actions {
+  @apply flex items-center gap-3 mt-6 pt-5
+    border-t border-gray-200;
 }
 
-th{
-    @apply p-4 text-left;
+.save-btn {
+  @apply px-5 py-2.5 rounded-lg
+    bg-[#24c0c5] text-white
+    font-medium
+    transition-all duration-200
+    hover:bg-[#1faeb3]
+    disabled:opacity-50
+    disabled:cursor-not-allowed;
 }
 
-td{
-    @apply border-b p-4;
+.cancel-btn {
+  @apply px-5 py-2.5 rounded-lg
+    bg-gray-100 text-gray-700
+    font-medium
+    border border-gray-300
+    transition-all duration-200
+    hover:bg-gray-200;
 }
 
-tbody tr{
-    @apply hover:bg-gray-50;
+/* ==========================
+   UPLOAD
+========================== */
+
+.upload-content {
+  @apply flex flex-wrap items-center gap-4 p-6;
 }
 
-/* Status */
-
-.active{
-    @apply bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm;
+.upload-content input[type="file"] {
+  @apply block text-sm text-gray-600;
 }
 
-.inactive{
-    @apply bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm;
+.upload-content input[type="file"]::file-selector-button {
+  @apply mr-4 px-4 py-2
+    rounded-lg border-0
+    bg-gray-100 text-gray-700
+    font-medium cursor-pointer
+    hover:bg-gray-200;
 }
 
-/* Buttons */
-
-.edit-btn{
-    @apply bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded mr-2;
+.upload-btn {
+  @apply px-5 py-2.5 rounded-lg
+    bg-[#2F3E46] text-white
+    font-medium
+    transition-all duration-200
+    hover:bg-[#243238]
+    disabled:opacity-50
+    disabled:cursor-not-allowed;
 }
 
-.delete-btn{
-    @apply bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded;
+.file-name {
+  @apply text-sm text-gray-600;
 }
 
-/* Pagination */
+/* ==========================
+   FILTERS
+========================== */
 
-.pagination{
-    @apply flex justify-end items-center gap-4 mt-6;
+.filter-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+    gap-5 p-6;
 }
 
-.pagination button{
-    @apply bg-[#2F3E46] text-white px-5 py-2 rounded disabled:opacity-50;
+.filter-group {
+  @apply flex flex-col;
+}
+
+.clear-btn {
+  @apply px-4 py-2 rounded-lg
+    border border-gray-300
+    bg-white text-gray-700
+    text-sm font-medium
+    transition-all duration-200
+    hover:bg-gray-100;
+}
+
+/* ==========================
+   SEARCH
+========================== */
+
+.search-card {
+  @apply p-4;
+}
+
+.search-card input {
+  @apply w-full;
+}
+
+/* ==========================
+   TABLE
+========================== */
+
+.table-wrapper {
+  @apply w-full overflow-x-auto;
+}
+
+table {
+  @apply w-full min-w-[1100px] border-collapse;
+}
+
+thead {
+  @apply bg-gray-50;
+}
+
+thead th {
+  @apply px-5 py-3.5
+    text-left text-xs font-semibold
+    uppercase tracking-wide
+    text-gray-600
+    border-b border-gray-200
+    whitespace-nowrap;
+}
+
+thead th:not(:last-child) {
+  @apply cursor-pointer;
+}
+
+thead th:hover {
+  @apply bg-gray-100;
+}
+
+tbody tr {
+  @apply border-b border-gray-100
+    transition-colors duration-150;
+}
+
+tbody tr:hover {
+  @apply bg-gray-50;
+}
+
+tbody td {
+  @apply px-5 py-4
+    text-sm text-gray-700
+    whitespace-nowrap;
+}
+
+/* ==========================
+   STATUS
+========================== */
+
+.status-btn {
+  @apply px-3 py-1.5 rounded-full
+    text-xs font-semibold
+    transition-all duration-200;
+}
+
+.status-btn.active {
+  @apply bg-green-100 text-green-700;
+}
+
+.status-btn.active:hover {
+  @apply bg-green-200;
+}
+
+.status-btn.inactive {
+  @apply bg-red-100 text-red-700;
+}
+
+.status-btn.inactive:hover {
+  @apply bg-red-200;
+}
+
+/* ==========================
+   ACTION BUTTONS
+========================== */
+
+.action-buttons {
+  @apply flex items-center gap-2;
+}
+
+.edit-btn {
+  @apply px-3 py-1.5 rounded-lg
+    bg-blue-50 text-blue-600
+    border border-blue-200
+    text-xs font-medium
+    transition-all duration-200
+    hover:bg-blue-100;
+}
+
+.delete-btn {
+  @apply px-3 py-1.5 rounded-lg
+    bg-red-50 text-red-600
+    border border-red-200
+    text-xs font-medium
+    transition-all duration-200
+    hover:bg-red-100;
+}
+
+/* ==========================
+   LOADING
+========================== */
+
+.loading {
+  @apply flex items-center justify-center
+    min-h-[200px]
+    text-sm text-gray-500;
+}
+
+/* ==========================
+   EMPTY STATE
+========================== */
+
+.empty-state {
+  @apply py-12 text-center
+    text-sm text-gray-500;
+}
+
+/* ==========================
+   PAGINATION
+========================== */
+
+.pagination {
+  @apply flex items-center justify-between
+    px-6 py-4
+    border-t border-gray-200;
+}
+
+.pagination button {
+  @apply px-4 py-2 rounded-lg
+    border border-gray-300
+    bg-white text-gray-700
+    text-sm font-medium
+    transition-all duration-200
+    hover:bg-gray-100
+    disabled:opacity-40
+    disabled:cursor-not-allowed;
+}
+
+.pagination span {
+  @apply text-sm text-gray-600;
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width: 768px) {
+
+  .user-page {
+    @apply p-4;
+  }
+
+  .page-header {
+    @apply flex-col items-start gap-4;
+  }
+
+  .form-header,
+  .upload-header,
+  .filter-header,
+  .table-header {
+    @apply flex-col items-start gap-3;
+  }
+
+  .form-card form {
+    @apply p-4;
+  }
+
+  .form-grid,
+  .filter-grid {
+    @apply grid-cols-1;
+  }
+
+  .pagination {
+    @apply flex-col gap-3;
+  }
+
+  .upload-content {
+    @apply flex-col items-start;
+  }
+
 }

@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, signal, afterNextRender } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 export interface User {
@@ -43,10 +43,12 @@ export class UserStore {
 
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     if (isPlatformBrowser(platformId)) {
-      const stored = localStorage.getItem('user');
-      if (stored) {
-        this._user.set(JSON.parse(stored));
-      }
+      afterNextRender(() => {
+        const stored = localStorage.getItem('user');
+        if (stored) {
+          this._user.set(JSON.parse(stored));
+        }
+      });
     }
   }
 

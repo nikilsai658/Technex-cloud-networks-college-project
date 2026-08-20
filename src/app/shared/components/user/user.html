@@ -1,233 +1,432 @@
-<div class="page">
+<div class="user-page">
 
-  <!-- Upload Card -->
-  <div class="card">
+  <!-- ==========================
+       HEADER
+  =========================== -->
+  <div class="page-header">
 
-    <div class="card-header">
-      <h2>Upload Users</h2>
+    <div>
+      <h1>User Management</h1>
+      <p>Manage users, roles and user details</p>
     </div>
 
-    <div class="upload-section">
+    <button
+      type="button"
+      class="refresh-btn"
+      (click)="refresh()"
+    >
+      ↻ Refresh
+    </button>
 
-      <input
-        class="file-input"
-        type="file"
-        accept=".csv,.xlsx,.xls"
-        (change)="onFileSelected($event)">
+  </div>
+
+
+  <!-- ==========================
+       USER FORM
+  =========================== -->
+  <div class="form-card">
+
+    <div class="form-header">
+
+      <div>
+        <h2>
+          {{ editMode ? 'Edit User' : 'Create User' }}
+        </h2>
+
+        <p>
+          {{
+            editMode
+              ? 'Update the user information'
+              : 'Add a new user'
+          }}
+        </p>
+      </div>
 
       <button
+        *ngIf="editMode"
         type="button"
-        class="btn-upload"
-        (click)="uploadFile()">
-
-        Upload File
-
+        class="cancel-btn"
+        (click)="cancelEdit()"
+      >
+        Cancel Edit
       </button>
 
     </div>
 
-  </div>
-
-  <!-- User Form -->
-
-  <div class="card">
-
-    <div class="card-header">
-
-      <h2>
-        {{ editMode ? 'Update User' : 'Create User' }}
-      </h2>
-
-    </div>
 
     <form
       [formGroup]="userForm"
-      (ngSubmit)="saveUser()">
+      (ngSubmit)="saveUser()"
+    >
 
+      <!-- ==========================
+           BASIC INFORMATION
+      =========================== -->
       <div class="form-grid">
 
-        <div class="field">
-          <label>Full Name</label>
+        <!-- Full Name -->
+        <div class="form-group">
+
+          <label>
+            Full Name
+            <span>*</span>
+          </label>
+
           <input
             type="text"
             formControlName="fullName"
-            placeholder="Enter Full Name">
+            placeholder="Enter full name"
+          />
+
+          <small
+            class="error"
+            *ngIf="
+              submitted &&
+              f['fullName'].invalid
+            "
+          >
+            Full name is required
+          </small>
+
         </div>
 
-        <div class="field">
-          <label>Email</label>
+
+        <!-- Email -->
+        <div class="form-group">
+
+          <label>
+            Email
+            <span>*</span>
+          </label>
+
           <input
             type="email"
             formControlName="email"
-            placeholder="Enter Email">
+            placeholder="Enter email"
+          />
+
+          <small
+            class="error"
+            *ngIf="
+              submitted &&
+              f['email'].errors?.['required']
+            "
+          >
+            Email is required
+          </small>
+
+          <small
+            class="error"
+            *ngIf="
+              submitted &&
+              f['email'].errors?.['email']
+            "
+          >
+            Enter a valid email
+          </small>
+
         </div>
 
-        <div class="field">
-          <label>Password</label>
+
+        <!-- Password -->
+        <div class="form-group">
+
+          <label>
+            Password
+            <span *ngIf="!editMode">*</span>
+          </label>
+
           <input
             type="password"
             formControlName="password"
-            placeholder="Enter Password">
+            [placeholder]="
+              editMode
+                ? 'Leave empty to keep current password'
+                : 'Enter password'
+            "
+          />
+
+          <small
+            class="error"
+            *ngIf="
+              submitted &&
+              !editMode &&
+              f['password'].invalid
+            "
+          >
+            Password is required
+          </small>
+
         </div>
 
-        <div class="field">
-          <label>Role</label>
 
-          <select formControlName="roleId">
+        <!-- Role -->
+        <div class="form-group">
 
-            <option [ngValue]="''">Select Role</option>
+          <label>
+            Role
+            <span>*</span>
+          </label>
+
+          <select
+            formControlName="roleName"
+          >
+
+            <option value="">
+              Select Role
+            </option>
 
             <option
               *ngFor="let role of roles"
-              [ngValue]="role.id">
-
-              {{ role.name }}
-
+              [value]="
+                role.name ||
+                role.roleName
+              "
+            >
+              {{
+                role.name ||
+                role.roleName
+              }}
             </option>
 
           </select>
 
+          <small
+            class="error"
+            *ngIf="
+              submitted &&
+              f['roleName'].invalid
+            "
+          >
+            Role is required
+          </small>
+
         </div>
 
-        <div class="field">
-          <label>College</label>
+
+        <!-- College -->
+        <div class="form-group">
+
+          <label>
+            College
+          </label>
 
           <select
             formControlName="collegeName"
-            (change)="onCollegeChange()">
+            (change)="onCollegeChange()"
+          >
 
-            <option value="">Select College</option>
+            <option value="">
+              Select College
+            </option>
 
             <option
               *ngFor="let college of colleges"
-              [value]="college.name">
-
-              {{ college.name }}
-
+              [value]="
+                college.name ||
+                college.collegeName
+              "
+            >
+              {{
+                college.name ||
+                college.collegeName
+              }}
             </option>
 
           </select>
 
         </div>
 
-        <div class="field">
-          <label>Department</label>
+
+        <!-- Department -->
+        <div class="form-group">
+
+          <label>
+            Department
+          </label>
 
           <select
             formControlName="departmentName"
-            (change)="onDepartmentChange()">
+            (change)="onDepartmentChange()"
+          >
 
-            <option value="">Select Department</option>
+            <option value="">
+              Select Department
+            </option>
 
             <option
               *ngFor="let department of departments"
-              [value]="department.name">
-
-              {{ department.name }}
-
+              [value]="
+                department.name ||
+                department.departmentName
+              "
+            >
+              {{
+                department.name ||
+                department.departmentName
+              }}
             </option>
 
           </select>
 
         </div>
 
-        <div class="field">
 
-          <label>Branch</label>
+        <!-- Branch -->
+        <div class="form-group">
 
-          <select formControlName="branchName">
+          <label>
+            Branch
+          </label>
 
-            <option value="">Select Branch</option>
+          <select
+            formControlName="branchName"
+          >
+
+            <option value="">
+              Select Branch
+            </option>
 
             <option
               *ngFor="let branch of branches"
-              [value]="branch.name">
-
-              {{ branch.name }}
-
+              [value]="
+                branch.name ||
+                branch.branchName
+              "
+            >
+              {{
+                branch.name ||
+                branch.branchName
+              }}
             </option>
 
           </select>
 
         </div>
 
-        <div class="field">
 
-          <label>Year</label>
+        <!-- Year -->
+        <div class="form-group">
 
-          <select formControlName="yearNumber">
+          <label>
+            Year
+          </label>
 
-            <option [ngValue]="null">Select Year</option>
-
-            <option [ngValue]="1">1</option>
-            <option [ngValue]="2">2</option>
-            <option [ngValue]="3">3</option>
-            <option [ngValue]="4">4</option>
-
-          </select>
-
-        </div>
-
-        <div class="field">
-
-          <label>Semester</label>
-
-          <select formControlName="semester">
-
-            <option [ngValue]="null">Select Semester</option>
-
-            <option *ngFor="let s of [1,2]"
-                    [ngValue]="s">
-
-              {{ s }}
-
-            </option>
-
-          </select>
+          <input
+            type="number"
+            formControlName="yearNumber"
+            placeholder="Enter year"
+            min="1"
+            max="4"
+          />
 
         </div>
 
-        <div class="field">
 
-          <label>Phone Number</label>
+        <!-- Semester -->
+        <div class="form-group">
+
+          <label>
+            Semester
+          </label>
+
+          <input
+            type="number"
+            formControlName="semester"
+            placeholder="Enter semester"
+            min="1"
+            max="8"
+          />
+
+        </div>
+
+
+        <!-- Phone -->
+        <div class="form-group">
+
+          <label>
+            Phone Number
+          </label>
 
           <input
             type="text"
             formControlName="phoneNumber"
-            placeholder="Phone Number">
+            placeholder="Enter phone number"
+          />
 
         </div>
 
-        <div class="field">
 
-          <label>Register Number</label>
+        <!-- Register Number -->
+        <div class="form-group">
+
+          <label>
+            Register Number
+          </label>
 
           <input
             type="text"
             formControlName="registerNumber"
-            placeholder="Register Number">
+            placeholder="Enter register number"
+          />
+
+        </div>
+
+
+        <!-- Status -->
+        <div class="form-group">
+
+          <label>
+            Status
+          </label>
+
+          <select
+            formControlName="isActive"
+          >
+
+            <option [ngValue]="true">
+              Active
+            </option>
+
+            <option [ngValue]="false">
+              Inactive
+            </option>
+
+          </select>
 
         </div>
 
       </div>
 
-      <div class="button-group">
+
+      <!-- ==========================
+           FORM BUTTONS
+      =========================== -->
+      <div class="form-actions">
 
         <button
-          class="btn-save"
-          type="submit">
+          type="submit"
+          class="save-btn"
+          [disabled]="loading"
+        >
 
-          {{ editMode ? 'Update User' : 'Create User' }}
+          <span *ngIf="!loading">
+            {{ editMode ? 'Update User' : 'Create User' }}
+          </span>
+
+          <span *ngIf="loading">
+            Processing...
+          </span>
 
         </button>
 
         <button
-          class="btn-reset"
+          *ngIf="editMode"
           type="button"
-          (click)="resetForm()">
-
-          Reset
-
+          class="cancel-btn"
+          (click)="cancelEdit()"
+        >
+          Cancel
         </button>
 
       </div>
@@ -236,22 +435,328 @@
 
   </div>
 
-  <!-- Table -->
 
-  <div class="card">
+  <!-- ==========================
+       UPLOAD USERS
+  =========================== -->
+  <div class="upload-card">
 
-    <div class="table-header">
+    <div class="upload-header">
 
-      <input
-        class="search-box"
-        placeholder="Search User..."
-        [(ngModel)]="searchText"
-        (input)="searchUsers()"
-        [ngModelOptions]="{standalone:true}">
+      <div>
+        <h2>Bulk User Upload</h2>
+
+        <p>
+          Upload users using a supported file
+        </p>
+      </div>
 
     </div>
 
-    <div class="table-wrapper">
+    <div class="upload-content">
+
+      <input
+        type="file"
+        (change)="onFileSelected($event)"
+        accept=".csv,.xlsx,.xls"
+      />
+
+      <button
+        type="button"
+        class="upload-btn"
+        (click)="uploadFile()"
+        [disabled]="loading || !selectedFile"
+      >
+        Upload Users
+      </button>
+
+      <span
+        *ngIf="selectedFile"
+        class="file-name"
+      >
+        {{ selectedFile.name }}
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================
+       FILTERS
+  =========================== -->
+  <div class="filter-card">
+
+    <div class="filter-header">
+
+      <div>
+        <h2>Filters</h2>
+        <p>Filter users by their details</p>
+      </div>
+
+      <button
+        type="button"
+        class="clear-btn"
+        (click)="clearFilters()"
+      >
+        Clear Filters
+      </button>
+
+    </div>
+
+
+    <div
+      class="filter-grid"
+      [formGroup]="filterForm"
+    >
+
+      <!-- Role Filter -->
+      <div class="filter-group">
+
+        <label>
+          Role
+        </label>
+
+        <select
+          formControlName="roleName"
+        >
+
+          <option value="">
+            All Roles
+          </option>
+
+          <option
+            *ngFor="let role of roles"
+            [value]="
+              role.name ||
+              role.roleName
+            "
+          >
+            {{
+              role.name ||
+              role.roleName
+            }}
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- College Filter -->
+      <div class="filter-group">
+
+        <label>
+          College
+        </label>
+
+        <select
+          formControlName="collegeName"
+        >
+
+          <option value="">
+            All Colleges
+          </option>
+
+          <option
+            *ngFor="let college of colleges"
+            [value]="
+              college.name ||
+              college.collegeName
+            "
+          >
+            {{
+              college.name ||
+              college.collegeName
+            }}
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Department Filter -->
+      <div class="filter-group">
+
+        <label>
+          Department
+        </label>
+
+        <select
+          formControlName="departmentName"
+        >
+
+          <option value="">
+            All Departments
+          </option>
+
+          <option
+            *ngFor="let department of departments"
+            [value]="
+              department.name ||
+              department.departmentName
+            "
+          >
+            {{
+              department.name ||
+              department.departmentName
+            }}
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Branch Filter -->
+      <div class="filter-group">
+
+        <label>
+          Branch
+        </label>
+
+        <select
+          formControlName="branchName"
+        >
+
+          <option value="">
+            All Branches
+          </option>
+
+          <option
+            *ngFor="let branch of branches"
+            [value]="
+              branch.name ||
+              branch.branchName
+            "
+          >
+            {{
+              branch.name ||
+              branch.branchName
+            }}
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Year Filter -->
+      <div class="filter-group">
+
+        <label>
+          Year
+        </label>
+
+        <select
+          formControlName="yearNumber"
+        >
+
+          <option [ngValue]="null">
+            All Years
+          </option>
+
+          <option [ngValue]="1">
+            1st Year
+          </option>
+
+          <option [ngValue]="2">
+            2nd Year
+          </option>
+
+          <option [ngValue]="3">
+            3rd Year
+          </option>
+
+          <option [ngValue]="4">
+            4th Year
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Status Filter -->
+      <div class="filter-group">
+
+        <label>
+          Status
+        </label>
+
+        <select
+          formControlName="isActive"
+        >
+
+          <option [ngValue]="true">
+            Active
+          </option>
+
+          <option [ngValue]="false">
+            Inactive
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================
+       SEARCH
+  =========================== -->
+  <div class="search-card">
+
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      [ngModelOptions]="{ standalone: true }"
+      (input)="searchUsers()"
+      placeholder="Search users by name, email, username or role..."
+    />
+
+  </div>
+
+
+  <!-- ==========================
+       USERS TABLE
+  =========================== -->
+  <div class="table-card">
+
+    <div class="table-header">
+
+      <div>
+        <h2>Users</h2>
+
+        <p>
+          Total Users:
+          <strong>
+            {{ totalRecords }}
+          </strong>
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- Loading -->
+    <div
+      class="loading"
+      *ngIf="loading"
+    >
+      Loading users...
+    </div>
+
+
+    <!-- Table -->
+    <div
+      class="table-wrapper"
+      *ngIf="!loading"
+    >
 
       <table>
 
@@ -259,62 +764,194 @@
 
           <tr>
 
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>College</th>
-            <th>Department</th>
-            <th>Branch</th>
-            <th>Year</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th
+              (click)="sort('id')"
+            >
+              ID
+            </th>
+
+            <th
+              (click)="sort('fullName')"
+            >
+              Name
+            </th>
+
+            <th
+              (click)="sort('email')"
+            >
+              Email
+            </th>
+
+            <th
+              (click)="sort('roleName')"
+            >
+              Role
+            </th>
+
+            <th>
+              College
+            </th>
+
+            <th>
+              Department
+            </th>
+
+            <th>
+              Branch
+            </th>
+
+            <th>
+              Year
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th>
+              Actions
+            </th>
 
           </tr>
 
         </thead>
 
+
         <tbody>
 
-          <tr *ngFor="let user of pagedUsers;trackBy:trackById">
+          <tr
+            *ngFor="
+              let user of pagedUsers;
+              trackBy: trackById
+            "
+          >
 
-            <td>{{user.fullName || (user.firstName+' '+user.lastName)}}</td>
-            <td>{{user.email}}</td>
-            <td>{{user.roleName}}</td>
-            <td>{{user.collegeName}}</td>
-            <td>{{user.departmentName}}</td>
-            <td>{{user.branchName}}</td>
-            <td>{{user.yearNumber}}</td>
+            <!-- ID -->
+            <td>
+              {{ user.id }}
+            </td>
 
+
+            <!-- Name -->
             <td>
 
-              <span
-                [class.active]="user.isActive"
-                [class.inactive]="!user.isActive">
-
-                {{user.isActive?'Active':'Inactive'}}
-
-              </span>
+              {{
+                user.fullName ||
+                (
+                  (user.firstName || '') +
+                  ' ' +
+                  (user.lastName || '')
+                ).trim() ||
+                '-'
+              }}
 
             </td>
 
+
+            <!-- Email -->
+            <td>
+              {{ user.email || '-' }}
+            </td>
+
+
+            <!-- Role -->
+            <td>
+
+              {{
+                user.roleName ||
+                user.role?.name ||
+                user.role?.roleName ||
+                '-'
+              }}
+
+            </td>
+
+
+            <!-- College -->
+            <td>
+              {{ user.collegeName || '-' }}
+            </td>
+
+
+            <!-- Department -->
+            <td>
+              {{ user.departmentName || '-' }}
+            </td>
+
+
+            <!-- Branch -->
+            <td>
+              {{ user.branchName || '-' }}
+            </td>
+
+
+            <!-- Year -->
+            <td>
+              {{ user.yearNumber || '-' }}
+            </td>
+
+
+            <!-- Status -->
             <td>
 
               <button
-                class="edit-btn"
-                (click)="editUser(user)">
+                type="button"
+                class="status-btn"
+                [class.active]="user.isActive"
+                [class.inactive]="!user.isActive"
+                (click)="changeStatus(user)"
+              >
 
-                Edit
+                {{
+                  user.isActive
+                    ? 'Active'
+                    : 'Inactive'
+                }}
 
               </button>
 
-              <button
-                class="delete-btn"
-                (click)="deleteUser(user.id)">
+            </td>
 
-                Delete
 
-              </button>
+            <!-- Actions -->
+            <td>
 
+              <div class="action-buttons">
+
+               <button
+  
+  type="button"
+  class="edit-btn"
+  (click)="editUser(user)"
+>
+  Edit
+</button>
+
+<button
+  type="button"
+  class="delete-btn"
+  (click)="deleteUser(user.id)"
+>
+  Delete
+</button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+
+          <!-- Empty -->
+          <tr
+            *ngIf="pagedUsers.length === 0"
+          >
+
+            <td
+              colspan="10"
+              class="empty-state"
+            >
+              No users found.
             </td>
 
           </tr>
@@ -325,28 +962,46 @@
 
     </div>
 
-    <div class="pagination">
+
+    <!-- ==========================
+         PAGINATION
+    =========================== -->
+    <div
+      class="pagination"
+      *ngIf="
+        !loading &&
+        totalRecords > 0
+      "
+    >
 
       <button
+        type="button"
         (click)="previousPage()"
-        [disabled]="page==1">
-
+        [disabled]="page === 1"
+      >
         Previous
-
       </button>
 
+
       <span>
-
-        Page {{page}}
-
+        Page {{ page }}
+        of
+        {{
+          Math.ceil(
+            totalRecords / pageSize
+          )
+        }}
       </span>
 
+
       <button
+        type="button"
         (click)="nextPage()"
-        [disabled]="page*pageSize>=users.length">
-
+        [disabled]="
+          page * pageSize >= totalRecords
+        "
+      >
         Next
-
       </button>
 
     </div>
