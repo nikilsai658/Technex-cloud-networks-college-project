@@ -40,7 +40,11 @@ private handleError(err: any) {
   if (err.status === 400) {
     this.showAlert(err.error.message);
   } else if (err.status === 401) {
-    this.showAlert('Unauthorized');
+    this.cookie.delete('token', '/');
+    this.cookie.delete('refresh', '/');
+    if (isPlatformBrowser(this.platformId)) {
+      this.router.navigate(['/auth/login']);
+    }
   } else if (err.status === 403) {
     this.showAlert('Forbidden');
   } else if (err.status === 404) {

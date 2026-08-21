@@ -1,0 +1,423 @@
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  Inject,
+  PLATFORM_ID
+} from '@angular/core';
+
+import {
+  CommonModule,
+  isPlatformBrowser
+} from '@angular/common';
+
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { finalize } from 'rxjs';
+
+import { Auth } from '../../../core/auth/auth';
+import { YearService } from '../../../features/services/year/year-service';
+import { CollegeService } from '../../../features/services/college/college-service';
+import { DepartmentService } from '../../../features/services/department/department-service';
+import { BranchService } from '../../../features/services/branch/branch-service';
+
+@Component({
+  selector: 'app-year-updation',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule
+  ],
+  templateUrl: './year-updation.html',
+  styleUrls: ['./year-updation.css']
+})
+export class YearUpdation implements OnInit {
+
+  promoteForm!: FormGroup;
+
+  colleges: any[] = [];
+  departments: any[] = [];
+  branches: any[] = [];
+
+  submitted = false;
+  loading = false;
+
+  selectedFile: File | null = null;
+  uploadLoading = false;
+
+  singlePromoteForm!: FormGroup;
+  singlePromoteLoading = false;
+
+  constructor(
+    private yearService: YearService,
+    private collegeService: CollegeService,
+    private departmentService: DepartmentService,
+    private branchService: BranchService,
+    private fb: FormBuilder,
+    private cookie: CookieService,
+    private router: Router,
+    private cd: ChangeDetectorRef,
+    public auth: Auth,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
+  ngOnInit(): void {
+
+    this.buildForm();
+
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const token = this.cookie.get('token');
+
+    if (!token) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
+    this.loadColleges();
+    this.loadDepartments();
+    this.loadBranches();
+
+  }
+
+  //==============================
+  // Build Form
+  //==============================
+
+  buildForm(): void {
+
+    this.promoteForm = this.fb.group({
+
+      fromYearId: ['', Validators.required],
+
+      toYearId: ['', Validators.required],
+
+      collegeName: [''],
+
+      collegeCode: [''],
+
+      departmentId: [null],
+
+      branchId: [null]
+
+    });
+
+    this.singlePromoteForm = this.fb.group({
+
+      collegeName: [''],
+
+      collegeCode: [''],
+
+      studentEmail: ['', [Validators.required, Validators.email]],
+
+      domainName: ['', Validators.required],
+
+      toYearId: ['', Validators.required]
+
+    });
+
+  }
+
+  //==============================
+  // Load Colleges
+  //==============================
+
+  loadColleges(): void {
+
+    this.collegeService.getcollege().subscribe({
+
+      next: (res: any) => {
+
+        if (Array.isArray(res)) {
+          this.colleges = res;
+        }
+        else if (Array.isArray(res.data)) {
+          this.colleges = res.data;
+        }
+        else if (Array.isArray(res.result)) {
+          this.colleges = res.result;
+        }
+        else {
+          this.colleges = [];
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+        console.error(err);
+        this.colleges = [];
+      }
+
+    });
+
+  }
+
+  //==============================
+  // Load Departments
+  //==============================
+
+  loadDepartments(): void {
+
+    this.departmentService.getDepartments().subscribe({
+
+      next: (res: any) => {
+
+        if (Array.isArray(res)) {
+          this.departments = res;
+        }
+        else if (Array.isArray(res.data)) {
+          this.departments = res.data;
+        }
+        else if (Array.isArray(res.result)) {
+          this.departments = res.result;
+        }
+        else {
+          this.departments = [];
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+        console.error(err);
+        this.departments = [];
+      }
+
+    });
+
+  }
+
+  //==============================
+  // Load Branches
+  //==============================
+
+  loadBranches(): void {
+
+    this.branchService.getBranches().subscribe({
+
+      next: (res: any) => {
+
+        if (Array.isArray(res)) {
+          this.branches = res;
+        }
+        else if (Array.isArray(res.data)) {
+          this.branches = res.data;
+        }
+        else if (Array.isArray(res.result)) {
+          this.branches = res.result;
+        }
+        else {
+          this.branches = [];
+        }
+
+        this.cd.detectChanges();
+
+      },
+
+      error: (err) => {
+        console.error(err);
+        this.branches = [];
+      }
+
+    });
+
+  }
+
+  //==============================
+  // College Change -> Auto-fill Code
+  //==============================
+
+  onCollegeChange(form: FormGroup = this.promoteForm): void {
+
+    const selectedName = form.get('collegeName')?.value;
+
+    const college = this.colleges.find(c => c.name === selectedName);
+
+    form.patchValue({
+      collegeCode: college ? college.code : ''
+    });
+
+  }
+
+  //==============================
+  // Promote Year
+  //==============================
+
+  promoteYear(): void {
+
+    if (!this.auth.hasPermission('UPDATE_YEAR')) {
+      alert('You do not have permission to promote years.');
+      return;
+    }
+
+    this.submitted = true;
+
+    if (this.promoteForm.invalid) {
+      this.promoteForm.markAllAsTouched();
+      return;
+    }
+
+    const raw = this.promoteForm.value;
+
+    const payload = {
+      fromYearId: Number(raw.fromYearId),
+      toYearId: Number(raw.toYearId),
+      collegeName: raw.collegeName || '',
+      collegeCode: raw.collegeCode || '',
+      departmentId: raw.departmentId ? Number(raw.departmentId) : null,
+      branchId: raw.branchId ? Number(raw.branchId) : null
+    };
+
+    this.loading = true;
+
+    this.yearService.YearUpdate(payload)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
+
+        next: () => {
+          alert('Students Promoted Successfully');
+          this.resetForm();
+        },
+
+        error: (err) => {
+          console.error(err);
+        }
+
+      });
+
+  }
+
+  //==============================
+  // File Select -> Promote With Domains
+  //==============================
+
+  onFileSelected(event: Event): void {
+
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    }
+
+  }
+
+  uploadPromoteFile(): void {
+
+    if (!this.auth.hasPermission('UPDATE_YEAR')) {
+      alert('You do not have permission to promote years.');
+      return;
+    }
+
+    if (!this.selectedFile) {
+      alert('Please select a file');
+      return;
+    }
+
+    this.uploadLoading = true;
+
+    this.yearService.YearUpdatewithDomain(this.selectedFile)
+      .pipe(finalize(() => this.uploadLoading = false))
+      .subscribe({
+
+        next: () => {
+          alert('Students Promoted Successfully');
+          this.selectedFile = null;
+        },
+
+        error: (err) => {
+          console.error(err);
+        }
+
+      });
+
+  }
+
+  //==============================
+  // Promote Single Student With Domain
+  //==============================
+
+  promoteSingleWithDomain(): void {
+
+    if (!this.auth.hasPermission('UPDATE_YEAR')) {
+      alert('You do not have permission to promote years.');
+      return;
+    }
+
+    if (this.singlePromoteForm.invalid) {
+      this.singlePromoteForm.markAllAsTouched();
+      return;
+    }
+
+    const raw = this.singlePromoteForm.value;
+
+    const payload = {
+      collegeName: raw.collegeName || '',
+      collegeCode: raw.collegeCode || '',
+      studentEmail: raw.studentEmail,
+      domainName: raw.domainName,
+      toYearId: Number(raw.toYearId)
+    };
+
+    this.singlePromoteLoading = true;
+
+    this.yearService.YearUpdatesingleDomain(payload)
+      .pipe(finalize(() => this.singlePromoteLoading = false))
+      .subscribe({
+
+        next: () => {
+          alert('Student Promoted Successfully');
+          this.resetSinglePromoteForm();
+        },
+
+        error: (err) => {
+          console.error(err);
+        }
+
+      });
+
+  }
+
+  resetSinglePromoteForm(): void {
+
+    this.singlePromoteForm.reset({
+      collegeName: '',
+      collegeCode: '',
+      studentEmail: '',
+      domainName: '',
+      toYearId: ''
+    });
+
+  }
+
+  //==============================
+  // Reset
+  //==============================
+
+  resetForm(): void {
+
+    this.submitted = false;
+
+    this.promoteForm.reset({
+      fromYearId: '',
+      toYearId: '',
+      collegeName: '',
+      collegeCode: '',
+      departmentId: null,
+      branchId: null
+    });
+
+  }
+
+}

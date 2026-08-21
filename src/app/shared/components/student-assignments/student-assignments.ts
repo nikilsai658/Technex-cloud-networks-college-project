@@ -39,6 +39,12 @@ export class StudentAssignments implements OnInit {
   startAssignment(id: number): void {
   const assignmentIds = this.assignments.map(a => a.assignmentId);
 
+  // Marks entry as coming from a real "Start" click, so assignmentGuard
+  // allows the student-assignment route and the lock/fullscreen can engage.
+  sessionStorage.setItem('activeAssignmentId', id.toString());
+
+  document.documentElement.requestFullscreen?.().catch(() => {});
+
   this.router.navigate(
     ['/main/student-assignment'],
     {

@@ -1,0 +1,442 @@
+<div class="min-h-screen bg-gray-100 p-6">
+
+    <!-- ================= Header ================= -->
+
+    <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
+
+        <div>
+            <h1 class="text-3xl font-bold text-[#2F3E46]">
+                Year Promotion
+            </h1>
+
+            <p class="text-gray-500 mt-1">
+                Promote Students from One Year to Another
+            </p>
+        </div>
+
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+
+        <!-- ================= PROMOTE FORM ================= -->
+
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6">
+
+            <h2 class="text-2xl font-bold text-[#2F3E46] mb-6">
+                Promote Year
+            </h2>
+
+            <form [formGroup]="promoteForm" (ngSubmit)="promoteYear()">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <!-- From Year -->
+
+                    <div>
+
+                        <label class="font-semibold">
+                            From Year <span class="text-red-500">*</span>
+                        </label>
+
+                        <input
+                            type="number"
+                            formControlName="fromYearId"
+                            placeholder="Enter From Year Id"
+                            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                        <small
+                            class="text-red-500"
+                            *ngIf="submitted && promoteForm.get('fromYearId')?.invalid">
+
+                            From Year is required
+
+                        </small>
+
+                    </div>
+
+                    <!-- To Year -->
+
+                    <div>
+
+                        <label class="font-semibold">
+                            To Year <span class="text-red-500">*</span>
+                        </label>
+
+                        <input
+                            type="number"
+                            formControlName="toYearId"
+                            placeholder="Enter To Year Id"
+                            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                        <small
+                            class="text-red-500"
+                            *ngIf="submitted && promoteForm.get('toYearId')?.invalid">
+
+                            To Year is required
+
+                        </small>
+
+                    </div>
+
+                    <!-- College -->
+
+                    <div>
+
+                        <label class="font-semibold">
+                            College
+                        </label>
+
+                        <select
+                            formControlName="collegeName"
+                            (change)="onCollegeChange()"
+                            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                            <option value="">All Colleges</option>
+
+                            <option
+                                *ngFor="let college of colleges"
+                                [ngValue]="college.name">
+
+                                {{ college.name }}
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- College Code -->
+
+                    <div>
+
+                        <label class="font-semibold">
+                            College Code
+                        </label>
+
+                        <input
+                            type="text"
+                            formControlName="collegeCode"
+                            readonly
+                            placeholder="Auto-filled on College selection"
+                            class="mt-2 w-full border rounded-lg p-3 bg-gray-100 text-gray-600 outline-none">
+
+                    </div>
+
+                    <!-- Department -->
+
+                    <div>
+
+                        <label class="font-semibold">
+                            Department
+                        </label>
+
+                        <select
+                            formControlName="departmentId"
+                            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                            <option [ngValue]="null">All Departments</option>
+
+                            <option
+                                *ngFor="let department of departments"
+                                [ngValue]="department.id">
+
+                                {{ department.name }}
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- Branch -->
+
+                    <div>
+
+                        <label class="font-semibold">
+                            Branch
+                        </label>
+
+                        <select
+                            formControlName="branchId"
+                            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                            <option [ngValue]="null">All Branches</option>
+
+                            <option
+                                *ngFor="let branch of branches"
+                                [ngValue]="branch.id">
+
+                                {{ branch.name }}
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+
+                <div class="flex gap-3 mt-8">
+
+                    <button
+                        *ngIf="auth.hasPermission('UPDATE_YEAR')"
+                        type="submit"
+                        [disabled]="loading"
+                        class="flex-1 bg-[#24c0c5] hover:bg-[#1eb3b8] text-white py-3 rounded-lg font-bold disabled:opacity-60">
+
+                        {{ loading ? 'Promoting...' : 'Promote Students' }}
+
+                    </button>
+
+                    <button
+                        type="button"
+                        (click)="resetForm()"
+                        class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-bold">
+
+                        Reset
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- ================= INFO PANEL ================= -->
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 h-fit">
+
+            <h2 class="text-xl font-bold text-[#2F3E46] mb-4">
+                How Promotion Works
+            </h2>
+
+            <ul class="text-gray-500 space-y-3 list-disc pl-5">
+
+                <li>
+                    Select the <b>From Year</b> and <b>To Year</b> to move students between.
+                </li>
+
+                <li>
+                    Leave <b>College</b>, <b>Department</b> and <b>Branch</b> empty to promote students across all of them.
+                </li>
+
+                <li>
+                    Selecting a <b>College</b> auto-fills its code, and narrows promotion to that college only.
+                </li>
+
+                <li>
+                    Selecting a <b>Department</b> or <b>Branch</b> further restricts which students are promoted.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <!-- ================= PROMOTE SINGLE STUDENT WITH DOMAIN ================= -->
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 mt-8">
+
+        <h2 class="text-2xl font-bold text-[#2F3E46] mb-2">
+            Promote Single Student with Domain
+        </h2>
+
+        <p class="text-gray-500 mb-6">
+            Promote a single student to a new year and assign a domain, by email.
+        </p>
+
+        <form [formGroup]="singlePromoteForm" (ngSubmit)="promoteSingleWithDomain()">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <!-- Student Email -->
+
+                <div>
+
+                    <label class="font-semibold">
+                        Student Email <span class="text-red-500">*</span>
+                    </label>
+
+                    <input
+                        type="email"
+                        formControlName="studentEmail"
+                        placeholder="Enter Student Email"
+                        class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                    <small
+                        class="text-red-500"
+                        *ngIf="singlePromoteForm.get('studentEmail')?.touched && singlePromoteForm.get('studentEmail')?.invalid">
+
+                        A valid Student Email is required
+
+                    </small>
+
+                </div>
+
+                <!-- Domain Name -->
+
+                <div>
+
+                    <label class="font-semibold">
+                        Domain Name <span class="text-red-500">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        formControlName="domainName"
+                        placeholder="Enter Domain Name"
+                        class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                    <small
+                        class="text-red-500"
+                        *ngIf="singlePromoteForm.get('domainName')?.touched && singlePromoteForm.get('domainName')?.invalid">
+
+                        Domain Name is required
+
+                    </small>
+
+                </div>
+
+                <!-- To Year -->
+
+                <div>
+
+                    <label class="font-semibold">
+                        To Year <span class="text-red-500">*</span>
+                    </label>
+
+                    <input
+                        type="number"
+                        formControlName="toYearId"
+                        placeholder="Enter To Year Id"
+                        class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                    <small
+                        class="text-red-500"
+                        *ngIf="singlePromoteForm.get('toYearId')?.touched && singlePromoteForm.get('toYearId')?.invalid">
+
+                        To Year is required
+
+                    </small>
+
+                </div>
+
+                <!-- College -->
+
+                <div>
+
+                    <label class="font-semibold">
+                        College
+                    </label>
+
+                    <select
+                        formControlName="collegeName"
+                        (change)="onCollegeChange(singlePromoteForm)"
+                        class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+
+                        <option value="">All Colleges</option>
+
+                        <option
+                            *ngFor="let college of colleges"
+                            [ngValue]="college.name">
+
+                            {{ college.name }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- College Code -->
+
+                <div>
+
+                    <label class="font-semibold">
+                        College Code
+                    </label>
+
+                    <input
+                        type="text"
+                        formControlName="collegeCode"
+                        readonly
+                        placeholder="Auto-filled on College selection"
+                        class="mt-2 w-full border rounded-lg p-3 bg-gray-100 text-gray-600 outline-none">
+
+                </div>
+
+            </div>
+
+            <!-- Buttons -->
+
+            <div class="flex gap-3 mt-8">
+
+                <button
+                    *ngIf="auth.hasPermission('UPDATE_YEAR')"
+                    type="submit"
+                    [disabled]="singlePromoteLoading"
+                    class="flex-1 md:flex-none md:px-8 bg-[#24c0c5] hover:bg-[#1eb3b8] text-white py-3 rounded-lg font-bold disabled:opacity-60">
+
+                    {{ singlePromoteLoading ? 'Promoting...' : 'Promote Student' }}
+
+                </button>
+
+                <button
+                    type="button"
+                    (click)="resetSinglePromoteForm()"
+                    class="flex-1 md:flex-none md:px-8 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-bold">
+
+                    Reset
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- ================= PROMOTE WITH DOMAINS (FILE UPLOAD) ================= -->
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 mt-8">
+
+        <h2 class="text-2xl font-bold text-[#2F3E46] mb-2">
+            Promote with Domains (Bulk Upload)
+        </h2>
+
+        <p class="text-gray-500 mb-6">
+            Upload a file to promote students along with their domain assignments in bulk.
+        </p>
+
+        <div class="flex flex-col md:flex-row md:items-center gap-4">
+
+            <input
+                type="file"
+                (change)="onFileSelected($event)"
+                accept=".csv,.xlsx,.xls"
+                class="border rounded-lg p-3 flex-1">
+
+            <button
+                *ngIf="auth.hasPermission('UPDATE_YEAR')"
+                type="button"
+                (click)="uploadPromoteFile()"
+                [disabled]="uploadLoading || !selectedFile"
+                class="bg-[#24c0c5] hover:bg-[#1eb3b8] text-white px-6 py-3 rounded-lg font-bold disabled:opacity-60">
+
+                {{ uploadLoading ? 'Uploading...' : 'Upload & Promote' }}
+
+            </button>
+
+        </div>
+
+        <p *ngIf="selectedFile" class="text-gray-600 mt-3">
+            Selected file: <b>{{ selectedFile.name }}</b>
+        </p>
+
+    </div>
+
+</div>

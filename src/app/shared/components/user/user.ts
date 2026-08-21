@@ -60,12 +60,10 @@ export class UserComponent implements OnInit {
   // ==========================
 
   userForm!: FormGroup;
-  filterForm!: FormGroup;
 
   // ==========================
   // Data
   // ==========================
-
   users: any[] = [];
 
   colleges: any[] = [];
@@ -131,8 +129,6 @@ export class UserComponent implements OnInit {
 
     this.initializeForm();
 
-    this.initializeFilterForm();
-
     this.loadPermissions();
 
     this.loadColleges();
@@ -147,7 +143,27 @@ export class UserComponent implements OnInit {
 
     if (isPlatformBrowser(this.platformId)) {
 
-      this.filterForm.valueChanges.subscribe(() => {
+      this.userForm.get('roleName')?.valueChanges.subscribe(() => {
+        this.loadUsers();
+      });
+
+      this.userForm.get('collegeName')?.valueChanges.subscribe(() => {
+        this.loadUsers();
+      });
+
+      this.userForm.get('departmentName')?.valueChanges.subscribe(() => {
+        this.loadUsers();
+      });
+
+      this.userForm.get('branchName')?.valueChanges.subscribe(() => {
+        this.loadUsers();
+      });
+
+      this.userForm.get('yearNumber')?.valueChanges.subscribe(() => {
+        this.loadUsers();
+      });
+
+      this.userForm.get('isActive')?.valueChanges.subscribe(() => {
         this.loadUsers();
       });
 
@@ -216,30 +232,6 @@ export class UserComponent implements OnInit {
   }
 
   // ==========================
-  // Initialize Filter Form
-  // ==========================
-
-  initializeFilterForm(): void {
-
-    this.filterForm = this.fb.group({
-
-      roleName: [''],
-
-      collegeName: [''],
-
-      departmentName: [''],
-
-      branchName: [''],
-
-      yearNumber: [null],
-
-      isActive: [true]
-
-    });
-
-  }
-
-  // ==========================
   // Load Users
   // ==========================
 
@@ -248,22 +240,22 @@ export class UserComponent implements OnInit {
     this.loading = true;
 
     const roleName =
-      this.filterForm?.get('roleName')?.value || '';
+      this.userForm?.get('roleName')?.value || '';
 
     const collegeName =
-      this.filterForm?.get('collegeName')?.value || '';
+      this.userForm?.get('collegeName')?.value || '';
 
     const departmentName =
-      this.filterForm?.get('departmentName')?.value || '';
+      this.userForm?.get('departmentName')?.value || '';
 
     const branchName =
-      this.filterForm?.get('branchName')?.value || '';
+      this.userForm?.get('branchName')?.value || '';
 
     const yearNumber =
-      this.filterForm?.get('yearNumber')?.value;
+      this.userForm?.get('yearNumber')?.value;
 
     const isActive =
-      this.filterForm?.get('isActive')?.value;
+      this.userForm?.get('isActive')?.value;
 
     this.userService
       .getUsers(
@@ -1336,7 +1328,7 @@ export class UserComponent implements OnInit {
 
   clearFilters(): void {
 
-    this.filterForm.reset({
+    this.userForm.patchValue({
 
       roleName: '',
 

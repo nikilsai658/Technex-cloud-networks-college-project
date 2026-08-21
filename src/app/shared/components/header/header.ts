@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -33,7 +33,26 @@ colleges = [
   }
 ];
 
-  constructor(private router:Router,private cookie:CookieService,public auth:Auth,private userStore:UserStore){}
+  constructor(private router:Router,private cookie:CookieService,public auth:Auth,private userStore:UserStore){
+    effect(() => {
+      const user = this.userStore.user();
+
+      if (!user) {
+        return;
+      }
+
+      this.username = user.name;
+
+      const selectedCollege = this.colleges.find(college =>
+        college.name.trim().toLowerCase() ===
+        user.collegeName?.trim().toLowerCase()
+      );
+
+      if (selectedCollege) {
+        this.collegeLogo = selectedCollege.logo;
+      }
+    });
+  }
   logout(){
     this.userStore.clearUser();
     this.cookie.delete('token','/');
@@ -41,24 +60,7 @@ colleges = [
     this.router.navigate(['/auth/login']);
   }
 
-  ngOnInit(): void {
-     const user = this.userStore.user();
-
-  if (!user) {
-    return;
-  }
-
-  this.username = user.name;
-
-  const selectedCollege = this.colleges.find(college =>
-    college.name.trim().toLowerCase() ===
-    user.collegeName?.trim().toLowerCase()
-  );
-
-  if (selectedCollege) {
-    this.collegeLogo = selectedCollege.logo;
-  }
-  }
+  ngOnInit(): void {}
   sidebarOpen = false;
 
   toggleSidebar() {

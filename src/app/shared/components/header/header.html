@@ -73,6 +73,7 @@
       </a>
 
       <a
+      *ngIf="this.auth.hasPermission('CREATE_TICKET')"
         routerLink="/main/ticket"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
@@ -82,6 +83,7 @@
 
       </a>
         <a
+        *ngIf="this.auth.hasPermission('VIEW_ALL_TICKETS')"
         routerLink="/main/alltickets"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
@@ -207,6 +209,16 @@
             class="nav-sublink">
 
             Year Management
+
+          </a>
+          <a
+            *ngIf="this.auth.hasPermission('UPDATE_YEAR')"
+            routerLink="/main/year-updation"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Year Promotion
 
           </a>
           <a

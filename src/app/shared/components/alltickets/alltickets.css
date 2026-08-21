@@ -1,0 +1,673 @@
+/* =====================================================
+   PAGE HEADER
+   ===================================================== */
+@import "tailwindcss";
+
+.alltickets-container {
+  @apply p-10;
+}
+
+.page-header {
+  @apply mb-8;
+}
+
+.header-content {
+  @apply flex flex-col lg:flex-row
+         lg:items-end lg:justify-between
+         gap-5;
+}
+
+.header-title-wrapper {
+  @apply flex items-center gap-4;
+}
+
+.header-icon {
+  @apply w-12 h-12
+         shrink-0
+         rounded-2xl
+         bg-linear-to-br from-cyan-500 to-cyan-600
+         text-white
+         flex items-center justify-center
+         shadow-sm shadow-cyan-200;
+}
+
+.header-icon-svg {
+  @apply w-6 h-6;
+}
+
+.page-title {
+  @apply text-2xl sm:text-3xl
+         font-bold
+         tracking-tight
+         text-gray-900;
+}
+
+.page-subtitle {
+  @apply text-sm
+         text-gray-500
+         mt-1;
+}
+
+
+/* =====================================================
+   HEADER ACTIONS
+   ===================================================== */
+
+.header-actions {
+  @apply flex flex-col
+         sm:flex-row
+         sm:items-center
+         gap-3;
+}
+
+.ticket-count {
+  @apply px-4 py-2.5
+         rounded-xl
+         bg-white
+         border border-gray-200
+         shadow-sm;
+}
+
+.count-label {
+  @apply text-xs
+         text-gray-400;
+}
+
+.count-value {
+  @apply text-lg
+         font-bold
+         text-gray-900;
+}
+
+
+/* =====================================================
+   STATUS BREAKDOWN STRIP
+   ===================================================== */
+
+.status-strip {
+  @apply mt-6;
+}
+
+.status-strip-bar {
+  @apply flex
+         w-full
+         h-2
+         rounded-full
+         overflow-hidden
+         bg-gray-100;
+}
+
+.status-strip-segment {
+  @apply h-full
+         transition-all
+         duration-300;
+}
+
+.segment-open {
+  @apply bg-blue-500;
+}
+
+.segment-resolved {
+  @apply bg-green-500;
+}
+
+.segment-closed {
+  @apply bg-gray-400;
+}
+
+.status-strip-legend {
+  @apply flex
+         flex-wrap
+         gap-x-5
+         gap-y-1.5
+         mt-3;
+}
+
+.legend-item {
+  @apply flex
+         items-center
+         gap-1.5
+         text-xs
+         font-semibold
+         text-gray-500;
+}
+
+.legend-dot {
+  @apply w-2 h-2
+         rounded-full
+         shrink-0;
+}
+
+
+/* =====================================================
+   LOADING
+   ===================================================== */
+
+.loading-container {
+  @apply bg-white
+         border border-gray-200
+         rounded-2xl
+         p-12
+         flex flex-col
+         items-center
+         justify-center
+         shadow-sm;
+}
+
+.loading-spinner {
+  @apply w-10 h-10
+         border-4
+         border-gray-200
+         border-t-cyan-600
+         rounded-full
+         animate-spin;
+}
+
+.loading-text {
+  @apply mt-4
+         text-sm
+         text-gray-500;
+}
+
+
+/* =====================================================
+   ERROR
+   ===================================================== */
+
+.error-container {
+  @apply rounded-2xl
+         border border-red-200
+         bg-red-50
+         p-5
+         flex items-start
+         gap-4;
+}
+
+.error-icon {
+  @apply w-10 h-10
+         shrink-0
+         rounded-lg
+         bg-red-100
+         text-red-600
+         flex items-center
+         justify-center
+         font-bold;
+}
+
+.error-content {
+  @apply flex-1;
+}
+
+.error-content h3 {
+  @apply font-semibold
+         text-red-800;
+}
+
+.error-content p {
+  @apply text-sm
+         text-red-600
+         mt-1;
+}
+
+.retry-button {
+  @apply mt-3
+         text-sm
+         font-semibold
+         text-red-700
+         hover:text-red-900
+         underline;
+}
+
+
+/* =====================================================
+   EMPTY STATE
+   ===================================================== */
+
+.empty-container {
+  @apply bg-white
+         rounded-2xl
+         border border-gray-200
+         shadow-sm
+         p-10 sm:p-14
+         text-center;
+}
+
+.empty-icon {
+  @apply mx-auto
+         w-20 h-20
+         rounded-2xl
+         bg-cyan-50
+         text-cyan-600
+         flex items-center
+         justify-center
+         text-3xl;
+}
+
+.empty-container h2 {
+  @apply mt-6
+         text-xl
+         font-bold
+         text-gray-900;
+}
+
+.empty-container p {
+  @apply mt-2
+         max-w-md
+         mx-auto
+         text-sm
+         leading-6
+         text-gray-500;
+}
+
+
+/* =====================================================
+   STATUS DOT (breakdown legend)
+   ===================================================== */
+
+.dot-open {
+  @apply bg-blue-500;
+}
+
+.dot-resolved {
+  @apply bg-green-500;
+}
+
+.dot-closed {
+  @apply bg-gray-400;
+}
+
+
+/* =====================================================
+   KANBAN BOARD
+   ===================================================== */
+
+.kanban-board {
+  @apply flex
+         items-start
+         gap-5
+         overflow-x-auto
+         pb-4
+         pt-6
+         -mx-1 px-1;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.kanban-board::-webkit-scrollbar {
+  height: 8px;
+}
+
+.kanban-board::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.kanban-board::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+.kanban-board::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+
+/* =====================================================
+   KANBAN COLUMN
+   ===================================================== */
+
+.kanban-column {
+  @apply flex
+         flex-col
+         shrink-0
+         w-84
+         max-h-[calc(100vh-320px)]
+         bg-gray-50/70
+         rounded-2xl
+         border border-gray-200/80
+         overflow-hidden
+         shadow-sm;
+}
+
+.kanban-column-accent {
+  @apply h-1.5 w-full shrink-0;
+}
+
+.accent-open {
+  @apply bg-blue-500;
+}
+
+.accent-resolved {
+  @apply bg-green-500;
+}
+
+.accent-closed {
+  @apply bg-gray-400;
+}
+
+.kanban-column-header {
+  @apply flex
+         items-center
+         gap-2.5
+         px-4 py-3.5
+         border-b border-gray-200/80
+         bg-white/60;
+}
+
+.column-icon {
+  @apply w-7 h-7
+         shrink-0
+         rounded-lg
+         flex items-center justify-center;
+}
+
+.column-icon svg {
+  @apply w-4 h-4;
+}
+
+.icon-open {
+  @apply bg-blue-100 text-blue-600;
+}
+
+.icon-resolved {
+  @apply bg-green-100 text-green-600;
+}
+
+.icon-closed {
+  @apply bg-gray-200 text-gray-500;
+}
+
+.column-label {
+  @apply flex-1
+         text-sm
+         font-bold
+         tracking-wide
+         text-gray-700;
+}
+
+.column-count {
+  @apply min-w-6
+         px-2 py-0.5
+         rounded-full
+         bg-white
+         border border-gray-200
+         text-xs
+         font-bold
+         text-gray-500
+         text-center;
+}
+
+
+/* =====================================================
+   DROP LIST
+   ===================================================== */
+
+.kanban-drop-list {
+  @apply flex
+         flex-col
+         gap-3
+         p-3
+         flex-1
+         min-h-40
+         overflow-y-auto
+         transition-colors
+         duration-150;
+
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+.kanban-drop-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.kanban-drop-list::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+.kanban-drop-list.cdk-drop-list-dragging {
+  @apply bg-cyan-50/50;
+}
+
+.kanban-drop-list.cdk-drop-list-receiving {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(8, 145, 178, 0.06),
+    rgba(8, 145, 178, 0.06) 10px,
+    rgba(8, 145, 178, 0.1) 10px,
+    rgba(8, 145, 178, 0.1) 20px
+  );
+}
+
+.kanban-empty-column {
+  @apply flex
+         flex-col
+         items-center
+         justify-center
+         gap-2
+         py-8
+         text-xs
+         font-medium
+         text-gray-400
+         border-2 border-dashed border-gray-200
+         rounded-xl;
+}
+
+.kanban-empty-icon {
+  @apply w-7 h-7
+         text-gray-300;
+}
+
+
+/* =====================================================
+   KANBAN CARD
+   ===================================================== */
+
+.kanban-card {
+  @apply relative
+         bg-white
+         rounded-xl
+         border border-gray-200
+         border-l-[3px]
+         shadow-sm
+         p-3.5
+         cursor-grab
+         transition-all
+         duration-150;
+
+  &:hover {
+    @apply shadow-md
+           border-cyan-200
+           -translate-y-0.5;
+  }
+
+  &:active {
+    @apply cursor-grabbing;
+  }
+}
+
+.kanban-card.cdk-drag-preview {
+  @apply shadow-2xl
+         rounded-xl
+         rotate-1
+         opacity-95;
+}
+
+.kanban-card.cdk-drag-animating {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.kanban-card-placeholder {
+  @apply bg-gray-100
+         border-2 border-dashed border-gray-300
+         rounded-xl
+         min-h-24;
+}
+
+.card-accent-open {
+  @apply border-l-blue-500;
+}
+
+.card-accent-resolved {
+  @apply border-l-green-500;
+}
+
+.card-accent-closed {
+  @apply border-l-gray-400;
+}
+
+
+/* =====================================================
+   CARD TOP ROW
+   ===================================================== */
+
+.kanban-card-top {
+  @apply flex
+         items-center
+         justify-between;
+}
+
+.ticket-id-badge {
+  @apply text-[11px]
+         font-bold
+         tracking-wide
+         text-gray-400;
+}
+
+.drag-handle {
+  @apply text-gray-300
+         cursor-grab
+         opacity-0
+         transition-opacity
+         duration-150;
+}
+
+.drag-handle svg {
+  @apply w-4 h-4;
+}
+
+.kanban-card:hover .drag-handle {
+  @apply opacity-100;
+}
+
+
+/* =====================================================
+   CARD CONTENT
+   ===================================================== */
+
+.kanban-card-subject {
+  @apply mt-1.5
+         text-sm
+         font-bold
+         text-gray-900
+         leading-5
+         line-clamp-2;
+}
+
+.kanban-card-description {
+  @apply mt-1.5
+         text-xs
+         leading-5
+         text-gray-500
+         line-clamp-2;
+}
+
+
+/* =====================================================
+   CARD STUDENT CHIP
+   ===================================================== */
+
+.kanban-card-student {
+  @apply flex
+         items-center
+         gap-2
+         mt-3;
+}
+
+.student-avatar {
+  @apply w-5 h-5
+         shrink-0
+         rounded-full
+         bg-cyan-100
+         text-cyan-700
+         text-[10px]
+         font-bold
+         flex items-center justify-center;
+}
+
+.student-name {
+  @apply text-xs
+         font-medium
+         text-gray-500
+         truncate;
+}
+
+
+.kanban-card-divider {
+  @apply border-t
+         border-gray-100
+         my-3;
+}
+
+
+/* =====================================================
+   CARD FOOTER
+   ===================================================== */
+
+.kanban-card-footer {
+  @apply flex
+         items-center
+         justify-between
+         gap-2;
+}
+
+.kanban-card-date {
+  @apply flex
+         items-center
+         gap-1
+         text-[11px]
+         font-semibold
+         text-gray-400;
+}
+
+.kanban-card-date svg {
+  @apply w-3.5 h-3.5;
+}
+
+
+/* =====================================================
+   CARD ACTION
+   ===================================================== */
+
+.kanban-card-action {
+  @apply inline-flex
+         items-center
+         justify-center
+         gap-1
+         px-3 py-1.5
+         rounded-lg
+         bg-cyan-50
+         text-cyan-700
+         text-xs
+         font-semibold
+         hover:bg-cyan-600
+         hover:text-white
+         transition;
+}
+
+.button-arrow {
+  @apply w-3 h-3;
+}
+
+
+/* =====================================================
+   MOBILE RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 640px) {
+
+  .kanban-column {
+    @apply w-72
+           max-h-[calc(100vh-380px)];
+  }
+
+}

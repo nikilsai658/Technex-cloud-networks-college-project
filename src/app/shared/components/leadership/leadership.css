@@ -1,0 +1,333 @@
+@import "tailwindcss";
+/* =========================================================
+   LEADERBOARD PAGE
+========================================================= */
+
+.leaderboard-page {
+  @apply min-h-full bg-slate-50 p-4 text-slate-800 sm:p-6 lg:p-8;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.leaderboard-header {
+  @apply mb-8 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between;
+}
+
+.header-content {
+  @apply flex-1;
+}
+
+.title-row {
+  @apply mb-2 flex items-center gap-3;
+}
+
+.header-icon {
+  @apply flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600;
+}
+
+.header-icon svg {
+  @apply h-6 w-6;
+}
+
+.page-title {
+  @apply m-0 text-2xl font-bold leading-tight text-slate-800 sm:text-3xl;
+}
+
+.page-subtitle {
+  @apply mt-1 text-sm text-slate-500 sm:text-base;
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.statistics-container {
+  @apply flex flex-col gap-3 sm:flex-row;
+}
+
+.stat-card {
+  @apply flex min-w-44 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md;
+}
+
+.stat-icon {
+  @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-lg;
+}
+
+.stat-icon svg {
+  @apply h-5 w-5;
+}
+
+.rank-icon {
+  @apply bg-orange-50 text-orange-600;
+}
+
+.score-icon {
+  @apply bg-cyan-50 text-cyan-600;
+}
+
+.stat-label {
+  @apply m-0 text-xs font-medium text-slate-500;
+}
+
+.stat-value {
+  @apply m-0 text-[22px] font-bold text-slate-700;
+}
+
+.score-value {
+  @apply text-cyan-600;
+}
+
+
+/* =========================================================
+   TOP STUDENTS
+========================================================= */
+
+.top-students {
+  @apply mb-8 grid grid-cols-1 gap-4 md:grid-cols-3;
+}
+
+.top-student-card {
+  @apply relative flex min-h-[220px] flex-col items-center justify-center rounded-2xl border bg-white p-6 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg;
+}
+
+.first-place {
+  @apply border-amber-200;
+}
+
+.second-place {
+  @apply border-slate-200;
+}
+
+.third-place {
+  @apply border-orange-200;
+}
+
+
+/* =========================================================
+   POSITION BADGES
+========================================================= */
+
+.position-badge {
+  @apply absolute right-3.5 top-3.5 flex h-8 w-8 items-center justify-center rounded-full text-[13px] font-bold;
+}
+
+.gold {
+  @apply bg-amber-100 text-amber-700;
+}
+
+.silver {
+  @apply bg-slate-100 text-slate-600;
+}
+
+.bronze {
+  @apply bg-orange-100 text-orange-700;
+}
+
+
+/* =========================================================
+   TOP STUDENT
+========================================================= */
+
+.student-avatar {
+  @apply mb-3 flex h-15 w-15 items-center justify-center rounded-full bg-slate-100 text-xl font-bold text-slate-700;
+}
+
+.winner-avatar {
+  @apply bg-amber-100 text-amber-700;
+}
+
+.top-student-name {
+  @apply max-w-[90%] truncate text-base font-bold text-slate-800;
+}
+
+.student-position {
+  @apply my-1 text-xs text-slate-500;
+}
+
+.top-score {
+  @apply text-xl font-bold text-cyan-600;
+}
+
+.top-score span {
+  @apply text-[11px] font-medium text-slate-500;
+}
+
+
+/* =========================================================
+   LEADERBOARD CARD
+========================================================= */
+
+.leaderboard-card {
+  @apply overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
+.table-heading {
+  @apply flex items-center justify-between gap-5 border-b border-slate-200 px-5 py-5 sm:px-6;
+}
+
+.table-title {
+  @apply m-0 text-[17px] font-bold text-slate-800;
+}
+
+.table-subtitle {
+  @apply mt-0.5 text-[13px] text-slate-500;
+}
+
+.student-count {
+  @apply whitespace-nowrap rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-container {
+  @apply w-full overflow-x-auto;
+}
+
+.leaderboard-table {
+  @apply w-full min-w-[700px] border-collapse;
+}
+
+.leaderboard-table thead {
+  @apply bg-slate-50;
+}
+
+.leaderboard-table th {
+  @apply border-b border-slate-200 px-6 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500;
+}
+
+.leaderboard-table td {
+  @apply border-b border-slate-100 px-6 py-4;
+}
+
+.leaderboard-row {
+  @apply transition-colors duration-150 hover:bg-slate-50;
+}
+
+.leaderboard-row:last-child td {
+  @apply border-b-0;
+}
+
+
+/* =========================================================
+   RANK
+========================================================= */
+
+.rank-number {
+  @apply inline-flex h-[34px] w-[34px] items-center justify-center rounded-full text-[13px] font-bold;
+}
+
+.rank-first {
+  @apply bg-amber-100 text-amber-700;
+}
+
+.rank-second {
+  @apply bg-slate-100 text-slate-600;
+}
+
+.rank-third {
+  @apply bg-orange-100 text-orange-700;
+}
+
+.rank-default {
+  @apply bg-slate-100 text-slate-500;
+}
+
+
+/* =========================================================
+   STUDENT
+========================================================= */
+
+.student-info {
+  @apply flex items-center gap-3;
+}
+
+.student-table-avatar {
+  @apply flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-cyan-50 text-[13px] font-bold text-cyan-700;
+}
+
+.student-name {
+  @apply m-0 text-sm font-semibold text-slate-700;
+}
+
+.student-label {
+  @apply mt-0.5 text-[11px] text-slate-400;
+}
+
+
+/* =========================================================
+   SCORE
+========================================================= */
+
+.score-badge {
+  @apply inline-flex min-w-[58px] items-center justify-center rounded-md bg-cyan-50 px-2.5 py-1.5 text-[13px] font-bold text-cyan-700;
+}
+
+.metric-value {
+  @apply text-sm font-semibold text-slate-600;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-state {
+  @apply flex min-h-[280px] flex-col items-center justify-center px-5 py-10 text-center;
+}
+
+.empty-icon {
+  @apply mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-400;
+}
+
+.empty-icon svg {
+  @apply h-8 w-8;
+}
+
+.empty-state h3 {
+  @apply mb-1.5 text-base font-bold text-slate-700;
+}
+
+.empty-state p {
+  @apply max-w-[420px] text-[13px] leading-relaxed text-slate-500;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 640px) {
+
+  .leaderboard-page {
+    @apply p-4;
+  }
+
+  .statistics-container {
+    @apply w-full;
+  }
+
+  .stat-card {
+    @apply w-full;
+  }
+
+  .table-heading {
+    @apply items-start;
+  }
+
+  .student-count {
+    @apply hidden;
+  }
+
+}

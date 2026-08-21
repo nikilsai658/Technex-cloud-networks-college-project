@@ -1,11 +1,12 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, HostListener, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Student } from '../../../features/services/student/student';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CodeEditorComponent, CodeSubmission } from '../code-editor/code-editor';
 import { Location } from '@angular/common';
-
+import { AssignmentLockService, AssignmentViolation } from '../../../features/services/assignment-lock-service/assignemt-lock-service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-student-assignment',
   standalone:true,
@@ -13,11 +14,11 @@ import { Location } from '@angular/common';
   templateUrl: './student-assignment.html',
   styleUrl: './student-assignment.css',
 })
-export class StudentAssignment implements OnInit{
+export class StudentAssignment implements OnInit, OnDestroy{
   assignmentId!: number;
   assignmentIds: number[] = [];
   assignment: any = null;
-
+  
   get canGoPrevious(): boolean {
     const index = this.assignmentIds.indexOf(this.assignmentId);
     return index > 0;
@@ -32,6 +33,14 @@ export class StudentAssignment implements OnInit{
     return (this.assignment?.testCases ?? []).filter((tc: any) => tc.isSample);
   }
 
+  get tabSwitchCount(): number {
+    return this.lockService.tabSwitchCount;
+  }
+
+  get fullscreenExitCount(): number {
+    return this.lockService.fullscreenExitCount;
+  }
+
   isRunning = false;
   isSubmitting = false;
 
@@ -41,11 +50,54 @@ export class StudentAssignment implements OnInit{
   runError: string | null = null;
   submitError: string | null = null;
 
-  constructor(private route:ActivatedRoute, private router:Router,private api:Student,private cd:ChangeDetectorRef,private location:Location, @Inject(PLATFORM_ID) private platformId: Object){}
+  // Proctoring
+  showFullscreenWarning = false;
+  lastViolation: AssignmentViolation | null = null;
+  private violationSubscription?: Subscription;
+
+  constructor(private route:ActivatedRoute, private router:Router,private api:Student,private cd:ChangeDetectorRef,private location:Location,private lockService:AssignmentLockService, @Inject(PLATFORM_ID) private platformId: Object){}
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.loadFromState(history.state);
+      this.lockService.startLock();
+
+      this.violationSubscription = this.lockService.violations$.subscribe(
+        (violation) => this.onViolation(violation)
+      );
     }
+  }
+
+  ngOnDestroy(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.violationSubscription?.unsubscribe();
+
+      this.lockService.stopLock();
+
+      sessionStorage.removeItem('activeAssignmentId');
+
+      if (document.fullscreenElement) {
+        document.exitFullscreen?.().catch(() => {});
+      }
+    }
+  }
+
+  private onViolation(violation: AssignmentViolation): void {
+
+    this.lastViolation = violation;
+
+    if (violation.type === 'fullscreen-exit') {
+      // The auto re-request in the lock service may or may not have been
+      // honored by the browser, so keep the banner up until the student
+      // confirms via a real click on "Resume Fullscreen".
+      this.showFullscreenWarning = !document.fullscreenElement;
+    }
+
+    this.cd.detectChanges();
+  }
+
+  resumeFullscreen(): void {
+    this.lockService.requestFullscreen();
+    this.showFullscreenWarning = false;
   }
 
   private loadFromState(state: any): void {

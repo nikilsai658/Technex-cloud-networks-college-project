@@ -37,6 +37,11 @@ import { SuperAdmin } from './shared/components/superadmin/superadmin';
 import { SuperadminDomains } from './shared/components/superadmin-domains/superadmin-domains';
 import { SuperadminDomainStudents } from './shared/components/superadmin-domain-students/superadmin-domain-students';
 import { SuperadminStudentAssignments } from './shared/components/superadmin-student-assignments/superadmin-student-assignments';
+import { YearUpdation } from './shared/components/year-updation/year-updation';
+import { authGuard } from './core/auth/auth-guard';
+import { assignmentGuard } from './core/guards/assignment-guard';
+import { permissionGuard } from './core/guards/permission-guard';
+import { NotFoundComponent } from './shared/components/page-not-found/page-not-found';
 export const routes: Routes = [
 
   {
@@ -55,13 +60,13 @@ export const routes: Routes = [
   },
 
   {
-    path: 'main',component: Admin,children: [
+    path: 'main',component: Admin,canActivate: [authGuard],canActivateChild: [authGuard, permissionGuard],children: [
 
       {
         path: '',redirectTo: 'student-domain', pathMatch: 'full'
       },
       {
-        path: 'student-domain', component: StudentDomain
+        path: 'student-domain', component: StudentDomain, data: { permission: 'VIEW_STUDENT_DOMAIN' }
       },
 
       {
@@ -71,51 +76,54 @@ export const routes: Routes = [
       {
         path: 'student-assignments', component: StudentAssignments
       },
-  
+
       {
-        path: 'student-assignment',  component: StudentAssignment
+        path: 'student-assignment', canActivate: [authGuard, assignmentGuard],  component: StudentAssignment
       },
       {
-        path:'college-management',component:College
+        path:'college-management',component:College, data: { permission: 'UPDATE_COLLEGE' }
       },
       {
-        path:'department-management',component:Department
+        path:'department-management',component:Department, data: { permission: 'VIEW_DEPARTMENT' }
       },
       {
-        path:'branch-management',component:Branch
+        path:'branch-management',component:Branch, data: { permission: 'UPDATE_BRANCH' }
       },
       {
-        path:'domain',component:DomainComponent
+        path:'domain',component:DomainComponent, data: { permission: 'VIEW_DOMAIN' }
       },
       {
-        path:'course',component:Course
+        path:'course',component:Course, data: { permission: 'VIEW_COURSE' }
       },
       {
-        path:'assignment',component:AssignmentComponent
+        path:'assignment',component:AssignmentComponent, data: { permission: 'UPDATE_ASSIGNMENT' }
       },
       {
-        path:'year',component:Year
+        path:'year',component:Year, data: { permission: 'VIEW_YEAR' }
       },
       {
-        path:'user',component:UserComponent
+        path:'year-updation',component:YearUpdation, data: { permission: 'UPDATE_YEAR' }
       },
       {
-        path:'role',component:Role
+        path:'user',component:UserComponent, data: { permission: 'VIEW_COURSE' }
       },
       {
-        path:'permission',component:Permission
+        path:'role',component:Role, data: { permission: 'VIEW_ROLE' }
+      },
+      {
+        path:'permission',component:Permission, data: { permission: 'VIEW_PERMISSION' }
       },
       {
         path:'profile',component:StudentProfile
       },
       {
-       path:'leadership',component:Leadership
+       path:'leadership',component:Leadership, data: { permission: 'VIEW_STUDENT_DOMAIN' }
       },
       {
-        path:'certificate',component:Certificate
+        path:'certificate',component:Certificate, data: { permission: 'VIEW_STUDENT_DOMAIN' }
       },
       {
-        path:'ticket',component:TicketComponent
+        path:'ticket',component:TicketComponent, data: { permission: 'CREATE_TICKET' }
       },
       {
       path:'mytickets',component:MyTicketComponent
@@ -124,34 +132,34 @@ export const routes: Routes = [
         path:'replyticket/:id',component:ReplyTicketComponent
       },
       {
-        path:'alltickets',component:AllTicketsComponent
+        path:'alltickets',component:AllTicketsComponent, data: { permission: 'VIEW_ALL_TICKETS' }
       },
       {
         path: 'support-ticket-details/:id',component: SupportTicketDetailsComponent
       },
       {
-        path:'college-department-mapping',component:CollegeDepartmentComponent
+        path:'college-department-mapping',component:CollegeDepartmentComponent, data: { permission: 'VIEW_COLLEGE_DEPARTMENT' }
       },
       {
-        path:'department-branch-mapping',component:DepartmentBranchComponent
+        path:'department-branch-mapping',component:DepartmentBranchComponent, data: { permission: 'VIEW_DEPARTMENT_BRANCH' }
       },
       {
-        path:'domain-course-mapping',component:DomainCourseMapComponent
+        path:'domain-course-mapping',component:DomainCourseMapComponent, data: { permission: 'VIEW_DOMAIN_COURSE_MAP' }
       },
       {
-        path:'course-assignment-mapping',component:CourseAssignmentMapComponent
+        path:'course-assignment-mapping',component:CourseAssignmentMapComponent, data: { permission: 'VIEW_COURSE_ASSIGNMENT_MAP' }
       },
       {
-        path:'student-domain-course-mapping',component:StudentDomainMapComponent
+        path:'student-domain-course-mapping',component:StudentDomainMapComponent, data: { permission: 'VIEW_STUDENT_DOMAIN_COURSE_MAP' }
       },
       {
-        path:'role-permission-mapping',component:RolePermissionComponent
+        path:'role-permission-mapping',component:RolePermissionComponent, data: { permission: 'VIEW_ROLE_PERMISSION' }
       },
       {
-        path:'student-assignment-scores',component:StudentAssignmentscore
+        path:'student-assignment-scores',component:StudentAssignmentscore, data: { permission: 'UPDATE_STUDENT_ASSIGNMENT' }
       },
       {
-        path:'superamin-colleges', component:SuperAdmin
+        path:'superamin-colleges', component:SuperAdmin, data: { permission: 'VIEW_SUPERADMIN_COLLEGES' }
       },
       {
         path:'superadmin-domains', component:SuperadminDomains
@@ -173,8 +181,11 @@ export const routes: Routes = [
     path: 'profile', component: ProfilePage
   },
   {
+    path: 'page-not-found', component: NotFoundComponent
+  },
+  {
     path: '**',
-    redirectTo: 'home'
+    redirectTo: 'page-not-found'
   }
 ];
  

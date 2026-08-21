@@ -26,13 +26,7 @@ export class TicketService {
     `Ticket/${ticketId}/messages?afterId=${afterId}`
   );
 }
-
 replyTicket(ticketId: number, message: string) {
-  return this.api.POST(
-    `Ticket/${ticketId}/reply`,
-    {
-      message
-    }
-  );
+  return this.api.POST(`Ticket/${ticketId}/reply`,{ message});
 }
 }

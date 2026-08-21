@@ -20,4 +20,17 @@ export class YearService {
   deleteYear(id:number){
     return this.api.DELETE(`Year/${id}`);
   }
+  YearUpdate(data:any){
+    return this.api.POST(`Year/promote`,data);
+  }
+  YearUpdatewithDomain(file:File){
+    const formData = new FormData();
+
+  // Fixed key expected by backend
+  formData.append('file', file);
+    return this.api.POST('Year/promote-with-domains',formData);
+  }
+  YearUpdatesingleDomain(data:any){
+    return this.api.POST('Year/promote-single-with-domain',data)
+  }
 }

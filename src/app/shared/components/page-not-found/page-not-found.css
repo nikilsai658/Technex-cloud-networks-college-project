@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+/* Main page */
+
+.not-found-page {
+  @apply min-h-screen flex items-center justify-center px-6;
+  background: #f8fafc;
+}
+
+.not-found-container {
+  @apply w-full max-w-lg text-center;
+}
+
+/* Error icon */
+
+.not-found-icon {
+  @apply mx-auto mb-6 flex items-center justify-center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #e6f7f8;
+  color: #24c0c5;
+}
+
+.not-found-icon svg {
+  width: 42px;
+  height: 42px;
+}
+
+/* 404 */
+
+.not-found-container h1 {
+  @apply m-0 font-extrabold;
+  font-size: 96px;
+  line-height: 1;
+  letter-spacing: -4px;
+  color: #2f3e46;
+}
+
+/* Heading */
+
+.not-found-container h2 {
+  @apply mt-5 mb-3 font-bold;
+  font-size: 28px;
+  color: #1e293b;
+}
+
+/* Description */
+
+.not-found-container p {
+  @apply mx-auto mb-8;
+  max-width: 450px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #64748b;
+}
+
+/* Buttons */
+
+.not-found-actions {
+  @apply flex items-center justify-center gap-3;
+}
+
+.home-button,
+.back-button {
+  @apply inline-flex items-center justify-center gap-2;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.home-button {
+  background: #24c0c5;
+  color: white;
+  border: 1px solid #24c0c5;
+}
+
+.home-button:hover {
+  background: #1da9ae;
+  border-color: #1da9ae;
+  transform: translateY(-1px);
+}
+
+.home-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.back-button {
+  background: white;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.back-button:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* Error reference */
+
+.error-reference {
+  @apply block mt-8;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .not-found-container h1 {
+    font-size: 72px;
+  }
+
+  .not-found-container h2 {
+    font-size: 23px;
+  }
+
+  .not-found-container p {
+    font-size: 14px;
+  }
+
+  .not-found-actions {
+    @apply flex-col;
+  }
+
+  .home-button,
+  .back-button {
+    width: 100%;
+  }
+}

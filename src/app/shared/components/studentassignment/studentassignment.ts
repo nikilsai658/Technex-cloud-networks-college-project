@@ -1,4 +1,4 @@
-import { Component, OnInit, afterNextRender } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit,ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -9,13 +9,13 @@ import {
 
 import { Studentassignment } from '../../../features/services/studentassignment/studentassignment';
 import { Auth } from '../../../core/auth/auth';
-
 @Component({
   selector: 'app-student-assignment',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './studentassignment.html',
-  styleUrls: ['./studentassignment.css']
+  styleUrls: ['./studentassignment.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentAssignment implements OnInit {
 
@@ -28,15 +28,13 @@ export class StudentAssignment implements OnInit {
   constructor(
     private fb: FormBuilder,
     private studentService: Studentassignment,
-    public auth: Auth
-  ) {
-    afterNextRender(() => {
-      this.getAssignments();
-    });
-  }
+    private cdr: ChangeDetectorRef,
+    public auth:Auth
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
+    this.getAssignments();
   }
 
   initializeForm(): void {
@@ -67,6 +65,7 @@ export class StudentAssignment implements OnInit {
     this.studentService.getstudentassignment().subscribe({
       next: (res: any) => {
         this.assignments = res.data || res;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
@@ -86,6 +85,7 @@ export class StudentAssignment implements OnInit {
 
         this.selectedId = id;
         this.editMode = true;
+        this.cdr.markForCheck();
       },
       error: (err) => console.error(err)
     });
@@ -93,11 +93,6 @@ export class StudentAssignment implements OnInit {
   }
 
 update(): void {
-
-  if (!this.auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT')) {
-    alert('Permission Denied');
-    return;
-  }
 
   if (this.assignmentForm.invalid) {
     this.assignmentForm.markAllAsTouched();
@@ -144,11 +139,6 @@ update(): void {
   // Delete
   delete(id: number): void {
 
-    if (!this.auth.hasPermission('DELETE_STUDENT_ASSIGNMENT')) {
-      alert('Permission Denied');
-      return;
-    }
-
     if (!confirm('Are you sure you want to delete this assignment?')) {
       return;
     }
@@ -159,10 +149,20 @@ update(): void {
         next: () => {
           alert('Assignment Deleted Successfully');
           this.getAssignments();
+
         },
         error: (err) => console.error(err)
       });
 
+  }
+
+  // Save (Create or Update)
+  save(): void {
+    if (this.editMode) {
+      this.update();
+    } else{
+
+    }
   }
 
   // Reset Form

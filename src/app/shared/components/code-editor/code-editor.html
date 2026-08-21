@@ -62,35 +62,33 @@
         class="editor-container">
     </div>
 
-    <!-- Custom Input (stdin) -->
+    <!-- Custom Input -->
 
-    <div class="output-panel">
+    <div class="custom-input-panel">
 
         <button
             type="button"
-            class="output-header custom-input-toggle"
+            class="custom-input-toggle"
             (click)="showCustomInput = !showCustomInput">
 
-            <span>Custom Input (optional)</span>
+            <span>Custom Input</span>
 
             <span
                 class="toggle-icon"
                 [class.open]="showCustomInput">
-                ▸
+                &#9656;
             </span>
 
         </button>
 
-        <div class="output-body" *ngIf="showCustomInput">
-
-            <textarea
-                [ngModel]="stdin"
-                (ngModelChange)="onStdinChange($event)"
-                rows="3"
-                placeholder="stdin for your code..."
-                class="custom-input-box"></textarea>
-
-        </div>
+        <textarea
+            *ngIf="showCustomInput"
+            class="custom-input-box"
+            rows="4"
+            placeholder="Enter stdin for your program..."
+            [ngModel]="stdin"
+            (ngModelChange)="onStdinChange($event)">
+        </textarea>
 
     </div>
 

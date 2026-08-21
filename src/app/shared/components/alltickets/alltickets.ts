@@ -3,10 +3,22 @@ import { Router } from '@angular/router';
 import { TicketService } from '../../../features/services/ticket/ticket-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  transferArrayItem
+} from '@angular/cdk/drag-drop';
+
+interface KanbanColumn {
+  status: string;
+  label: string;
+  tickets: any[];
+}
+
 @Component({
   selector: 'app-all-tickets',
   templateUrl: './alltickets.html',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, DragDropModule],
   styleUrls: ['./alltickets.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -17,8 +29,11 @@ export class AllTicketsComponent implements OnInit {
   loading = false;
   errorMessage = '';
 
-  selectedStatus: string = 'All';
-  statusOptions: string[] = ['All', 'Open', 'Pending', 'Closed'];
+  statusOptions: string[] = ['Open', 'Resolved', 'Closed'];
+
+  columns: KanbanColumn[] = [];
+
+  connectedDropListIds: string[] = [];
 
   constructor(
     private ticketService: TicketService,
@@ -27,6 +42,10 @@ export class AllTicketsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
+    this.connectedDropListIds =
+      this.statusOptions.map(status => `drop-list-${status}`);
+
     this.getTickets();
   }
 
@@ -35,15 +54,16 @@ export class AllTicketsComponent implements OnInit {
 
     this.loading = true;
     this.errorMessage = '';
+    this.cdr.markForCheck();
 
     this.ticketService.getTickets().subscribe({
 
       next: (res: any) => {
 
-        console.log('Tickets response:', res);
-
         // If API returns { data: [...] }
         this.tickets = res?.data || [];
+
+        this.buildColumns();
 
         this.loading = false;
         this.cdr.markForCheck();
@@ -53,10 +73,14 @@ export class AllTicketsComponent implements OnInit {
 
         console.error('Get tickets error:', error);
 
+        this.tickets = [];
+        this.columns = [];
+
         this.errorMessage =
           'Unable to load tickets. Please try again.';
 
         this.loading = false;
+        this.cdr.markForCheck();
       }
 
     });
@@ -64,17 +88,83 @@ export class AllTicketsComponent implements OnInit {
   }
 
 
-  // Tickets filtered by the selected status
-  get filteredTickets(): any[] {
+  // =====================================
+  // BUILD KANBAN COLUMNS
+  // =====================================
 
-    if (!this.selectedStatus || this.selectedStatus === 'All') {
-      return this.tickets;
+  private buildColumns(): void {
+
+    this.columns = this.statusOptions.map(status => ({
+
+      status,
+
+      label: status,
+
+      tickets: this.tickets.filter(ticket =>
+        (ticket.status || 'Open').toLowerCase() === status.toLowerCase()
+      )
+
+    }));
+
+  }
+
+
+  // =====================================
+  // DRAG & DROP — STATUS CHANGE
+  // =====================================
+
+  dropListId(status: string): string {
+    return `drop-list-${status}`;
+  }
+
+  onDrop(event: CdkDragDrop<any[]>, column: KanbanColumn): void {
+
+    if (event.previousContainer === event.container) {
+      return;
     }
 
-    return this.tickets.filter(ticket =>
-      (ticket.status || 'Open').toLowerCase() ===
-      this.selectedStatus.toLowerCase()
+    const ticket = event.previousContainer.data[event.previousIndex];
+    const previousStatus = ticket.status;
+
+    transferArrayItem(
+      event.previousContainer.data,
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex
     );
+
+    ticket.status = column.status;
+
+    this.cdr.markForCheck();
+
+
+    this.ticketService
+      .updateTicketstatus(ticket.id, { status: column.status })
+      .subscribe({
+
+        next: () => {
+          // status change persisted
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Error updating ticket status:',
+            err
+          );
+
+          ticket.status = previousStatus;
+
+          this.buildColumns();
+
+          this.errorMessage =
+            'Unable to move ticket. Please try again.';
+
+          this.cdr.markForCheck();
+
+        }
+
+      });
 
   }
 
@@ -82,13 +172,11 @@ export class AllTicketsComponent implements OnInit {
   // Open selected ticket
   openTicket(ticketId: number): void {
 
-  console.log('Opening ticket:', ticketId);
+    this.router.navigate([
+      '/main/support-ticket-details',
+      ticketId
+    ]);
 
-  this.router.navigate([
-    '/main/support-ticket-details',
-    ticketId
-  ]);
-
-}
+  }
 
 }

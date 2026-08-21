@@ -11,9 +11,21 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 
+import {
+  CdkDragDrop,
+  DragDropModule,
+  transferArrayItem
+} from '@angular/cdk/drag-drop';
+
 import { Router } from '@angular/router';
 
 import { TicketService } from '../../../features/services/ticket/ticket-service';
+
+interface KanbanColumn {
+  status: string;
+  label: string;
+  tickets: any[];
+}
 
 @Component({
   selector: 'app-my-ticket',
@@ -22,7 +34,8 @@ import { TicketService } from '../../../features/services/ticket/ticket-service'
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DragDropModule
   ],
 
   templateUrl: './mytickets.html',
@@ -42,10 +55,12 @@ export class MyTicketComponent implements OnInit {
 
   errorMessage = '';
 
-  selectedStatus: string = 'All';
-
   statusOptions: string[] =
-    ['All', 'Open', 'Pending', 'Resolved', 'Closed'];
+    ['Open', 'Resolved', 'Closed'];
+
+  columns: KanbanColumn[] = [];
+
+  connectedDropListIds: string[] = [];
 
 
   constructor(
@@ -60,6 +75,9 @@ export class MyTicketComponent implements OnInit {
   // =====================================
 
   ngOnInit(): void {
+
+    this.connectedDropListIds =
+      this.statusOptions.map(status => `drop-list-${status}`);
 
     this.getMyTickets();
 
@@ -85,24 +103,12 @@ export class MyTicketComponent implements OnInit {
 
         next: (res: any) => {
 
-          console.log(
-            'My Tickets Response:',
-            res
-          );
-
-
           this.tickets =
             res?.data || [];
 
+          this.buildColumns();
 
           this.loading = false;
-
-
-          console.log(
-            'My Tickets:',
-            this.tickets
-          );
-
 
           this.cdr.markForCheck();
 
@@ -118,6 +124,8 @@ export class MyTicketComponent implements OnInit {
 
 
           this.tickets = [];
+
+          this.columns = [];
 
           this.loading = false;
 
@@ -135,29 +143,83 @@ export class MyTicketComponent implements OnInit {
 
 
   // =====================================
-  // FILTERED TICKETS
+  // BUILD KANBAN COLUMNS
   // =====================================
 
-  get filteredTickets(): any[] {
+  private buildColumns(): void {
 
-    if (!this.selectedStatus || this.selectedStatus === 'All') {
-      return this.tickets;
-    }
+    this.columns = this.statusOptions.map(status => ({
 
-    return this.tickets.filter(ticket =>
-      (ticket.status || 'Open').toLowerCase() ===
-      this.selectedStatus.toLowerCase()
-    );
+      status,
+
+      label: status,
+
+      tickets: this.tickets.filter(ticket =>
+        (ticket.status || 'Open').toLowerCase() === status.toLowerCase()
+      )
+
+    }));
 
   }
 
 
   // =====================================
-  // STATUS FILTER CHANGE
+  // DRAG & DROP — STATUS CHANGE
   // =====================================
 
-  onStatusChange(): void {
+  dropListId(status: string): string {
+    return `drop-list-${status}`;
+  }
+
+  onDrop(event: CdkDragDrop<any[]>, column: KanbanColumn): void {
+
+    if (event.previousContainer === event.container) {
+      return;
+    }
+
+    const ticket = event.previousContainer.data[event.previousIndex];
+    const previousStatus = ticket.status;
+
+    transferArrayItem(
+      event.previousContainer.data,
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex
+    );
+
+    ticket.status = column.status;
+
     this.cdr.markForCheck();
+
+
+    this.ticketService
+      .updateTicketstatus(ticket.id, { status: column.status })
+      .subscribe({
+
+        next: () => {
+          // status change persisted
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Error updating ticket status:',
+            err
+          );
+
+          ticket.status = previousStatus;
+
+          this.buildColumns();
+
+          this.errorMessage =
+            'Unable to move ticket. Please try again.';
+
+          this.cdr.markForCheck();
+
+        }
+
+      });
+
   }
 
 
@@ -166,12 +228,6 @@ export class MyTicketComponent implements OnInit {
   // =====================================
 
   openTicket(ticketId: number): void {
-
-    console.log(
-      'Opening Ticket ID:',
-      ticketId
-    );
-
 
     this.router.navigate([
       '/main/replyticket',
