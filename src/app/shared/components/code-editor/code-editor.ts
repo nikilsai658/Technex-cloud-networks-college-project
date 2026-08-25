@@ -38,6 +38,7 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
 
   @Input() runResult: any = null;
   @Input() submitResult: any = null;
+  @Input() submitMessage: string | null = null;
   @Input() runError: string | null = null;
   @Input() submitError: string | null = null;
 

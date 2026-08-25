@@ -180,7 +180,7 @@
                             {{ submitResult.isAccepted ? 'Correct!' : 'Wrong Answer' }}
                         </div>
                         <div class="verdict-subtitle">
-                            {{ submitResult.passedTestCases }}/{{ submitResult.totalTestCases }} test cases passed
+                            {{ submitMessage ?? (submitResult.passedTestCases + '/' + submitResult.totalTestCases + ' test cases passed') }}
                         </div>
                     </div>
 

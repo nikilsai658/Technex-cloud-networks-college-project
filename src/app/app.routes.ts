@@ -42,6 +42,7 @@ import { authGuard } from './core/auth/auth-guard';
 import { assignmentGuard } from './core/guards/assignment-guard';
 import { permissionGuard } from './core/guards/permission-guard';
 import { NotFoundComponent } from './shared/components/page-not-found/page-not-found';
+import { Viewcertificate } from './shared/components/viewcertificate/viewcertificate';
 export const routes: Routes = [
 
   {
@@ -169,6 +170,9 @@ export const routes: Routes = [
       },
       {
         path:'superadmin-student-assignments',component:SuperadminStudentAssignments
+      },
+      {
+        path:'view-certificate',component:Viewcertificate
       }
     ]
   },

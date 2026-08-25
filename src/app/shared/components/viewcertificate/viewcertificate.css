@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:host {
+  @apply block min-h-screen;
+}
+
+.certificate-page {
+  @apply flex min-h-screen w-full items-center justify-center bg-[#f7f7f8] p-6;
+}
+
+.certificate-loading {
+  @apply flex flex-col items-center justify-center text-center;
+}
+
+.loader {
+  @apply mb-5 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-[#2F3E46];
+}
+
+.certificate-loading h3 {
+  @apply mb-2 text-lg font-semibold text-[#202124];
+}
+
+.certificate-loading p {
+  @apply text-sm text-gray-500;
+}
+
+.certificate-wrapper {
+  @apply w-full max-w-6xl overflow-hidden rounded-xl bg-white shadow-lg;
+}
+
+.certificate-image {
+  @apply block h-auto w-full object-contain;
+}
+
+.certificate-error {
+  @apply flex flex-col items-center justify-center text-center;
+}
+
+.certificate-error h3 {
+  @apply mb-2 text-lg font-semibold text-red-600;
+}
+
+.certificate-error p {
+  @apply mb-5 text-sm text-gray-500;
+}
+
+.certificate-error button {
+  @apply rounded-lg bg-[#2F3E46] px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90;
+}

@@ -1,268 +1,495 @@
-@import "tailwindcss";
-/* ===============================
+/* =========================================================
+   OPTION 4 — PROFILE PAGE
+   Color: #2F3E46 + White
+   Sharp / Professional / Minimal
+   ========================================================= */
+
+
+/* =========================================================
    PAGE
-================================= */
-
-.profile-page{
-    @apply min-h-screen bg-gray-100 p-8;
+   ========================================================= */
+@import "tailwindcss";
+.profile-page {
+  @apply min-h-screen bg-white
+         px-6 py-6
+         text-[#2F3E46];
 }
 
-/* ===============================
+
+/* =========================================================
    HEADER
-================================= */
+   ========================================================= */
 
-.page-header{
-    @apply flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8;
+.page-header {
+  @apply relative
+         flex items-center justify-between
+         min-h-[110px]
+         bg-[#2F3E46]
+         px-8 py-6
+         text-white;
+
+  /* Slight angled bottom edge like option 4 */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 82%,
+    98% 100%,
+    0 100%
+  );
 }
 
-.page-title{
-    @apply text-5xl font-bold text-[#183153];
+.page-title {
+  @apply m-0
+         text-2xl
+         font-semibold
+         tracking-tight
+         text-white;
 }
 
-.page-subtitle{
-    @apply text-gray-500 text-lg mt-2;
+.page-subtitle {
+  @apply mt-1
+         text-sm
+         text-gray-300;
 }
 
-.edit-btn{
-    @apply bg-[#2F3E46] hover:bg-[#435861] text-white font-semibold px-6 py-3 rounded-xl transition;
+
+/* =========================================================
+   EDIT BUTTON
+   ========================================================= */
+
+.edit-btn {
+  @apply border
+         border-white
+         bg-transparent
+         px-5 py-2
+         text-sm
+         font-medium
+         text-white
+         transition-all
+         duration-200
+         cursor-pointer;
 }
 
-/* ===============================
-   LAYOUT
-================================= */
-
-.profile-layout{
-    @apply grid grid-cols-1 xl:grid-cols-3 gap-8;
+.edit-btn:hover {
+  @apply bg-white
+         text-[#2F3E46];
 }
 
-.left-card{
-    @apply bg-white rounded-3xl shadow-lg p-8 flex flex-col items-center;
+
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+
+.profile-layout {
+  @apply flex
+         flex-col
+         bg-white;
 }
 
-.right-section{
-    @apply xl:col-span-2 space-y-8;
+
+/* =========================================================
+   PROFILE SECTION
+   ========================================================= */
+
+.left-card {
+  @apply relative
+         flex
+         flex-col
+         items-center
+         border-l
+         border-r
+         border-b
+         border-gray-200
+         bg-white
+         px-6
+         pb-5;
 }
 
-/* ===============================
+
+/* =========================================================
    PROFILE IMAGE
-================================= */
+   ========================================================= */
 
-.image-section{
-    @apply flex flex-col items-center;
+.image-section {
+  @apply flex
+         justify-center;
 }
 
-.profile-image-box{
-    @apply w-44 h-44 rounded-full overflow-hidden border-4 border-[#2F3E46] shadow-lg;
+
+.profile-image-box {
+  @apply relative
+         z-10
+         -mt-12
+         flex
+         h-[86px]
+         w-[86px]
+         items-center
+         justify-center
+         overflow-hidden
+         border-[4px]
+         border-white
+         bg-[#2F3E46];
+
+  border-radius: 50%;
+
+  /* Subtle dark outline */
+  box-shadow: 0 0 0 1px #2F3E46;
 }
 
-.profile-image{
-    @apply w-full h-full object-cover;
+
+.profile-image {
+  @apply h-full
+         w-full
+         object-cover;
 }
 
-.profile-placeholder{
-    @apply w-full h-full flex items-center justify-center bg-[#2F3E46] text-white text-6xl font-bold;
+
+.profile-placeholder {
+  @apply flex
+         h-full
+         w-full
+         items-center
+         justify-center
+         bg-white
+         text-3xl
+         font-semibold
+         text-[#2F3E46];
+
+  border-radius: 50%;
 }
 
-.upload-image-btn{
-    @apply mt-5 cursor-pointer bg-[#24c0c5] hover:bg-cyan-600 text-white px-5 py-2 rounded-lg transition;
+
+/* =========================================================
+   STUDENT NAME
+   ========================================================= */
+
+.student-name {
+  @apply mt-3
+         mb-1
+         text-center
+         text-base
+         font-semibold
+         text-[#2F3E46];
 }
 
-/* ===============================
-   NAME
-================================= */
 
-.student-name{
-    @apply mt-6 text-4xl font-bold text-[#183153];
+/* =========================================================
+   ACTIVE STUDENT
+   ========================================================= */
+
+.status-badge {
+  @apply border
+         border-[#2F3E46]
+         px-3
+         py-0.5
+         text-[10px]
+         font-medium
+         uppercase
+         tracking-wide
+         text-[#2F3E46];
 }
 
-.status-badge{
-    @apply mt-4 px-6 py-2 rounded-full bg-green-100 text-green-700 font-semibold;
+
+/* =========================================================
+   PROFILE DIVIDER
+   ========================================================= */
+
+.left-card hr {
+  @apply mt-4
+         mb-0
+         w-full
+         border-0
+         border-t
+         border-gray-200;
 }
 
-/* ===============================
-   DETAILS
-================================= */
 
-.left-card hr{
-    @apply w-full my-8 border-gray-300;
+/* =========================================================
+   RIGHT SECTION
+   ========================================================= */
+
+.right-section {
+  @apply relative
+         grid
+         grid-cols-1
+         gap-6
+         px-0
+         pt-6;
+
+  /* Dotted decorative background */
+  background-image: radial-gradient(
+    #d9dee1 1px,
+    transparent 1px
+  );
+
+  background-size: 10px 10px;
+
+  /* Keep dots extremely subtle */
+  background-position: right top;
 }
 
-.left-details{
-    @apply w-full space-y-5;
+
+/* White overlay hides dots from most of the area */
+
+.right-section::before {
+  content: "";
+
+  @apply absolute
+         inset-0
+         bg-white;
+
+  width: 94%;
+  z-index: 0;
 }
 
-.detail-row{
-    @apply flex justify-between items-center gap-4;
+
+/* Keep cards above decoration */
+
+.info-card {
+  @apply relative
+         z-10
+         border
+         border-gray-200
+         bg-white;
 }
 
-.detail-row span{
-    @apply text-gray-500 text-lg;
+
+/* =========================================================
+   PERSONAL + ACADEMIC CARDS
+   DESKTOP SIDE-BY-SIDE
+   ========================================================= */
+
+@media (min-width: 900px) {
+
+  .right-section {
+    @apply grid-cols-2
+           gap-0;
+
+    background-image: none;
+  }
+
+  .right-section::before {
+    display: none;
+  }
+
+  .info-card:first-child {
+    @apply border-r-0;
+  }
 }
 
-.detail-row strong{
-    @apply text-[#183153] font-semibold text-lg text-right;
+
+/* =========================================================
+   CARD HEADING
+   ANGLED DARK SHAPE — OPTION 4
+   ========================================================= */
+
+.card-title {
+  @apply relative
+         z-10
+         m-0
+         inline-flex
+         min-w-[145px]
+         items-center
+         bg-[#2F3E46]
+         px-5
+         py-2
+         text-xs
+         font-semibold
+         text-white;
+
+  /* Creates the angled/trapezoid right edge */
+  clip-path: polygon(
+    0 0,
+    92% 0,
+    100% 50%,
+    92% 100%,
+    0 100%
+  );
 }
 
-/* ===============================
-   CARD
-================================= */
 
-.info-card{
-    @apply bg-white rounded-3xl shadow-lg p-8;
+/* Remove the old underline */
+
+.card-title::after {
+  content: none;
 }
 
-.card-title{
-    @apply text-3xl font-bold text-[#183153] mb-8;
+
+/* =========================================================
+   CARD HEADING AREA
+   ========================================================= */
+
+.info-card {
+  padding-top: 0;
 }
 
-/* ===============================
-   GRID
-================================= */
 
-.info-grid{
-    @apply grid md:grid-cols-2 gap-6;
+/* =========================================================
+   INFORMATION GRID
+   ========================================================= */
+
+.info-grid {
+  @apply grid
+         grid-cols-1
+         sm:grid-cols-2
+         border-t
+         border-gray-200;
 }
 
-.input-group{
-    @apply flex flex-col;
+
+/* =========================================================
+   INPUT GROUP
+   ========================================================= */
+
+.input-group {
+  @apply border-b
+         border-gray-200
+         px-5
+         py-3;
 }
 
-.input-group label{
-    @apply text-gray-500 mb-2 text-lg;
+
+/* Vertical separator between fields */
+
+@media (min-width: 640px) {
+
+  .input-group:nth-child(odd) {
+    @apply border-r
+           border-gray-200;
+  }
 }
 
-.input-group input{
-    @apply border border-gray-300 rounded-xl px-5 py-4 bg-gray-50 text-lg outline-none;
+
+/* =========================================================
+   LABEL
+   ========================================================= */
+
+.input-group label {
+  @apply mb-1
+         block
+         text-[10px]
+         font-medium
+         uppercase
+         tracking-wide
+         text-gray-500;
 }
 
-.input-group input:focus{
-    @apply border-[#24c0c5];
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+.input-group input {
+  @apply w-full
+         border-0
+         bg-transparent
+         p-0
+         text-xs
+         font-medium
+         text-[#2F3E46]
+         outline-none;
 }
 
-/* ===============================
-   PERMISSIONS
-================================= */
 
-.permission-wrapper{
-    @apply flex flex-wrap gap-4;
+/* =========================================================
+   ACADEMIC INFORMATION
+   ========================================================= */
+
+/* Give academic card slightly different spacing */
+
+.info-card:nth-child(2) .input-group {
+  @apply py-3;
 }
 
-.permission-chip{
-    @apply bg-[#2F3E46] text-white px-5 py-2 rounded-full text-sm font-semibold shadow;
+
+/* =========================================================
+   DESKTOP CARD HEIGHT
+   ========================================================= */
+
+@media (min-width: 900px) {
+
+  .info-card {
+    min-height: 235px;
+  }
+
+  .info-grid {
+    min-height: 180px;
+  }
 }
 
-/* ===============================
-   RESUME
-================================= */
 
-.resume-box{
-    @apply flex flex-col lg:flex-row justify-between items-center gap-5 bg-gray-50 rounded-2xl border p-6;
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 899px) {
+
+  .profile-page {
+    @apply px-4
+           py-4;
+  }
+
+  .page-header {
+    @apply px-6;
+  }
+
+  .right-section {
+    @apply gap-5;
+    background-image: none;
+  }
+
+  .right-section::before {
+    display: none;
+  }
+
+  .info-card {
+    @apply border;
+  }
 }
 
-.resume-name{
-    @apply text-lg font-medium text-gray-700 break-all;
-}
 
-.resume-btn{
-    @apply cursor-pointer bg-[#24c0c5] hover:bg-cyan-600 text-white font-semibold px-6 py-3 rounded-xl transition;
-}
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
-/* ===============================
-   RESPONSIVE
-================================= */
+@media (max-width: 640px) {
 
-@media (max-width:1024px){
+  .page-header {
+    @apply flex-col
+           items-start
+           gap-4
+           px-5
+           py-5;
+  }
 
-.profile-page{
-    @apply p-6;
-}
-
-.page-title{
-    @apply text-4xl;
-}
-
-.student-name{
-    @apply text-3xl;
-}
-
-.card-title{
-    @apply text-2xl;
-}
-
-}
-
-@media (max-width:768px){
-
-.profile-page{
-    @apply p-4;
-}
-
-.page-title{
-    @apply text-3xl;
-}
-
-.page-subtitle{
-    @apply text-base;
-}
-
-.profile-image-box{
-    @apply w-36 h-36;
-}
-
-.student-name{
-    @apply text-2xl;
-}
-
-.detail-row{
-    @apply flex-col items-start;
-}
-
-.detail-row strong{
-    @apply text-left;
-}
-
-.info-grid{
-    @apply grid-cols-1;
-}
-
-.resume-box{
-    @apply flex-col items-start;
-}
-
-.edit-btn{
+  .edit-btn {
     @apply w-full;
-}
+  }
 
-.resume-btn{
-    @apply w-full text-center;
-}
+  .profile-page {
+    @apply px-3
+           py-3;
+  }
 
-.upload-image-btn{
-    @apply w-full text-center;
-}
+  .left-card {
+    @apply px-4;
+  }
 
-}
+  .right-section {
+    @apply grid-cols-1
+           gap-4
+           pt-4;
+  }
 
-@media (max-width:480px){
+  .info-grid {
+    @apply grid-cols-1;
+  }
 
-.profile-image-box{
-    @apply w-32 h-32;
-}
+  .input-group:nth-child(odd) {
+    @apply border-r-0;
+  }
 
-.profile-placeholder{
-    @apply text-5xl;
-}
-
-.permission-wrapper{
-    @apply gap-2;
-}
-
-.permission-chip{
-    @apply text-xs px-3 py-2;
-}
-
-.input-group input{
-    @apply text-base;
-}
-
+  .card-title {
+    @apply min-w-[140px];
+  }
 }
