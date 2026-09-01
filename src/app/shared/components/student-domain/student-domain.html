@@ -1,126 +1,227 @@
-<div class="p-6">
 
-    <!-- Header -->
+<div class="domain-page">
 
-    <div class="flex items-center justify-between mb-6">
+  <!-- =====================================================
+       DOMAIN COUNT
+  ====================================================== -->
+  <div class="domain-toolbar">
 
-        <div>
+    <div class="toolbar-title">
+      <span class="page-label">LEARNING PORTAL</span>
 
-            <h2 class="text-3xl font-bold text-[#2F3E46]">
-                My Domains
-            </h2>
+      <h1>
+        My Domains
+      </h1>
 
-            <p class="text-gray-500">
-                Explore your learning domains
-            </p>
+      <p>
+        Explore your assigned learning domains and continue your learning journey.
+      </p>
+    </div>
 
+    <div class="domain-count">
+
+      <div class="count-icon">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor">
+
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v11a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 014 17.5v-11z" />
+
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M8 8h8M8 12h8M8 16h4" />
+
+        </svg>
+      </div>
+
+      <div class="count-content">
+        <span>Available</span>
+
+        <div class="count-number">
+          <strong>{{ domain.length }}</strong>
+          <small>Domains</small>
         </div>
-
-        <div
-            class="bg-[#24C0C5] text-white px-5 py-2 rounded-full font-semibold shadow">
-
-            {{domain.length}} Domains
-
-        </div>
+      </div>
 
     </div>
 
-    <!-- Loading -->
+  </div>
 
-    <div *ngIf="loading"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <div
-            *ngFor="let x of [1,2,3,4,5,6]"
-            class="h-48 rounded-2xl bg-gray-200 animate-pulse">
-        </div>
+  <!-- =====================================================
+       LOADING SKELETON
+  ====================================================== -->
+  <section
+    *ngIf="loading"
+    class="domain-grid">
+
+    <article
+      *ngFor="let x of [1,2,3,4,5,6]"
+      class="domain-card skeleton-card">
+
+      <div class="skeleton-top"></div>
+
+      <div class="skeleton-body">
+
+        <div class="skeleton-line skeleton-title"></div>
+
+        <div class="skeleton-line"></div>
+
+        <div class="skeleton-line skeleton-short"></div>
+
+        <div class="skeleton-footer"></div>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================================
+       EMPTY STATE
+  ====================================================== -->
+  <section
+    *ngIf="!loading && domain.length === 0"
+    class="empty-state">
+
+    <div class="empty-icon">
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor">
+
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.7"
+          d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v11a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 014 17.5v-11z" />
+
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.7"
+          d="M8 9h8M8 13h5" />
+
+      </svg>
 
     </div>
 
-    <!-- No Data -->
+    <h3>
+      No Domains Available
+    </h3>
 
-    <div
-        *ngIf="!loading && domain.length==0"
-        class="bg-white rounded-xl shadow p-10 text-center">
+    <p>
+      Your assigned learning domains will appear here.
+    </p>
 
-        <img
-            src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
-            class="w-28 mx-auto mb-4">
+  </section>
 
-        <h3 class="text-xl font-semibold">
-            No Domains Available
-        </h3>
 
-        <p class="text-gray-500">
-            Domains will appear here after they are assigned.
+  <!-- =====================================================
+       DOMAIN CARDS
+  ====================================================== -->
+  <section
+    *ngIf="!loading && domain.length > 0"
+    class="domain-grid">
+
+    <article
+      *ngFor="let item of domain"
+      class="domain-card">
+
+      <!-- =================================================
+           CARD CONTENT
+      ================================================== -->
+      <div class="card-content">
+
+        <span class="domain-label">
+          LEARNING DOMAIN
+        </span>
+
+        <h2>
+          {{ item.domainName }}
+        </h2>
+
+        <p>
+          {{
+            item.description ||
+            'Start learning this domain and improve your technical skills.'
+          }}
         </p>
 
-    </div>
 
-    <!-- Domain Cards -->
+        <!-- =================================================
+             CARD FOOTER
+        ================================================== -->
+        <div class="card-footer">
 
-    <div
-        *ngIf="!loading && domain.length>0"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div class="domain-info">
 
-        <div
-            *ngFor="let item of domain"
-            class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border hover:border-[#24C0C5]">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor">
 
-            <!-- Top -->
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.8"
+                d="M12 6v6l4 2" />
 
-            <div
-                class="h-28 bg-gradient-to-r from-[#2F3E46] to-[#24C0C5] flex justify-center items-center">
+              <circle
+                cx="12"
+                cy="12"
+                r="9"
+                stroke-width="1.8" />
 
-                <div
-                    class="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-lg">
+            </svg>
 
-                    <span class="text-3xl">💻</span>
+            <span>
+              Continue Learning
+            </span>
 
-                </div>
+          </div>
 
-            </div>
 
-            <!-- Content -->
+          <button
+            type="button"
+            class="view-button"
+            (click)="view(item.domainId)">
 
-            <div class="p-5">
+            <span>
+              View
+            </span>
 
-                <h3
-                    class="text-xl font-bold text-[#2F3E46] group-hover:text-[#24C0C5]">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor">
 
-                    {{item.domainName}}
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 12h14M13 6l6 6-6 6" />
 
-                </h3>
+            </svg>
 
-                <p class="text-gray-500 mt-2 min-h-[50px]">
-
-                    {{item.description || 'Start learning this domain and improve your skills.'}}
-
-                </p>
-
-                <div
-                    class="mt-5 flex justify-between items-center">
-
-                    <span
-                        class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-
-                        Active
-
-                    </span>
-
-                    <button (click)="view(item.domainId)"
-                        class="bg-[#24C0C5] hover:bg-[#2F3E46] text-white px-4 py-2 rounded-lg transition">
-
-                        View
-
-                    </button>
-
-                </div>
-
-            </div>
+          </button>
 
         </div>
 
-    </div>
+      </div>
+
+    </article>
+
+  </section>
 
 </div>
+

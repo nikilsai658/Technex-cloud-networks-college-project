@@ -1,92 +1,180 @@
-<div class="min-h-screen bg-gray-100 p-6">
+<div class="domain-page">
 
-  <!-- Header -->
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+  <section class="page-header">
 
-  <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
+    <div class="header-left">
 
-    <div>
-      <h1 class="text-3xl font-bold text-[#2F3E46]">
-        Domain Management
-      </h1>
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M12 3v18m9-9H3M5.5 5.5l13 13m0-13-13 13" />
+        </svg>
+      </div>
 
-      <p class="text-gray-500">
-        Create, Update and Manage Domains
-      </p>
+      <div>
+        <h1>Domain Management</h1>
+
+        <p>
+          Create, organize and manage learning domains
+        </p>
+      </div>
+
     </div>
 
+
+    <!-- STAT CARD -->
     <div
-      class="bg-white rounded-xl shadow px-6 py-4"
+      class="domain-stat"
       *ngIf="auth.hasPermission('VIEW_DOMAIN')">
 
-      <p class="text-sm text-gray-500">
-        Total Domains
-      </p>
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v11a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 014 17.5v-11z" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M8 8h8M8 12h8M8 16h5" />
+        </svg>
+      </div>
 
-      <h2 class="text-3xl font-bold text-[#24c0c5]">
-        {{ domains.length }}
-      </h2>
+      <div>
+        <span>Total Domains</span>
+        <strong>{{ domains.length }}</strong>
+      </div>
 
     </div>
 
-  </div>
+  </section>
 
-  <div class="grid lg:grid-cols-3 gap-8">
 
-    <!-- ================= FORM ================= -->
+  <!-- =====================================================
+       MAIN CONTENT
+  ====================================================== -->
+  <section class="domain-layout">
 
-    <div class="bg-white rounded-2xl shadow-lg p-6">
 
-      <h2 class="text-2xl font-bold text-[#2F3E46] mb-6">
+    <!-- ===================================================
+         FORM CARD
+    ==================================================== -->
+    <div class="form-card">
 
-        {{ isEditMode ? 'Update Domain' : 'Create Domain' }}
+      <div class="card-heading">
 
-      </h2>
+        <div>
+          <span class="section-label">
+            DOMAIN
+          </span>
 
+          <h2>
+            {{ isEditMode ? 'Update Domain' : 'Create Domain' }}
+          </h2>
+
+          <p>
+            {{ isEditMode
+              ? 'Update the selected domain information.'
+              : 'Add a new learning domain to the portal.'
+            }}
+          </p>
+        </div>
+
+        <div class="form-heading-icon">
+
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M12 6v12M6 12h12" />
+
+          </svg>
+
+        </div>
+
+      </div>
+
+
+      <!-- FORM -->
       <form
         [formGroup]="domainForm"
-        (ngSubmit)="isEditMode ? updateDomain() : createDomain()">
+        (ngSubmit)="isEditMode ? updateDomain() : createDomain()"
+        class="domain-form">
 
-        <!-- Name -->
 
-        <div class="mb-5">
+        <!-- DOMAIN NAME -->
+        <div class="form-group">
 
-          <label class="font-semibold">
+          <label>
             Domain Name
+            <span>*</span>
           </label>
 
-          <input
-            type="text"
-            formControlName="name"
-            placeholder="Enter Domain Name"
-            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+          <div class="input-wrapper">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.8"
+                d="M4 7h16M4 12h16M4 17h10" />
+            </svg>
+
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="e.g. Web Development" />
+
+          </div>
 
           <small
-            class="text-red-500"
-            *ngIf="domainForm.get('name')?.invalid && domainForm.get('name')?.touched">
+            class="validation-error"
+            *ngIf="
+              domainForm.get('name')?.invalid &&
+              domainForm.get('name')?.touched
+            ">
 
-            Domain Name is required
+            Domain name is required
 
           </small>
 
         </div>
 
-        <!-- Description -->
 
-        <div class="mb-5">
+        <!-- DESCRIPTION -->
+        <div class="form-group">
 
-          <label class="font-semibold">
+          <label>
             Description
+            <span>*</span>
           </label>
 
-          <textarea
-            rows="3"
-            formControlName="description"
-            placeholder="Enter Description"
-            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none"></textarea>
+          <div class="textarea-wrapper">
+
+            <textarea
+              rows="4"
+              formControlName="description"
+              placeholder="Describe what this domain covers...">
+            </textarea>
+
+          </div>
 
           <small
-            class="text-red-500"
-            *ngIf="domainForm.get('description')?.invalid && domainForm.get('description')?.touched">
+            class="validation-error"
+            *ngIf="
+              domainForm.get('description')?.invalid &&
+              domainForm.get('description')?.touched
+            ">
 
             Description is required
 
@@ -94,80 +182,194 @@
 
         </div>
 
-        <!-- Eligible From Year -->
 
-        <div class="mb-5">
+        <!-- YEAR RANGE -->
+        <div class="year-grid">
 
-          <label class="font-semibold">
-            Eligible From Year
-          </label>
+          <div class="form-group">
 
-          <input
-            type="number"
-            formControlName="eligibleFromYear"
-            min="1"
-            class="mt-2 w-full border rounded-lg p-3">
+            <label>
+              Eligible From Year
+            </label>
+
+            <div class="input-wrapper">
+
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="16"
+                  rx="2"
+                  stroke-width="1.8" />
+
+                <path
+                  d="M16 3v4M8 3v4M3 10h18"
+                  stroke-width="1.8"
+                  stroke-linecap="round" />
+              </svg>
+
+              <input
+                type="number"
+                min="1"
+                formControlName="eligibleFromYear"
+                placeholder="1" />
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Eligible To Year
+            </label>
+
+            <div class="input-wrapper">
+
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="16"
+                  rx="2"
+                  stroke-width="1.8" />
+
+                <path
+                  d="M16 3v4M8 3v4M3 10h18"
+                  stroke-width="1.8"
+                  stroke-linecap="round" />
+              </svg>
+
+              <input
+                type="number"
+                min="1"
+                formControlName="eligibleToYear"
+                placeholder="4" />
+
+            </div>
+
+          </div>
 
         </div>
 
-        <!-- Eligible To Year -->
 
-        <div class="mb-5">
+        <!-- ACTIVE -->
+        <div class="active-box">
 
-          <label class="font-semibold">
-            Eligible To Year
-          </label>
+          <div class="active-info">
 
-          <input
-            type="number"
-            formControlName="eligibleToYear"
-            min="1"
-            class="mt-2 w-full border rounded-lg p-3">
+            <div class="active-icon">
 
-        </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
 
-        <!-- Active -->
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.8"
+                  d="M12 3a9 9 0 100 18 9 9 0 000-18z" />
 
-        <div class="mb-6">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.8"
+                  d="M8 12l2.5 2.5L16 9" />
 
-          <label class="flex items-center gap-3">
+              </svg>
+
+            </div>
+
+            <div>
+
+              <strong>Domain Status</strong>
+
+              <span>
+                Make this domain available to students
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <label class="switch">
 
             <input
               type="checkbox"
-              formControlName="isActive">
+              formControlName="isActive" />
 
-            Active
+            <span class="slider"></span>
 
           </label>
 
         </div>
 
-        <!-- Buttons -->
 
-        <div class="flex gap-3">
+        <!-- ACTIONS -->
+        <div class="form-actions">
 
           <button
-            *ngIf="!isEditMode && auth.hasPermission('CREATE_DOMAIN')"
+            *ngIf="
+              !isEditMode &&
+              auth.hasPermission('CREATE_DOMAIN')
+            "
             type="submit"
-            class="flex-1 bg-[#24c0c5] hover:bg-[#18a7ab] text-white py-3 rounded-lg font-semibold">
+            class="primary-btn">
 
-            Create
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 5v14M5 12h14" />
+
+            </svg>
+
+            Create Domain
 
           </button>
 
-          <button
-            *ngIf="isEditMode && auth.hasPermission('UPDATE_DOMAIN')"
-            type="submit"
-            class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-lg font-semibold">
 
-            Update
+          <button
+            *ngIf="
+              isEditMode &&
+              auth.hasPermission('UPDATE_DOMAIN')
+            "
+            type="submit"
+            class="update-btn">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.8"
+                d="M16.862 3.487a2.1 2.1 0 013.65 2.1L8.2 17.9l-4.7 1.2 1.2-4.7L16.862 3.487z" />
+
+            </svg>
+
+            Update Domain
 
           </button>
+
 
           <button
             type="button"
             (click)="resetForm()"
-            class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold">
+            class="secondary-btn">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.8"
+                d="M4 12a8 8 0 1114.9 4M4 12V6m0 6h6" />
+
+            </svg>
 
             Reset
 
@@ -179,115 +381,247 @@
 
     </div>
 
-    <!-- ================= TABLE ================= -->
 
+    <!-- ===================================================
+         TABLE CARD
+    ==================================================== -->
     <div
-      class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden"
+      class="table-card"
       *ngIf="auth.hasPermission('VIEW_DOMAIN')">
 
-      <div class="bg-[#2F3E46] text-white px-6 py-4">
 
-        <h2 class="text-xl font-bold">
+      <!-- TABLE HEADER -->
+      <div class="table-header">
 
-          Domain List
+        <div>
 
-        </h2>
+          <span class="section-label">
+            OVERVIEW
+          </span>
+
+          <h2>
+            Domain List
+          </h2>
+
+          <p>
+            Manage all available learning domains
+          </p>
+
+        </div>
+
+
+        <div class="domain-count">
+
+          {{ domains.length }}
+
+          <span>
+            Domains
+          </span>
+
+        </div>
 
       </div>
 
-      <div class="overflow-x-auto">
 
-        <table class="min-w-full">
+      <!-- TABLE -->
+      <div class="table-container">
 
-          <thead class="bg-gray-100">
+        <table>
+
+          <thead>
 
             <tr>
 
-              <th class="px-5 py-4 text-left">#</th>
+              <th class="number-column">
+                #
+              </th>
 
-              <th class="px-5 py-4 text-left">Domain</th>
+              <th>
+                Domain
+              </th>
 
-              <th class="px-5 py-4 text-left">Description</th>
+              <th>
+                Description
+              </th>
 
-              <th class="px-5 py-4 text-center">From Year</th>
+              <th class="center-column">
+                From
+              </th>
 
-              <th class="px-5 py-4 text-center">To Year</th>
+              <th class="center-column">
+                To
+              </th>
 
-              <th class="px-5 py-4 text-center">Status</th>
+              <th class="center-column">
+                Status
+              </th>
 
-              <th class="px-5 py-4 text-center">Actions</th>
+              <th class="center-column">
+                Actions
+              </th>
 
             </tr>
 
           </thead>
 
+
           <tbody>
 
             <tr
-              *ngFor="let domain of domains; let i=index"
-              class="border-b hover:bg-gray-50">
+              *ngFor="
+                let domain of domains;
+                let i = index
+              ">
 
-              <td class="px-5 py-4">
+
+              <!-- NUMBER -->
+              <td class="number-cell">
 
                 {{ i + 1 }}
 
               </td>
 
-              <td class="px-5 py-4 font-semibold">
 
-                {{ domain.name }}
+              <!-- DOMAIN -->
+              <td>
+
+                <div class="domain-name">
+
+                  <div class="domain-avatar">
+
+                    {{ domain.name?.charAt(0)?.toUpperCase() }}
+
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      {{ domain.name }}
+                    </strong>
+
+                    <span>
+                      Domain #{{ domain.id }}
+                    </span>
+
+                  </div>
+
+                </div>
 
               </td>
 
-              <td class="px-5 py-4">
 
-                {{ domain.description }}
+              <!-- DESCRIPTION -->
+              <td>
 
-              </td>
+                <div class="description-cell">
 
-              <td class="px-5 py-4 text-center">
+                  {{ domain.description }}
 
-                {{ domain.eligibleFromYear }}
-
-              </td>
-
-              <td class="px-5 py-4 text-center">
-
-                {{ domain.eligibleToYear }}
+                </div>
 
               </td>
 
-              <td class="px-5 py-4 text-center">
+
+              <!-- FROM -->
+              <td class="center-column">
+
+                <span class="year-badge">
+                  {{ domain.eligibleFromYear }}
+                </span>
+
+              </td>
+
+
+              <!-- TO -->
+              <td class="center-column">
+
+                <span class="year-badge">
+                  {{ domain.eligibleToYear }}
+                </span>
+
+              </td>
+
+
+              <!-- STATUS -->
+              <td class="center-column">
 
                 <span
-                  class="px-3 py-1 rounded-full text-white"
-                  [ngClass]="domain.isActive ? 'bg-green-500' : 'bg-red-500'">
+                  class="status-badge"
+                  [ngClass]="
+                    domain.isActive
+                      ? 'status-active'
+                      : 'status-inactive'
+                  ">
 
-                  {{ domain.isActive ? 'Active' : 'Inactive' }}
+                  <span class="status-dot"></span>
+
+                  {{ domain.isActive
+                    ? 'Active'
+                    : 'Inactive'
+                  }}
 
                 </span>
 
               </td>
 
-              <td class="px-5 py-4">
 
-                <div class="flex justify-center gap-2">
+              <!-- ACTIONS -->
+              <td class="center-column">
 
+                <div class="action-buttons">
+
+
+                  <!-- EDIT -->
                   <button
-                    *ngIf="auth.hasPermission('UPDATE_DOMAIN')"
+                    *ngIf="
+                      auth.hasPermission('UPDATE_DOMAIN')
+                    "
                     (click)="editDomain(domain)"
-                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                    class="icon-btn edit-btn"
+                    title="Edit Domain">
 
-                    Edit
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor">
+
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M16.862 3.487a2.1 2.1 0 013.65 2.1L8.2 17.9l-4.7 1.2 1.2-4.7L16.862 3.487z" />
+
+                      <path
+                        stroke-linecap="round"
+                        stroke-width="1.8"
+                        d="M14.5 5.5l4 4" />
+
+                    </svg>
 
                   </button>
 
-                  <button
-                    *ngIf="auth.hasPermission('DELETE_DOMAIN')"
-                    (click)="deleteDomain(domain.id)"
-                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
 
-                    Delete
+                  <!-- DELETE -->
+                  <button
+                    *ngIf="
+                      auth.hasPermission('DELETE_DOMAIN')
+                    "
+                    (click)="deleteDomain(domain.id)"
+                    class="icon-btn delete-btn"
+                    title="Delete Domain">
+
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor">
+
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+
+                    </svg>
 
                   </button>
 
@@ -297,13 +631,38 @@
 
             </tr>
 
+
+            <!-- EMPTY STATE -->
             <tr *ngIf="domains.length === 0">
 
               <td
                 colspan="7"
-                class="text-center py-8 text-gray-500">
+                class="empty-state">
 
-                No Domains Found
+                <div class="empty-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor">
+
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.8"
+                      d="M4 7h16M4 12h16M4 17h10" />
+
+                  </svg>
+
+                </div>
+
+                <strong>
+                  No domains found
+                </strong>
+
+                <span>
+                  Create your first domain using the form.
+                </span>
 
               </td>
 
@@ -317,6 +676,6 @@
 
     </div>
 
-  </div>
+  </section>
 
 </div>

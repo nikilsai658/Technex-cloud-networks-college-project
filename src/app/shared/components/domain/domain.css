@@ -1,0 +1,599 @@
+@import "tailwindcss";
+
+/* =========================================================
+   DOMAIN MANAGEMENT
+   Professional Enterprise Admin UI
+   ========================================================= */
+
+:host {
+  @apply block min-h-screen;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.domain-page {
+  @apply min-h-screen w-full bg-[#f6f8fa] px-5 py-6 lg:px-8 lg:py-8;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.page-header {
+  @apply mb-8 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between;
+}
+
+.header-left {
+  @apply flex items-center gap-4;
+}
+
+.header-icon {
+  @apply flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl
+         bg-[#2F3E46] text-[#24c0c5]
+         shadow-sm;
+}
+
+.header-icon svg {
+  @apply h-7 w-7;
+}
+
+.header-left h1 {
+  @apply text-2xl font-bold tracking-tight text-[#2F3E46] lg:text-3xl;
+}
+
+.header-left p {
+  @apply mt-1 text-sm text-gray-500;
+}
+
+
+/* =========================================================
+   STAT CARD
+   ========================================================= */
+
+.domain-stat {
+  @apply flex min-w-[210px] items-center gap-4 rounded-2xl
+         border border-gray-200 bg-white px-5 py-4
+         shadow-sm;
+}
+
+.stat-icon {
+  @apply flex h-11 w-11 items-center justify-center
+         rounded-xl bg-[#24c0c5]/10 text-[#24c0c5];
+}
+
+.stat-icon svg {
+  @apply h-5 w-5;
+}
+
+.domain-stat span {
+  @apply block text-xs font-medium uppercase tracking-wide text-gray-400;
+}
+
+.domain-stat strong {
+  @apply mt-0.5 block text-2xl font-bold text-[#2F3E46];
+}
+
+
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+
+.domain-layout {
+  @apply grid grid-cols-1 gap-6 xl:grid-cols-[380px_minmax(0,1fr)];
+}
+
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.form-card {
+  @apply overflow-hidden rounded-2xl border border-gray-200
+         bg-white shadow-sm;
+}
+
+.card-heading {
+  @apply flex items-start justify-between border-b border-gray-100
+         px-6 py-5;
+}
+
+.section-label {
+  @apply text-[10px] font-bold tracking-[0.16em] text-[#24c0c5];
+}
+
+.card-heading h2,
+.table-header h2 {
+  @apply mt-1 text-xl font-bold text-[#2F3E46];
+}
+
+.card-heading p,
+.table-header p {
+  @apply mt-1 text-xs leading-5 text-gray-500;
+}
+
+.form-heading-icon {
+  @apply flex h-10 w-10 items-center justify-center rounded-xl
+         bg-[#f1f7f7] text-[#24c0c5];
+}
+
+.form-heading-icon svg {
+  @apply h-5 w-5;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.domain-form {
+  @apply p-6;
+}
+
+.form-group {
+  @apply mb-5;
+}
+
+.form-group label {
+  @apply mb-2 block text-sm font-semibold text-[#2F3E46];
+}
+
+.form-group label span {
+  @apply ml-1 text-red-500;
+}
+
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+.input-wrapper {
+  @apply flex items-center rounded-xl border border-gray-200
+         bg-white transition-all duration-200;
+}
+
+.input-wrapper:focus-within {
+  @apply border-[#24c0c5] ring-4 ring-[#24c0c5]/10;
+}
+
+.input-wrapper svg {
+  @apply ml-3 h-5 w-5 shrink-0 text-gray-400;
+}
+
+.input-wrapper input {
+  @apply w-full border-0 bg-transparent px-3 py-3
+         text-sm text-[#2F3E46] outline-none;
+}
+
+.input-wrapper input::placeholder {
+  @apply text-gray-400;
+}
+
+
+/* =========================================================
+   TEXTAREA
+   ========================================================= */
+
+.textarea-wrapper {
+  @apply rounded-xl border border-gray-200 bg-white transition-all duration-200;
+}
+
+.textarea-wrapper:focus-within {
+  @apply border-[#24c0c5] ring-4 ring-[#24c0c5]/10;
+}
+
+.textarea-wrapper textarea {
+  @apply w-full resize-none rounded-xl border-0 bg-transparent
+         px-4 py-3 text-sm leading-6 text-[#2F3E46]
+         outline-none;
+}
+
+.textarea-wrapper textarea::placeholder {
+  @apply text-gray-400;
+}
+
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+.validation-error {
+  @apply mt-1.5 block text-xs font-medium text-red-500;
+}
+
+
+/* =========================================================
+   YEAR GRID
+   ========================================================= */
+
+.year-grid {
+  @apply grid grid-cols-2 gap-3;
+}
+
+
+/* =========================================================
+   ACTIVE STATUS
+   ========================================================= */
+
+.active-box {
+  @apply mb-6 flex items-center justify-between rounded-xl
+         border border-gray-200 bg-[#fafbfb] px-4 py-3;
+}
+
+.active-info {
+  @apply flex items-center gap-3;
+}
+
+.active-icon {
+  @apply flex h-9 w-9 items-center justify-center rounded-lg
+         bg-[#24c0c5]/10 text-[#24c0c5];
+}
+
+.active-icon svg {
+  @apply h-5 w-5;
+}
+
+.active-info strong {
+  @apply block text-sm font-semibold text-[#2F3E46];
+}
+
+.active-info span {
+  @apply mt-0.5 block text-[11px] text-gray-400;
+}
+
+
+/* =========================================================
+   TOGGLE
+   ========================================================= */
+
+.switch {
+  @apply relative inline-flex h-6 w-11 cursor-pointer;
+}
+
+.switch input {
+  @apply absolute h-0 w-0 opacity-0;
+}
+
+.slider {
+  @apply absolute inset-0 cursor-pointer rounded-full
+         bg-gray-300 transition-all duration-200;
+}
+
+.slider::before {
+  content: "";
+  @apply absolute left-1 top-1 h-4 w-4 rounded-full
+         bg-white shadow-sm transition-all duration-200;
+}
+
+.switch input:checked + .slider {
+  @apply bg-[#24c0c5];
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+
+/* =========================================================
+   FORM ACTIONS
+   ========================================================= */
+
+.form-actions {
+  @apply flex gap-3;
+}
+
+.primary-btn,
+.update-btn,
+.secondary-btn {
+  @apply flex flex-1 items-center justify-center gap-2
+         rounded-xl px-4 py-3 text-sm font-semibold
+         transition-all duration-200;
+}
+
+.primary-btn {
+  @apply bg-[#24c0c5] text-white shadow-sm;
+}
+
+.primary-btn:hover {
+  @apply bg-[#1eafb4] shadow-md;
+}
+
+.update-btn {
+  @apply bg-[#e9a400] text-white shadow-sm;
+}
+
+.update-btn:hover {
+  @apply bg-[#d99600] shadow-md;
+}
+
+.secondary-btn {
+  @apply border border-gray-200 bg-white text-gray-600;
+}
+
+.secondary-btn:hover {
+  @apply bg-gray-50 text-[#2F3E46];
+}
+
+.primary-btn svg,
+.update-btn svg,
+.secondary-btn svg {
+  @apply h-4 w-4;
+}
+
+
+/* =========================================================
+   TABLE CARD
+   ========================================================= */
+
+.table-card {
+  @apply min-w-0 overflow-hidden rounded-2xl border border-gray-200
+         bg-white shadow-sm;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+   ========================================================= */
+
+.table-header {
+  @apply flex items-center justify-between border-b border-gray-100
+         px-6 py-5;
+}
+
+.domain-count {
+  @apply flex items-baseline gap-1 rounded-xl
+         bg-[#f1f7f7] px-4 py-2 text-lg font-bold text-[#2F3E46];
+}
+
+.domain-count span {
+  @apply text-xs font-medium text-gray-400;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-container {
+  @apply w-full overflow-x-auto;
+}
+
+table {
+  @apply w-full min-w-[850px] border-collapse;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+   ========================================================= */
+
+thead {
+  @apply bg-[#f8fafb];
+}
+
+thead tr {
+  @apply border-b border-gray-200;
+}
+
+th {
+  @apply whitespace-nowrap px-5 py-4 text-left
+         text-[10px] font-bold uppercase tracking-[0.08em]
+         text-gray-400;
+}
+
+.number-column {
+  @apply w-14;
+}
+
+.center-column {
+  @apply text-center;
+}
+
+
+/* =========================================================
+   TABLE BODY
+   ========================================================= */
+
+tbody tr {
+  @apply border-b border-gray-100 transition-colors duration-150;
+}
+
+tbody tr:hover {
+  @apply bg-[#fafcfc];
+}
+
+td {
+  @apply px-5 py-4 text-sm text-gray-600;
+}
+
+.number-cell {
+  @apply font-medium text-gray-400;
+}
+
+
+/* =========================================================
+   DOMAIN NAME
+   ========================================================= */
+
+.domain-name {
+  @apply flex items-center gap-3;
+}
+
+.domain-avatar {
+  @apply flex h-10 w-10 shrink-0 items-center justify-center
+         rounded-xl bg-[#2F3E46] text-sm font-bold text-[#24c0c5];
+}
+
+.domain-name strong {
+  @apply block max-w-[180px] truncate text-sm font-semibold text-[#2F3E46];
+}
+
+.domain-name span {
+  @apply mt-0.5 block text-[10px] text-gray-400;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.description-cell {
+  @apply max-w-[280px] truncate text-sm text-gray-500;
+}
+
+
+/* =========================================================
+   YEAR BADGE
+   ========================================================= */
+
+.year-badge {
+  @apply inline-flex min-w-[32px] items-center justify-center
+         rounded-lg bg-gray-100 px-2.5 py-1.5
+         text-xs font-semibold text-gray-600;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status-badge {
+  @apply inline-flex items-center gap-2 rounded-full
+         px-3 py-1.5 text-xs font-semibold;
+}
+
+.status-active {
+  @apply bg-emerald-50 text-emerald-600;
+}
+
+.status-inactive {
+  @apply bg-red-50 text-red-500;
+}
+
+.status-dot {
+  @apply h-1.5 w-1.5 rounded-full bg-current;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.action-buttons {
+  @apply flex justify-center gap-2;
+}
+
+.icon-btn {
+  @apply flex h-9 w-9 items-center justify-center
+         rounded-lg border transition-all duration-150;
+}
+
+.icon-btn svg {
+  @apply h-4 w-4;
+}
+
+.edit-btn {
+  @apply border-amber-200 bg-amber-50 text-amber-600;
+}
+
+.edit-btn:hover {
+  @apply bg-amber-100;
+}
+
+.delete-btn {
+  @apply border-red-200 bg-red-50 text-red-500;
+}
+
+.delete-btn:hover {
+  @apply bg-red-100;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+  @apply py-16 text-center;
+}
+
+.empty-icon {
+  @apply mx-auto mb-4 flex h-14 w-14 items-center justify-center
+         rounded-2xl bg-gray-100 text-gray-400;
+}
+
+.empty-icon svg {
+  @apply h-6 w-6;
+}
+
+.empty-state strong {
+  @apply block text-sm font-semibold text-[#2F3E46];
+}
+
+.empty-state span {
+  @apply mt-1 block text-xs text-gray-400;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .domain-layout {
+    @apply grid-cols-1;
+  }
+
+}
+
+
+@media (max-width: 640px) {
+
+  .domain-page {
+    @apply px-4 py-5;
+  }
+
+  .header-left {
+    @apply items-start;
+  }
+
+  .header-icon {
+    @apply h-11 w-11 rounded-xl;
+  }
+
+  .header-icon svg {
+    @apply h-5 w-5;
+  }
+
+  .header-left h1 {
+    @apply text-xl;
+  }
+
+  .domain-stat {
+    @apply w-full;
+  }
+
+  .card-heading,
+  .table-header {
+    @apply px-4;
+  }
+
+  .domain-form {
+    @apply p-4;
+  }
+
+  .form-actions {
+    @apply flex-col;
+  }
+
+  .primary-btn,
+  .update-btn,
+  .secondary-btn {
+    @apply w-full;
+  }
+
+}
