@@ -20,6 +20,7 @@ export class Department {
 
   isEditMode = false;
   selectedDepartmentId = 0;
+  showModal = false;
 
  sidebarOpen = false;
 
@@ -38,14 +39,14 @@ export class Department {
 
   ngOnInit(): void {
 
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     this.departmentForm = this.fb.group({
       name: ['', Validators.required],
       code: ['', Validators.required]
     });
+
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
     // Check login
     const token = this.cookie.get('token');
@@ -110,6 +111,34 @@ loadDepartments(): void {
 }
 
   //=====================================
+  // Modal Controls
+  //=====================================
+
+  openAddModal(): void {
+
+    this.isEditMode = false;
+
+    this.selectedDepartmentId = 0;
+
+    this.departmentForm.reset();
+
+    this.showModal = true;
+
+  }
+
+  closeModal(): void {
+
+    this.showModal = false;
+
+    this.isEditMode = false;
+
+    this.selectedDepartmentId = 0;
+
+    this.departmentForm.reset();
+
+  }
+
+  //=====================================
   // Create Department
   //=====================================
 
@@ -132,6 +161,8 @@ loadDepartments(): void {
         alert('Department Created Successfully');
 
         this.departmentForm.reset();
+
+        this.showModal = false;
 
         this.loadDepartments();
 
@@ -165,6 +196,8 @@ loadDepartments(): void {
 
     });
 
+    this.showModal = true;
+
   }
 
   //=====================================
@@ -197,6 +230,8 @@ loadDepartments(): void {
         this.isEditMode = false;
 
         this.selectedDepartmentId = 0;
+
+        this.showModal = false;
 
         this.loadDepartments();
 
@@ -253,6 +288,8 @@ loadDepartments(): void {
     this.isEditMode = false;
 
     this.selectedDepartmentId = 0;
+
+    this.showModal = false;
 
   }
 }

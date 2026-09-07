@@ -207,67 +207,20 @@ export class RolePermissionComponent implements OnInit {
 
     this.loading = true;
 
-    if (this.editMode) {
+    this.rolePermissionService
+      .createRolepermission(payload)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
 
-      if (this.selectedId == null) return;
+        next: () => {
 
-      this.rolePermissionService
-        .updateRolepermission(this.selectedId, payload)
-        .pipe(finalize(() => this.loading = false))
-        .subscribe({
+          this.loadMappings();
 
-          next: () => {
+          this.resetForm();
 
-            this.loadMappings();
+        }
 
-            this.resetForm();
-
-          }
-
-        });
-
-    } else {
-
-      this.rolePermissionService
-        .createRolepermission(payload)
-        .pipe(finalize(() => this.loading = false))
-        .subscribe({
-
-          next: () => {
-
-            this.loadMappings();
-
-            this.resetForm();
-
-          }
-
-        });
-
-    }
-
-  }
-
-  //=====================================
-  // EDIT
-  //=====================================
-
-  edit(item: any): void {
-
-    if (!this.auth.hasPermission('UPDATE_ROLE_PERMISSION')) return;
-
-    this.editMode = true;
-
-    this.selectedId = item.id;
-
-    this.rolePermissionForm.patchValue({
-
-      roleName: item.roleName,
-
-      permissionCode: item.permissionCode,
-
-      canDelegate: item.canDelegate
-
-    });
+      });
 
   }
 

@@ -14,9 +14,9 @@ export class StudentdomaincoursemapService {
   createStudentdomaincoursemap(data:any){
     return this.api.POST('StudentDomainCourseMap',data);
   }
-  updateStudentdomaincoursemap(id:number,data:any){
+  /*updateStudentdomaincoursemap(id:number,data:any){
     return this.api.PUT(`StudentDomainCourseMap/${id}`,data);
-  }
+  }*/
   deleteStudentdomaincoursemap(id:number){
     return this.api.DELETE(`StudentDomainCourseMap/${id}`);
   }

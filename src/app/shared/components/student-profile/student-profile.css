@@ -1,16 +1,17 @@
 /* =========================================================
-   OPTION 4 — PROFILE PAGE
-   Color: #2F3E46 + White
-   Sharp / Professional / Minimal
+   PROFILE PAGE — OPTION 4
+   Responsive / Sharp / Professional
+   Primary: #2F3E46
    ========================================================= */
 
-
+@import "tailwindcss";
 /* =========================================================
    PAGE
    ========================================================= */
-@import "tailwindcss";
+
 .profile-page {
-  @apply min-h-screen bg-white
+  @apply min-h-screen w-full
+         bg-white
          px-6 py-6
          text-[#2F3E46];
 }
@@ -22,18 +23,19 @@
 
 .page-header {
   @apply relative
-         flex items-center justify-between
-         min-h-[110px]
+         flex
+         min-h-[105px]
+         items-center
+         justify-between
          bg-[#2F3E46]
          px-8 py-6
          text-white;
 
-  /* Slight angled bottom edge like option 4 */
   clip-path: polygon(
     0 0,
     100% 0,
     100% 82%,
-    98% 100%,
+    98.5% 100%,
     0 100%
   );
 }
@@ -58,7 +60,8 @@
    ========================================================= */
 
 .edit-btn {
-  @apply border
+  @apply cursor-pointer
+         border
          border-white
          bg-transparent
          px-5 py-2
@@ -66,8 +69,7 @@
          font-medium
          text-white
          transition-all
-         duration-200
-         cursor-pointer;
+         duration-200;
 }
 
 .edit-btn:hover {
@@ -77,28 +79,30 @@
 
 
 /* =========================================================
-   MAIN LAYOUT
+   MAIN PROFILE LAYOUT
    ========================================================= */
 
 .profile-layout {
   @apply flex
+         w-full
          flex-col
          bg-white;
 }
 
 
 /* =========================================================
-   PROFILE SECTION
+   PROFILE AREA
    ========================================================= */
 
 .left-card {
   @apply relative
          flex
+         w-full
          flex-col
          items-center
+         border-b
          border-l
          border-r
-         border-b
          border-gray-200
          bg-white
          px-6
@@ -115,14 +119,14 @@
          justify-center;
 }
 
-
 .profile-image-box {
   @apply relative
          z-10
-         -mt-12
+         -mt-[43px]
          flex
-         h-[86px]
-         w-[86px]
+         h-[82px]
+         w-[82px]
+         shrink-0
          items-center
          justify-center
          overflow-hidden
@@ -132,17 +136,14 @@
 
   border-radius: 50%;
 
-  /* Subtle dark outline */
   box-shadow: 0 0 0 1px #2F3E46;
 }
-
 
 .profile-image {
   @apply h-full
          w-full
          object-cover;
 }
-
 
 .profile-placeholder {
   @apply flex
@@ -160,7 +161,7 @@
 
 
 /* =========================================================
-   STUDENT NAME
+   NAME
    ========================================================= */
 
 .student-name {
@@ -174,14 +175,14 @@
 
 
 /* =========================================================
-   ACTIVE STUDENT
+   STATUS
    ========================================================= */
 
 .status-badge {
   @apply border
          border-[#2F3E46]
          px-3
-         py-0.5
+         py-1
          text-[10px]
          font-medium
          uppercase
@@ -191,7 +192,7 @@
 
 
 /* =========================================================
-   PROFILE DIVIDER
+   DIVIDER
    ========================================================= */
 
 .left-card hr {
@@ -211,43 +212,22 @@
 .right-section {
   @apply relative
          grid
+         w-full
          grid-cols-1
-         gap-6
-         px-0
+         gap-5
+         bg-white
          pt-6;
-
-  /* Dotted decorative background */
-  background-image: radial-gradient(
-    #d9dee1 1px,
-    transparent 1px
-  );
-
-  background-size: 10px 10px;
-
-  /* Keep dots extremely subtle */
-  background-position: right top;
 }
 
 
-/* White overlay hides dots from most of the area */
-
-.right-section::before {
-  content: "";
-
-  @apply absolute
-         inset-0
-         bg-white;
-
-  width: 94%;
-  z-index: 0;
-}
-
-
-/* Keep cards above decoration */
+/* =========================================================
+   INFORMATION CARD
+   ========================================================= */
 
 .info-card {
   @apply relative
          z-10
+         w-full
          border
          border-gray-200
          bg-white;
@@ -255,8 +235,7 @@
 
 
 /* =========================================================
-   PERSONAL + ACADEMIC CARDS
-   DESKTOP SIDE-BY-SIDE
+   DESKTOP — TWO CARDS SIDE BY SIDE
    ========================================================= */
 
 @media (min-width: 900px) {
@@ -264,12 +243,6 @@
   .right-section {
     @apply grid-cols-2
            gap-0;
-
-    background-image: none;
-  }
-
-  .right-section::before {
-    display: none;
   }
 
   .info-card:first-child {
@@ -279,8 +252,7 @@
 
 
 /* =========================================================
-   CARD HEADING
-   ANGLED DARK SHAPE — OPTION 4
+   CARD TITLE — OPTION 4 ANGLED SHAPE
    ========================================================= */
 
 .card-title {
@@ -288,7 +260,7 @@
          z-10
          m-0
          inline-flex
-         min-w-[145px]
+         min-w-[155px]
          items-center
          bg-[#2F3E46]
          px-5
@@ -297,30 +269,17 @@
          font-semibold
          text-white;
 
-  /* Creates the angled/trapezoid right edge */
   clip-path: polygon(
     0 0,
-    92% 0,
+    91% 0,
     100% 50%,
-    92% 100%,
+    91% 100%,
     0 100%
   );
 }
 
-
-/* Remove the old underline */
-
 .card-title::after {
   content: none;
-}
-
-
-/* =========================================================
-   CARD HEADING AREA
-   ========================================================= */
-
-.info-card {
-  padding-top: 0;
 }
 
 
@@ -330,10 +289,44 @@
 
 .info-grid {
   @apply grid
+         w-full
          grid-cols-1
-         sm:grid-cols-2
          border-t
          border-gray-200;
+}
+
+
+/* =========================================================
+   PERSONAL — DESKTOP
+   ========================================================= */
+
+@media (min-width: 640px) {
+
+  .info-card:first-child .info-grid {
+    @apply grid-cols-3;
+  }
+
+}
+
+
+/* =========================================================
+   ACADEMIC — DESKTOP
+   ========================================================= */
+
+@media (min-width: 640px) {
+
+  .info-card:nth-child(2) .info-grid {
+    @apply grid-cols-2;
+  }
+
+}
+
+@media (min-width: 1100px) {
+
+  .info-card:nth-child(2) .info-grid {
+    @apply grid-cols-3;
+  }
+
 }
 
 
@@ -342,21 +335,60 @@
    ========================================================= */
 
 .input-group {
-  @apply border-b
+  @apply flex
+         min-h-[76px]
+         min-w-0
+         flex-col
+         justify-center
+         border-b
          border-gray-200
          px-5
-         py-3;
+         py-4;
 }
 
 
-/* Vertical separator between fields */
+/* =========================================================
+   VERTICAL BORDERS
+   ========================================================= */
 
 @media (min-width: 640px) {
 
+  /* Personal: 3 columns */
+
+  .info-card:first-child
+  .input-group:not(:last-child) {
+    @apply border-r
+           border-gray-200;
+  }
+
+
+  /* Academic: 2 columns */
+
+  .info-card:nth-child(2)
   .input-group:nth-child(odd) {
     @apply border-r
            border-gray-200;
   }
+
+}
+
+
+@media (min-width: 1100px) {
+
+  /* Academic: 3 columns */
+
+  .info-card:nth-child(2)
+  .input-group:nth-child(odd),
+  .info-card:nth-child(2)
+  .input-group:nth-child(even) {
+    border-right: 1px solid #e5e7eb;
+  }
+
+  .info-card:nth-child(2)
+  .input-group:nth-child(3n) {
+    border-right: 0;
+  }
+
 }
 
 
@@ -365,8 +397,9 @@
    ========================================================= */
 
 .input-group label {
-  @apply mb-1
+  @apply mb-1.5
          block
+         truncate
          text-[10px]
          font-medium
          uppercase
@@ -380,7 +413,12 @@
    ========================================================= */
 
 .input-group input {
-  @apply w-full
+  @apply block
+         w-full
+         min-w-0
+         overflow-hidden
+         text-ellipsis
+         whitespace-nowrap
          border-0
          bg-transparent
          p-0
@@ -392,37 +430,98 @@
 
 
 /* =========================================================
-   ACADEMIC INFORMATION
+   DECORATIVE DOT PATTERN
    ========================================================= */
 
-/* Give academic card slightly different spacing */
+.right-section::after {
+  content: "";
 
-.info-card:nth-child(2) .input-group {
-  @apply py-3;
+  @apply pointer-events-none
+         absolute
+         right-0
+         top-0
+         h-[130px]
+         w-[150px];
+
+  background-image: radial-gradient(
+    #d8dde0 1px,
+    transparent 1px
+  );
+
+  background-size: 9px 9px;
+  opacity: 0.4;
+  z-index: 0;
 }
 
 
 /* =========================================================
-   DESKTOP CARD HEIGHT
+   LARGE DESKTOP
+   1200px+
    ========================================================= */
 
-@media (min-width: 900px) {
+@media (min-width: 1200px) {
 
-  .info-card {
-    min-height: 235px;
+  .profile-page {
+    @apply px-8
+           py-7;
   }
 
-  .info-grid {
-    min-height: 180px;
+  .page-header {
+    @apply px-10;
   }
+
+  .right-section {
+    @apply pt-7;
+  }
+
+  .input-group {
+    @apply min-h-[82px]
+           px-6
+           py-5;
+  }
+
 }
 
 
 /* =========================================================
    TABLET
+   768px — 899px
    ========================================================= */
 
-@media (max-width: 899px) {
+@media (min-width: 768px) and (max-width: 899px) {
+
+  .profile-page {
+    @apply px-5
+           py-5;
+  }
+
+  .page-header {
+    @apply min-h-[100px]
+           px-7;
+  }
+
+  .right-section {
+    @apply gap-5
+           pt-5;
+  }
+
+  .info-card {
+    @apply w-full;
+  }
+
+  .right-section::after {
+    display: none;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL TABLET / LARGE MOBILE
+   640px — 767px
+   ========================================================= */
+
+@media (min-width: 640px) and (max-width: 767px) {
 
   .profile-page {
     @apply px-4
@@ -430,50 +529,100 @@
   }
 
   .page-header {
-    @apply px-6;
+    @apply min-h-[95px]
+           px-6;
+  }
+
+  .page-title {
+    @apply text-xl;
+  }
+
+  .page-subtitle {
+    @apply text-xs;
   }
 
   .right-section {
-    @apply gap-5;
-    background-image: none;
+    @apply gap-4
+           pt-5;
   }
 
-  .right-section::before {
+  .right-section::after {
     display: none;
   }
 
-  .info-card {
-    @apply border;
-  }
 }
 
 
 /* =========================================================
    MOBILE
+   Below 640px
    ========================================================= */
 
-@media (max-width: 640px) {
-
-  .page-header {
-    @apply flex-col
-           items-start
-           gap-4
-           px-5
-           py-5;
-  }
-
-  .edit-btn {
-    @apply w-full;
-  }
+@media (max-width: 639px) {
 
   .profile-page {
     @apply px-3
            py-3;
   }
 
-  .left-card {
-    @apply px-4;
+
+  /* ---------------- HEADER ---------------- */
+
+  .page-header {
+    @apply min-h-0
+           flex-col
+           items-start
+           gap-4
+           px-5
+           py-5;
   }
+
+
+  .page-title {
+    @apply text-xl;
+  }
+
+
+  .page-subtitle {
+    @apply mt-1
+           text-xs
+           leading-5;
+  }
+
+
+  .edit-btn {
+    @apply w-full
+           py-2.5;
+  }
+
+
+  /* ---------------- PROFILE ---------------- */
+
+  .left-card {
+    @apply px-4
+           pb-5;
+  }
+
+
+  .profile-image-box {
+    @apply -mt-[38px]
+           h-[76px]
+           w-[76px];
+  }
+
+
+  .student-name {
+    @apply mt-3
+           text-sm;
+  }
+
+
+  .status-badge {
+    @apply text-[9px];
+  }
+
+
+  /* ---------------- RIGHT SECTION ---------------- */
 
   .right-section {
     @apply grid-cols-1
@@ -481,15 +630,127 @@
            pt-4;
   }
 
-  .info-grid {
+
+  /* Remove decorative dots */
+
+  .right-section::after {
+    display: none;
+  }
+
+
+  /* ---------------- CARDS ---------------- */
+
+  .info-card {
+    @apply w-full;
+  }
+
+
+  /* ---------------- CARD TITLE ---------------- */
+
+  .card-title {
+    @apply min-w-[145px]
+           px-4
+           py-2
+           text-[11px];
+  }
+
+
+  /* ---------------- GRIDS ---------------- */
+
+  .info-card:first-child .info-grid,
+  .info-card:nth-child(2) .info-grid {
     @apply grid-cols-1;
   }
 
-  .input-group:nth-child(odd) {
-    @apply border-r-0;
+
+  /* ---------------- FIELDS ---------------- */
+
+  .input-group {
+    @apply min-h-[68px]
+           border-r-0
+           px-4
+           py-3;
   }
 
-  .card-title {
-    @apply min-w-[140px];
+
+  .info-card .input-group {
+    border-right: 0 !important;
   }
+
+
+  .input-group label {
+    @apply mb-1
+           text-[9px];
+  }
+
+
+  .input-group input {
+    @apply text-xs;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   Below 400px
+   ========================================================= */
+
+@media (max-width: 399px) {
+
+  .profile-page {
+    @apply px-2
+           py-2;
+  }
+
+
+  .page-header {
+    @apply px-4
+           py-4;
+  }
+
+
+  .page-title {
+    @apply text-lg;
+  }
+
+
+  .page-subtitle {
+    @apply text-[11px];
+  }
+
+
+  .left-card {
+    @apply px-3;
+  }
+
+
+  .profile-image-box {
+    @apply -mt-[35px]
+           h-[70px]
+           w-[70px];
+  }
+
+
+  .profile-placeholder {
+    @apply text-2xl;
+  }
+
+
+  .student-name {
+    @apply text-sm;
+  }
+
+
+  .card-title {
+    @apply min-w-[135px]
+           px-3
+           text-[10px];
+  }
+
+
+  .input-group {
+    @apply px-3;
+  }
+
 }

@@ -58,10 +58,6 @@ export class Branch implements OnInit {
 
   ngOnInit(): void {
 
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     this.branchForm = this.fb.group({
 
       name: ['', Validators.required],
@@ -69,6 +65,10 @@ export class Branch implements OnInit {
       code: ['', Validators.required],
 
     });
+
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
     const token = this.cookie.get('token');
 

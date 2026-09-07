@@ -26,7 +26,11 @@
         <label for="over_label" class="p-floatlabel">Password</label>
     </p-floatlabel>
 
-    <p-button label="Login" type="submit"></p-button>
+    <p-button label="Login" type="submit" [loading]="loading"></p-button>
+
+    <p *ngIf="errorMessage" class="login-error">
+        {{ errorMessage }}
+    </p>
 </form>
 <div class="f">
     <div><a routerLink="/auth/forgot-password" class="forgot">

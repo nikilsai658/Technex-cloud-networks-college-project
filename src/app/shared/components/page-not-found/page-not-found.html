@@ -1,5 +1,91 @@
-<div class="not-found">
-  <h1>404</h1>
-  <p>Page not found</p>
-  <a routerLink="/main/student-domain">Go back</a>
+<div class="not-found-page">
+
+  <div class="not-found-container">
+
+    <!-- BRAND -->
+    <div class="not-found-brand">
+
+      <img
+        src="../../../../assets/images/logo.jpeg"
+        alt="Technex Cloud Networks"
+        class="not-found-logo" />
+
+      <span>Technex Cloud Networks</span>
+
+    </div>
+
+
+    <!-- ICON -->
+    <div class="not-found-icon">
+
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.8"
+          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6-13l6 3m0 0l4.553-2.276A1 1 0 0121 5.618v10.764a1 1 0 01-.553.894L15 20m0-13v13" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.8"
+          d="M4 4l16 16" />
+      </svg>
+
+    </div>
+
+
+    <!-- 404 -->
+    <h1>404</h1>
+
+    <!-- HEADING -->
+    <h2>Page Not Found</h2>
+
+    <!-- DESCRIPTION -->
+    <p>
+      The page you're looking for doesn't exist, may have been moved,
+      or you don't have permission to view it. Let's get you back to
+      the portal.
+    </p>
+
+
+    <!-- ACTIONS -->
+    <div class="not-found-actions">
+
+      <a routerLink="/main/student-domain" class="home-button">
+
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h4a1 1 0 001-1v-4a1 1 0 011-1h0a1 1 0 011 1v4a1 1 0 001 1h4a1 1 0 001-1V10" />
+        </svg>
+
+        Back to Dashboard
+
+      </a>
+
+      <button type="button" (click)="goBack()" class="back-button">
+
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7" />
+        </svg>
+
+        Go Back
+
+      </button>
+
+    </div>
+
+
+    <span class="error-reference">
+      Error Code: 404 &middot; Resource Not Found
+    </span>
+
+  </div>
+
 </div>

@@ -132,6 +132,18 @@
   @apply hidden sm:block font-semibold text-gray-700;
 }
 
+.change-password-btn{
+  @apply flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700;
+}
+
+.change-password-icon{
+  @apply w-6 h-6;
+}
+
+.change-password-label{
+  @apply hidden lg:block font-semibold text-sm;
+}
+
 .logout-btn{
   @apply bg-[#2F3E46] hover:bg-[#435861]
   text-white font-semibold rounded-lg

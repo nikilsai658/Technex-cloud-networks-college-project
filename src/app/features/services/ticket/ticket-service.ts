@@ -6,8 +6,19 @@ import { Api } from '../../../core/api/api';
 })
 export class TicketService {
   constructor(private api:Api){}
-  getTickets(){
-    return this.api.GET('Ticket');
+  getTickets(status?: string, collegeName?: string){
+
+    const params: any = {};
+
+    if (status) {
+      params.status = status;
+    }
+
+    if (collegeName) {
+      params.collegeName = collegeName;
+    }
+
+    return this.api.GET('Ticket', params);
   }
   getTicketById(id:number){
     return this.api.GET(`Ticket/${id}`);

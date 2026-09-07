@@ -1,525 +1,553 @@
 @import "tailwindcss";
 
+
 /* =========================================================
    CERTIFICATE PAGE
-   Professional LMS / Student Portal
-
-   COLORS ONLY:
-   #FFFFFF
-   #2F3E46
-   ========================================================= */
-
-:host {
-  @apply block min-h-screen;
-}
-
-
-/* =========================================================
-   PAGE
-   ========================================================= */
+========================================================= */
 
 .certificate-page {
-  @apply min-h-screen w-full bg-white px-5 py-6
-         lg:px-8 lg:py-8;
+  @apply min-h-screen w-full bg-white px-8 py-10;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #111827;
 }
 
 
 /* =========================================================
    PAGE HEADER
-   ========================================================= */
+========================================================= */
 
-.page-header {
-  @apply mb-8 flex flex-col gap-6
-         xl:flex-row xl:items-center xl:justify-between;
+.certificate-header {
+  @apply flex items-start justify-between;
+  max-width: 1216px;
+  margin: 0 auto;
 }
 
-.header-content {
-  @apply flex items-center gap-4;
+
+/* Small ACHIEVEMENTS label */
+
+.header-label {
+  @apply m-0 mb-2
+         text-[12px]
+         font-semibold
+         uppercase
+         tracking-[1px]
+         text-[#64748B];
 }
 
-.header-icon {
-  @apply flex h-14 w-14 shrink-0 items-center justify-center
-         bg-[#2F3E46] text-white shadow-sm;
+
+/* Main heading */
+
+.certificate-header .page-title {
+  @apply m-0
+         text-[36px]
+         font-bold
+         leading-[42px]
+         tracking-[-1px]
+         text-[#111827];
 }
 
-.header-icon svg {
-  @apply h-7 w-7;
-}
 
-.page-label {
-  @apply text-[10px] font-bold tracking-[0.18em]
-         text-[#2F3E46];
-}
+/* Subtitle */
 
-.header-content h1 {
-  @apply mt-1 text-2xl font-bold tracking-tight
-         text-[#2F3E46]
-         lg:text-3xl;
-}
-
-.header-content p {
-  @apply mt-1 max-w-2xl text-sm leading-6
-         text-[#2F3E46]/60;
+.certificate-header .page-subtitle {
+  @apply m-0 mt-2
+         text-[16px]
+         font-normal
+         leading-6
+         text-[#64748B];
 }
 
 
 /* =========================================================
    CERTIFICATE COUNT
-   ========================================================= */
+========================================================= */
 
 .certificate-count {
-  @apply flex min-w-[210px] items-center gap-3
-         border border-[#2F3E46]/15
-         bg-white px-5 py-4
-         shadow-sm;
-}
-
-.count-icon {
-  @apply flex h-11 w-11 shrink-0 items-center justify-center
-         bg-[#2F3E46]
-         text-white;
-}
-
-.count-icon svg {
-  @apply h-5 w-5;
-}
-
-.certificate-count span {
-  @apply text-xs font-medium text-[#2F3E46]/50;
-}
-
-.certificate-count strong {
-  @apply ml-1 text-2xl font-bold
-         text-[#2F3E46];
-}
-
-.certificate-count small {
-  @apply ml-1 text-xs font-medium
-         text-[#2F3E46]/50;
-}
-
-
-/* =========================================================
-   CERTIFICATE GRID
-   ========================================================= */
-
-.certificate-grid {
-  @apply grid grid-cols-1 gap-5
-         sm:grid-cols-2
-         lg:grid-cols-3
-         xl:grid-cols-4;
-}
-
-
-/* =========================================================
-   CERTIFICATE CARD
-   ========================================================= */
-
-.certificate-card {
-  @apply relative flex min-h-[410px]
-         flex-col overflow-hidden
-         border border-[#2F3E46]/15
+  @apply flex items-center gap-2
+         rounded-lg
+         border border-[#DCE3EC]
          bg-white
-         shadow-sm
-         transition-all duration-200;
+         px-4 py-2;
 }
 
-.certificate-card:hover {
-  @apply border-[#2F3E46]
-         shadow-md;
-}
-
-
-/* =========================================================
-   CERTIFICATE TOP
-   ========================================================= */
-
-.certificate-top {
-  @apply relative flex h-28 items-center
-         justify-between
-         bg-[#2F3E46]
-         px-5;
-}
-
-
-/* Top white line */
-
-.certificate-top::before {
-  content: "";
-  @apply absolute left-0 top-0
-         h-1 w-full
-         bg-white;
-}
-
-
-/* =========================================================
-   CERTIFICATE MARK
-   ========================================================= */
-
-.certificate-mark {
-  @apply flex h-14 w-14
+.count-number {
+  @apply flex h-7 min-w-7
          items-center justify-center
-         border border-white/30
-         bg-white/10
-         text-white;
-}
-
-.certificate-mark svg {
-  @apply h-7 w-7;
-}
-
-
-/* =========================================================
-   COMPLETED BADGE
-   ========================================================= */
-
-.completed-badge {
-  @apply inline-flex items-center gap-2
-         border border-white/30
-         bg-white/10
-         px-3 py-1.5
-         text-[11px] font-semibold
-         text-white;
-}
-
-.badge-dot {
-  @apply h-1.5 w-1.5
          rounded-full
-         bg-white;
+         border border-[#DCE3EC]
+         bg-[#F5F8FB]
+         px-2
+         text-[12px]
+         font-medium
+         text-[#334155];
+}
+
+.count-label {
+  @apply text-[13px]
+         font-medium
+         text-[#475569];
 }
 
 
 /* =========================================================
-   CERTIFICATE CONTENT
-   ========================================================= */
+   LOADING
+========================================================= */
 
-.certificate-content {
-  @apply flex flex-1 flex-col p-5;
+.loading-container {
+  @apply mx-auto mt-10
+         flex min-h-[300px]
+         flex-col items-center justify-center
+         text-[#64748B];
+  max-width: 1216px;
 }
 
-.certificate-label {
-  @apply text-[9px] font-bold
-         tracking-[0.16em]
-         text-[#2F3E46];
+.loading-container p {
+  @apply mt-4
+         text-[14px]
+         text-[#64748B];
 }
 
-.certificate-title {
-  @apply mt-2 line-clamp-2
-         text-lg font-bold
-         leading-6
-         text-[#2F3E46];
-}
-
-.course-name {
-  @apply mt-3
-         text-sm font-medium
-         leading-6
-         text-[#2F3E46]/60;
-}
-
-
-/* =========================================================
-   CERTIFICATE DETAILS
-   ========================================================= */
-
-.certificate-details {
-  @apply mt-5
-         border-t border-[#2F3E46]/10;
-}
-
-.detail-item {
-  @apply flex flex-col gap-1
-         border-b border-[#2F3E46]/10
-         py-3;
-}
-
-.detail-item:last-child {
-  @apply border-b-0;
-}
-
-.detail-label {
-  @apply text-[9px] font-bold
-         tracking-[0.14em]
-         text-[#2F3E46]/45;
-}
-
-.detail-value {
-  @apply truncate text-xs font-semibold
-         text-[#2F3E46];
-}
-
-
-/* =========================================================
-   ACTION AREA
-   ========================================================= */
-
-.certificate-actions {
-  @apply border-t border-[#2F3E46]/10
-         p-5;
-}
-
-
-/* =========================================================
-   VIEW BUTTON
-   ========================================================= */
-
-.view-button {
-  @apply flex w-full items-center
-         justify-center gap-2
-         bg-[#2F3E46]
-         px-4 py-3
-         text-xs font-semibold
-         text-white
-         transition-all duration-200;
-}
-
-.view-button svg {
-  @apply h-4 w-4
-         transition-transform duration-200;
-}
-
-.view-button:hover {
-  @apply bg-white
-         text-[#2F3E46]
-         ring-1 ring-[#2F3E46];
-}
-
-.view-button:hover svg {
-  transform: translateX(3px);
-}
-
-
-/* =========================================================
-   EMPTY STATE
-   ========================================================= */
-
-.empty-state {
-  @apply flex min-h-[400px]
-         flex-col items-center
-         justify-center
-         border border-[#2F3E46]/15
-         bg-white
-         px-6
-         text-center
-         shadow-sm;
-}
-
-.empty-icon {
-  @apply mb-5 flex h-16 w-16
-         items-center justify-center
-         bg-[#2F3E46]
-         text-white;
-}
-
-.empty-icon svg {
-  @apply h-7 w-7;
-}
-
-.empty-label {
-  @apply text-[9px] font-bold
-         tracking-[0.16em]
-         text-[#2F3E46]/50;
-}
-
-.empty-state h2 {
-  @apply mt-2 text-xl font-bold
-         text-[#2F3E46];
-}
-
-.empty-state p {
-  @apply mt-2 max-w-lg
-         text-sm leading-6
-         text-[#2F3E46]/60;
-}
-
-
-/* =========================================================
-   EMPTY STATE NOTE
-   ========================================================= */
-
-.empty-note {
-  @apply mt-6 flex items-center
-         gap-2
-         border border-[#2F3E46]/15
-         px-4 py-3
-         text-xs font-semibold
-         text-[#2F3E46];
-}
-
-.empty-note svg {
-  @apply h-4 w-4 shrink-0;
+.loader {
+  @apply h-8 w-8
+         animate-spin
+         rounded-full
+         border-[3px]
+         border-[#E2E8F0]
+         border-t-[#2F3E46];
 }
 
 
 /* =========================================================
    ERROR CARD
-   ========================================================= */
+========================================================= */
 
 .error-card {
-  @apply flex items-center gap-4
-         border border-[#2F3E46]
+  @apply mx-auto mt-8
+         flex items-start gap-4
+         rounded-lg
+         border border-[#E2E8F0]
          bg-white
-         p-6
-         shadow-sm;
+         p-5
+         shadow-[0_2px_8px_rgba(15,23,42,0.04)];
+  max-width: 1216px;
 }
 
 .error-icon {
-  @apply flex h-12 w-12 shrink-0
+  @apply flex h-9 w-9
+         shrink-0
          items-center justify-center
+         rounded-full
          bg-[#2F3E46]
-         text-xl font-bold
+         text-sm
+         font-bold
          text-white;
-}
-
-.error-label {
-  @apply text-[9px] font-bold
-         tracking-[0.16em]
-         text-[#2F3E46]/50;
 }
 
 .error-card h2 {
-  @apply mt-1 text-lg font-bold
-         text-[#2F3E46];
+  @apply m-0
+         text-[16px]
+         font-semibold
+         text-[#111827];
 }
 
 .error-card p {
-  @apply mt-1 text-sm
-         text-[#2F3E46]/60;
+  @apply m-0 mt-1
+         text-[14px]
+         leading-5
+         text-[#64748B];
 }
 
 
 /* =========================================================
-   PERMISSION STATE
-   ========================================================= */
+   CERTIFICATE GRID
+========================================================= */
 
-.permission-state {
-  @apply flex min-h-[400px]
-         flex-col items-center
-         justify-center
-         border border-[#2F3E46]/15
+.certificate-grid {
+  @apply mx-auto mt-9
+         grid gap-6;
+  max-width: 1216px;
+
+  /*
+    Screenshot shows cards starting from the left
+    rather than stretching across the page.
+  */
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(360px, 383px)
+  );
+  align-items: start;
+}
+
+
+/* =========================================================
+   CERTIFICATE CARD
+========================================================= */
+
+.certificate-card {
+  @apply relative
+         overflow-hidden
+         rounded-[10px]
+         border border-[#DCE3EC]
          bg-white
-         px-6
-         text-center
-         shadow-sm;
-}
+         shadow-[0_4px_14px_rgba(15,23,42,0.08)];
 
-.permission-icon {
-  @apply mb-5 flex h-16 w-16
-         items-center justify-center
-         bg-[#2F3E46]
-         text-white;
-}
-
-.permission-icon svg {
-  @apply h-7 w-7;
-}
-
-.permission-state h2 {
-  @apply text-xl font-bold
-         text-[#2F3E46];
-}
-
-.permission-state p {
-  @apply mt-2 text-sm
-         text-[#2F3E46]/60;
+  width: 383px;
 }
 
 
 /* =========================================================
-   SKELETON
-   ========================================================= */
+   CERTIFICATE TOP / DARK HEADER
+========================================================= */
 
-.skeleton-card {
-  @apply overflow-hidden
-         border-[#2F3E46]/10;
+.certificate-top {
+  @apply relative
+         flex items-center justify-between
+         px-6 py-6;
+
+  height: 100px;
+
+  /*
+    Dark teal/charcoal header from screenshot
+  */
+  background:
+    radial-gradient(
+      circle at 85% 45%,
+      rgba(36, 192, 197, 0.18),
+      transparent 35%
+    ),
+    #2F3E46;
 }
 
-.skeleton-top {
-  @apply h-28
-         animate-pulse
-         bg-[#2F3E46]/10;
+
+/* =========================================================
+   CERTIFICATE CHECK ICON
+========================================================= */
+
+.certificate-icon {
+  @apply flex h-12 w-12
+         items-center justify-center
+         rounded-[10px]
+         border border-white/20
+         bg-white/10
+         text-[22px]
+         font-medium
+         text-[#24C0C5];
 }
 
-.skeleton-content {
-  @apply flex-1 p-5;
+
+/* =========================================================
+   COMPLETED BADGE
+========================================================= */
+
+.completed-badge {
+  @apply inline-flex
+         items-center
+         rounded-full
+         border border-[#24C0C5]/40
+         bg-[#24C0C5]/15
+         px-3 py-1
+         text-[11px]
+         font-medium
+         uppercase
+         tracking-[0.7px]
+         text-[#55D9C5];
 }
 
-.skeleton-line {
-  @apply mb-3 h-3
-         animate-pulse
-         bg-[#2F3E46]/10;
+.completed-badge::before {
+  content: "";
+  @apply mr-1.5
+         h-1.5
+         w-1.5
+         rounded-full
+         bg-[#24C0C5];
 }
 
-.skeleton-small {
-  @apply w-1/3;
+
+/* =========================================================
+   CERTIFICATE CONTENT
+========================================================= */
+
+.certificate-content {
+  @apply px-6 pt-6;
 }
 
-.skeleton-title {
-  @apply h-5 w-4/5;
+
+/* COURSE CERTIFICATE */
+
+.certificate-label {
+  @apply m-0
+         text-[11px]
+         font-semibold
+         uppercase
+         tracking-[0.5px]
+         text-[#8CA0B8];
 }
 
-.skeleton-short {
-  @apply w-1/2;
+
+/* Certificate title */
+
+.certificate-title {
+  @apply m-0 mt-2
+         text-[19px]
+         font-bold
+         leading-6
+         tracking-[-0.4px]
+         text-[#111827];
 }
 
-.skeleton-details {
-  @apply mt-6
-         border-t border-[#2F3E46]/10
+
+/* Course name */
+
+.course-name {
+  @apply m-0 mt-2
+         text-[13px]
+         leading-5
+         text-[#64748B];
+}
+
+
+/* =========================================================
+   CERTIFICATE DETAILS
+========================================================= */
+
+.certificate-details {
+  @apply mt-4;
+}
+
+
+/* Each detail */
+
+.detail-item {
+  @apply flex flex-col;
+}
+
+
+/* Separator between details */
+
+.detail-item + .detail-item {
+  @apply mt-4
+         border-t border-[#E7ECF2]
          pt-4;
 }
 
-.skeleton-action {
-  @apply mx-5 mb-5 h-11
-         animate-pulse
-         bg-[#2F3E46]/10;
+
+/* Detail label */
+
+.detail-label {
+  @apply text-[11px]
+         font-semibold
+         uppercase
+         tracking-[0.4px]
+         text-[#8CA0B8];
+}
+
+
+/* Detail value */
+
+.detail-value {
+  @apply mt-1
+         inline-flex
+         w-fit
+         items-center
+         rounded-[5px]
+         border border-[#DCE3EC]
+         bg-[#F7F9FB]
+         px-2.5 py-1.5
+         font-mono
+         text-[12px]
+         font-medium
+         tracking-[0.4px]
+         text-[#334155];
 }
 
 
 /* =========================================================
-   RESPONSIVE
-   ========================================================= */
+   ACTION AREA
+========================================================= */
+
+.certificate-actions {
+  @apply px-6 pb-6 pt-8;
+}
+
+
+/* View Certificate button */
+
+.view-button {
+  @apply flex h-11 w-full
+         items-center justify-center
+         gap-2
+         rounded-[7px]
+         border-0
+         bg-[#2F3E46]
+         px-4
+         text-[14px]
+         font-semibold
+         text-white
+         transition-all
+         duration-150;
+}
+
+.view-button:hover {
+  @apply bg-[#263940]
+         shadow-[0_4px_10px_rgba(47,62,70,0.18)];
+}
+
+.view-button:active {
+  @apply scale-[0.99];
+}
+
+
+/* Arrow */
+
+.arrow {
+  @apply text-[20px]
+         font-normal
+         leading-none
+         transition-transform
+         duration-150;
+}
+
+.view-button:hover .arrow {
+  @apply translate-x-1;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-card {
+  @apply mx-auto mt-8
+         flex min-h-[320px]
+         flex-col items-center justify-center
+         rounded-[10px]
+         border border-[#DCE3EC]
+         bg-white
+         text-center
+         shadow-[0_3px_12px_rgba(15,23,42,0.05)];
+  max-width: 1216px;
+}
+
+.empty-icon {
+  @apply text-[38px]
+         opacity-70;
+}
+
+.empty-card h2 {
+  @apply m-0 mt-3
+         text-[20px]
+         font-bold
+         text-[#111827];
+}
+
+.empty-card p {
+  @apply m-0 mt-2
+         max-w-[430px]
+         text-[14px]
+         leading-5
+         text-[#64748B];
+}
+
+
+/* =========================================================
+   HOVER EFFECT
+========================================================= */
+
+.certificate-card {
+  transition:
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    border-color 180ms ease;
+}
+
+.certificate-card:hover {
+  @apply border-[#CBD5E1]
+         shadow-[0_8px_22px_rgba(15,23,42,0.10)];
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .certificate-page {
+    @apply px-6 py-8;
+  }
+
+  .certificate-header {
+    @apply flex-col gap-5;
+  }
+
+  .certificate-count {
+    @apply self-start;
+  }
+
+  .certificate-grid {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(320px, 383px)
+    );
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+========================================================= */
 
 @media (max-width: 640px) {
 
   .certificate-page {
-    @apply px-4 py-5;
+    @apply px-4 py-7;
   }
 
-  .header-content {
-    @apply items-start;
+  .certificate-header .page-title {
+    @apply text-[30px]
+           leading-9;
   }
 
-  .header-icon {
-    @apply h-11 w-11;
+  .certificate-header .page-subtitle {
+    @apply text-[14px];
   }
 
-  .header-icon svg {
-    @apply h-5 w-5;
-  }
-
-  .header-content h1 {
-    @apply text-xl;
-  }
-
-  .certificate-count {
-    @apply w-full;
+  .certificate-grid {
+    @apply mt-7 grid-cols-1;
   }
 
   .certificate-card {
-    @apply min-h-0;
+    width: 100%;
+    max-width: 383px;
   }
 
 }
 
 
 /* =========================================================
-   TABLET
-   ========================================================= */
+   VERY SMALL MOBILE
+========================================================= */
 
-@media (min-width: 641px) and (max-width: 1024px) {
+@media (max-width: 400px) {
 
-  .certificate-grid {
-    @apply grid-cols-2;
+  .certificate-header .page-title {
+    @apply text-[27px];
+  }
+
+  .certificate-top {
+    @apply px-5;
+  }
+
+  .certificate-content {
+    @apply px-5;
+  }
+
+  .certificate-actions {
+    @apply px-5 pb-5;
   }
 
 }

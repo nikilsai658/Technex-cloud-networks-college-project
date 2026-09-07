@@ -1,0 +1,319 @@
+<div class="assignment-code-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <button class="back-btn" type="button" onclick="history.back()">
+        <span class="back-icon">&larr;</span>
+        Back
+      </button>
+
+      <div class="header-title">
+        <span class="eyebrow">ASSIGNMENT SUBMISSION</span>
+
+        <h1>
+          {{ assignmentCode?.data?.title || 'Assignment Source Code' }}
+        </h1>
+
+        <p>
+          View the source code submitted for this assignment.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="header-status" *ngIf="assignmentCode?.isFailure === false">
+      <span class="status-dot"></span>
+      Source Code Available
+    </div>
+
+  </div>
+
+  <!-- =====================================================
+       LOADING STATE
+  ====================================================== -->
+
+  <div class="loading-card" *ngIf="loading">
+
+    <div class="loading-spinner"></div>
+
+    <div>
+      <h3>Loading assignment code</h3>
+      <p>Please wait while the source code is being fetched.</p>
+    </div>
+
+  </div>
+
+  <!-- =====================================================
+       ERROR STATE
+  ====================================================== -->
+
+  <div class="error-card" *ngIf="!loading && error">
+
+    <div class="error-icon">!</div>
+
+    <div>
+      <h3>Unable to load assignment</h3>
+      <p>{{ error }}</p>
+    </div>
+
+    <button class="retry-btn" type="button" (click)="getAssignmentCode()">
+      Try Again
+    </button>
+
+  </div>
+
+  <!-- =====================================================
+       MAIN CONTENT
+  ====================================================== -->
+
+  <main
+    class="assignment-container"
+    *ngIf="!loading && !error && assignmentCode?.data"
+  >
+
+    <!-- ===================================================
+         ASSIGNMENT INFORMATION
+    ==================================================== -->
+    <section class="assignment-info-card">
+
+      <div class="assignment-info-main">
+
+        <div class="assignment-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M8 6h8M8 10h8M8 14h5M6 3h9l3 3v15H6V3Z"
+            />
+          </svg>
+        </div>
+
+        <div class="assignment-details">
+
+          <span class="section-label">
+            ASSIGNMENT
+          </span>
+
+          <h2>
+            {{ assignmentCode.data.title }}
+          </h2>
+
+          <p>
+            Assignment ID:
+            <strong>#{{ assignmentCode.data.assignmentId }}</strong>
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="assignment-meta">
+
+        <div class="meta-item">
+
+          <span class="meta-label">
+            Language
+          </span>
+
+          <span class="language-badge">
+            Python
+          </span>
+
+        </div>
+
+        <div class="meta-item">
+
+          <span class="meta-label">
+            Language ID
+          </span>
+
+          <span class="language-id">
+            {{ assignmentCode.data.languageId }}
+          </span>
+
+        </div>
+
+        <div class="meta-item">
+
+          <span class="meta-label">
+            Status
+          </span>
+
+          <span class="success-badge">
+            <span></span>
+            Available
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         SOURCE CODE CARD
+    ==================================================== -->
+    <section class="code-card">
+
+      <!-- Code Header -->
+      <div class="code-header">
+
+        <div class="code-title">
+
+          <div class="code-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m8 9-3 3 3 3M16 9l3 3-3 3M14 5l-4 14"
+              />
+            </svg>
+          </div>
+
+          <div>
+            <h3>Source Code</h3>
+            <p>Student's submitted solution</p>
+          </div>
+
+        </div>
+
+
+        <div class="code-actions">
+
+          <span class="python-badge">
+            Python
+          </span>
+
+          <button
+            class="copy-btn"
+            type="button"
+            (click)="copyCode()"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <rect
+                x="9"
+                y="9"
+                width="11"
+                height="11"
+                rx="2"
+              />
+
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              />
+            </svg>
+
+            {{ copied ? 'Copied' : 'Copy Code' }}
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- Code Window -->
+      <div class="code-window">
+
+        <div class="code-window-header">
+
+          <div class="window-left">
+
+            <span class="window-dot"></span>
+            <span class="window-dot"></span>
+            <span class="window-dot"></span>
+
+            <span class="file-name">
+              solution.py
+            </span>
+
+          </div>
+
+          <span class="code-language">
+            PYTHON
+          </span>
+
+        </div>
+
+
+        <div class="code-content">
+
+          <div class="line-numbers">
+
+            <span
+              *ngFor="
+                let line of (assignmentCode.data.sourceCode || '').split('\n');
+                let i = index
+              "
+            >
+              {{ i + 1 }}
+            </span>
+
+          </div>
+
+
+          <pre><code>{{ assignmentCode.data.sourceCode }}</code></pre>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         RESPONSE INFORMATION
+    ==================================================== -->
+    <section class="response-card">
+
+      <div class="response-icon">
+        &#10003;
+      </div>
+
+      <div class="response-content">
+
+        <h3>
+          Assignment source code fetched successfully
+        </h3>
+
+        <p>
+          The student's source code was retrieved successfully from
+          the assignment service.
+        </p>
+
+      </div>
+
+      <div class="response-code">
+        <span>Response Code</span>
+        <strong>{{ assignmentCode.errorCode }}</strong>
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

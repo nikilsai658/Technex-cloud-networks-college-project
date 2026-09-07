@@ -37,12 +37,14 @@ import { SuperAdmin } from './shared/components/superadmin/superadmin';
 import { SuperadminDomains } from './shared/components/superadmin-domains/superadmin-domains';
 import { SuperadminDomainStudents } from './shared/components/superadmin-domain-students/superadmin-domain-students';
 import { SuperadminStudentAssignments } from './shared/components/superadmin-student-assignments/superadmin-student-assignments';
+import { SuperadminStudentAssignmentCode } from './shared/components/superadmin-student-assignment-code/superadmin-student-assignment-code';
 import { YearUpdation } from './shared/components/year-updation/year-updation';
 import { authGuard } from './core/auth/auth-guard';
 import { assignmentGuard } from './core/guards/assignment-guard';
 import { permissionGuard } from './core/guards/permission-guard';
 import { NotFoundComponent } from './shared/components/page-not-found/page-not-found';
 import { Viewcertificate } from './shared/components/viewcertificate/viewcertificate';
+import { ChangePassword } from './shared/components/change-password/change-password';
 export const routes: Routes = [
 
   {
@@ -172,7 +174,13 @@ export const routes: Routes = [
         path:'superadmin-student-assignments',component:SuperadminStudentAssignments
       },
       {
+        path:'superadmin-student-assignment-code',component:SuperadminStudentAssignmentCode
+      },
+      {
         path:'view-certificate',component:Viewcertificate
+      },
+      {
+        path:'change_password',component:ChangePassword
       }
     ]
   },

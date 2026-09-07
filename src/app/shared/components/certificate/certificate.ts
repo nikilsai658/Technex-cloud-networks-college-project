@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CertificateService } from '../../../features/services/certificate/certificate-service';
 
@@ -10,11 +10,14 @@ import { CertificateService } from '../../../features/services/certificate/certi
   templateUrl: './certificate.html',
   styleUrl: './certificate.css'
 })
-export class Certificate implements OnInit {
+export class Certificate implements OnInit, OnDestroy {
 
   certificates: any[] = [];
   loading = false;
   error = '';
+
+  private pollHandle: any = null;
+  private readonly POLL_INTERVAL_MS = 15000;
 
   constructor(
     private CertificateService: CertificateService,
@@ -24,6 +27,30 @@ export class Certificate implements OnInit {
 
   ngOnInit(): void {
     this.loadCertificates();
+    this.startPolling();
+  }
+
+  ngOnDestroy(): void {
+    this.stopPolling();
+  }
+
+  startPolling(): void {
+
+    this.stopPolling();
+
+    this.pollHandle = setInterval(() => {
+      this.refreshCertificates();
+    }, this.POLL_INTERVAL_MS);
+
+  }
+
+  stopPolling(): void {
+
+    if (this.pollHandle) {
+      clearInterval(this.pollHandle);
+      this.pollHandle = null;
+    }
+
   }
 
   loadCertificates(): void {
@@ -48,9 +75,44 @@ export class Certificate implements OnInit {
 
         this.certificates = [];
         this.loading = false;
-        this.error = 'Unable to load certificates.';
+
+        // A 404 here just means no certificates have been earned
+        // yet — that's the normal "No Certificates Yet" empty state,
+        // not a failure.
+        if (err?.status !== 404) {
+          this.error = 'Unable to load certificates.';
+        }
 
         this.cd.detectChanges();
+      }
+    });
+
+  }
+
+  // Silent background refresh — no loading spinner, so a new
+  // certificate just appears once it's available instead of the
+  // student having to reload the page.
+  refreshCertificates(): void {
+
+    this.CertificateService.certificate().subscribe({
+      next: (res: any) => {
+
+        this.certificates = res?.data ?? [];
+        this.error = '';
+
+        this.cd.detectChanges();
+      },
+
+      error: (err: any) => {
+
+        // Stay quiet on the background refresh — still nothing
+        // to show, keep whatever state is already on screen.
+        if (err?.status === 404) {
+          this.certificates = [];
+          this.error = '';
+          this.cd.detectChanges();
+        }
+
       }
     });
 

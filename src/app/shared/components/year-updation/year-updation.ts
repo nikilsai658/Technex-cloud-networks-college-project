@@ -348,7 +348,7 @@ export class YearUpdation implements OnInit {
   // Promote Single Student With Domain
   //==============================
 
-  promoteSingleWithDomain(): void {
+  /*promoteSingleWithDomain(): void {
 
     if (!this.auth.hasPermission('UPDATE_YEAR')) {
       alert('You do not have permission to promote years.');
@@ -387,7 +387,7 @@ export class YearUpdation implements OnInit {
 
       });
 
-  }
+  }*/
 
   resetSinglePromoteForm(): void {
 

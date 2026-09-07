@@ -58,6 +58,61 @@
     </div>
 
 
+    <!-- FILTERS -->
+    <div class="ticket-filter-bar">
+
+      <div class="filter-field">
+
+        <label>Status</label>
+
+        <select
+          [(ngModel)]="selectedStatus"
+          [ngModelOptions]="{ standalone: true }"
+          (change)="onFilterChange()">
+
+          <option value="">All Statuses</option>
+
+          <option
+            *ngFor="let status of statusOptions"
+            [value]="status">
+            {{ status === 'Resolved' ? 'In process' : status }}
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="filter-field">
+
+        <label>College</label>
+
+        <select
+          [(ngModel)]="selectedCollegeName"
+          [ngModelOptions]="{ standalone: true }"
+          (change)="onFilterChange()">
+
+          <option value="">All Colleges</option>
+
+          <option
+            *ngFor="let college of colleges"
+            [value]="college.name || college.collegeName">
+            {{ college.name || college.collegeName }}
+          </option>
+
+        </select>
+
+      </div>
+
+      <button
+        type="button"
+        class="filter-clear-button"
+        (click)="clearFilters()">
+        Clear Filters
+      </button>
+
+    </div>
+
+
     <!-- STATUS BREAKDOWN STRIP -->
     <div
       *ngIf="!loading && !errorMessage && tickets.length > 0"

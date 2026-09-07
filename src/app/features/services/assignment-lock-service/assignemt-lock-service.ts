@@ -22,7 +22,7 @@ export class AssignmentLockService {
 
   private handleFullscreenChange = (): void => {
   if (!this.locked) {
-    return;
+    return; 
   }
 
   if (!document.fullscreenElement) {
@@ -57,9 +57,9 @@ export class AssignmentLockService {
   this.tabSwitchCount = 0;
   this.fullscreenExitCount = 0;
 
-  document.addEventListener('copy', this.prevent);
+ /* document.addEventListener('copy', this.prevent);
   document.addEventListener('cut', this.prevent);
-  document.addEventListener('paste', this.prevent);
+  document.addEventListener('paste', this.prevent);*/
   document.addEventListener('contextmenu', this.prevent);
   document.addEventListener('keydown', this.handleKeyboard);
   document.addEventListener('visibilitychange', this.handleVisibility);
@@ -73,9 +73,9 @@ export class AssignmentLockService {
   stopLock(): void {
   this.locked = false;
 
-  document.removeEventListener('copy', this.prevent);
+  /*document.removeEventListener('copy', this.prevent);
   document.removeEventListener('cut', this.prevent);
-  document.removeEventListener('paste', this.prevent);
+  document.removeEventListener('paste', this.prevent);*/
   document.removeEventListener('contextmenu', this.prevent);
   document.removeEventListener('keydown', this.handleKeyboard);
   document.removeEventListener('visibilitychange', this.handleVisibility);

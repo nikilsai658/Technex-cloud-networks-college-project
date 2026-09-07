@@ -21,6 +21,8 @@ import { UserStore } from '../../../core/store/user';
 export class Login implements OnInit{
   Form !:FormGroup;
   collegecode:any;
+  errorMessage = '';
+  loading = false;
    constructor(private fb: FormBuilder, private router:Router,private cookie:CookieService,private auth:AuthServices,private userStore:UserStore,@Inject(PLATFORM_ID) private platformId: Object){
     this.Form=this.fb.group({
       userNameOrEmail: ['',Validators.required],
@@ -40,9 +42,15 @@ export class Login implements OnInit{
   }
      
    onSubmit(){
+    this.errorMessage = '';
+
     if(this.Form.valid){
+      this.loading = true;
+
       this.auth.login(this.Form.value).subscribe({
         next:(res :any)=>{
+          this.loading = false;
+
           const token=res.data.accessToken;
           const refresh=res.data.refreshToken;
          localStorage.setItem('user', JSON.stringify(res.data));
@@ -55,11 +63,33 @@ export class Login implements OnInit{
            this.router.navigate(['/profile']);
          }else{
          this.router.navigate(['/main']);
-         }  
+         }
         },error:(err)=>{
           console.log(err);
+
+          this.loading = false;
+
+          this.errorMessage = this.extractErrorMessage(err);
         }
       })
     }
+   }
+
+   private extractErrorMessage(err: any): string {
+
+    const body = err?.error;
+
+    if (typeof body === 'string' && body.trim()) {
+      return body;
+    }
+
+    return (
+      body?.message ||
+      body?.title ||
+      body?.error ||
+      body?.errorMessage ||
+      'Invalid username or password. Please try again.'
+    );
+
    }
 }

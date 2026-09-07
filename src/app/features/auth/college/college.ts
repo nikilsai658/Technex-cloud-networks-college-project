@@ -24,12 +24,23 @@ export class College implements OnInit {
    })
   }
     ngOnInit() {
-        this.colleges = [
-            { name: 'Jain University', code: 'AU'},
-            {name:'HINDUSTHAN COLLEGE OF ENGINEERING',code:'HECT'},
-            {name:'RVS COLLEGE OF ENGINEERING',code:'RVS'},
-            {name:'CMS COLLEGE OF SCIENCE & COMMERCE',code:'CMS'}
-        ];
+        this.api.getcollege().subscribe({
+          next: (res: any) => {
+            if (Array.isArray(res)) {
+              this.colleges = res;
+            } else if (Array.isArray(res?.data)) {
+              this.colleges = res.data;
+            } else if (Array.isArray(res?.result)) {
+              this.colleges = res.result;
+            } else {
+              this.colleges = [];
+            }
+          },
+          error: (err) => {
+            console.error(err);
+            this.colleges = [];
+          }
+        });
     }
     onSubmit(){
       if(this.form.valid){

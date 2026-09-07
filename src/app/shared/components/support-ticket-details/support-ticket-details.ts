@@ -2,7 +2,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnInit
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild
 } from '@angular/core';
 
 import {
@@ -39,7 +42,10 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SupportTicketDetailsComponent
-  implements OnInit {
+  implements OnInit, OnDestroy {
+
+  @ViewChild('chatScrollContainer')
+  chatScrollContainer?: ElementRef<HTMLDivElement>;
 
   // ==========================================
   // TICKET
@@ -93,6 +99,17 @@ export class SupportTicketDetailsComponent
   lastMessageId = 0;
 
 
+  // ==========================================
+  // POLLING
+  // ==========================================
+
+  private pollHandle: any = null;
+
+  private polling = false;
+
+  private readonly POLL_INTERVAL_MS = 3000;
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -126,6 +143,131 @@ export class SupportTicketDetailsComponent
       this.getTicket();
 
       this.getMessages();
+
+      this.startPolling();
+
+    });
+
+  }
+
+
+  // ==========================================
+  // DESTROY
+  // ==========================================
+
+  ngOnDestroy(): void {
+
+    this.stopPolling();
+
+  }
+
+
+  // ==========================================
+  // START / STOP POLLING
+  // ==========================================
+
+  startPolling(): void {
+
+    this.stopPolling();
+
+    this.pollHandle = setInterval(() => {
+
+      this.pollMessages();
+
+    }, this.POLL_INTERVAL_MS);
+
+  }
+
+  stopPolling(): void {
+
+    if (this.pollHandle) {
+
+      clearInterval(this.pollHandle);
+
+      this.pollHandle = null;
+
+    }
+
+  }
+
+
+  // ==========================================
+  // POLL FOR NEW MESSAGES
+  // ==========================================
+
+  pollMessages(): void {
+
+    if (
+      this.polling ||
+      !this.ticketId ||
+      this.messagesLoading
+    ) {
+
+      return;
+
+    }
+
+    this.polling = true;
+
+    this.ticketService
+      .getMessages(this.ticketId, this.lastMessageId)
+      .subscribe({
+
+        next: (res: any) => {
+
+          const newMessages =
+            res?.data || res || [];
+
+          if (newMessages.length) {
+
+            this.messages = [
+              ...this.messages,
+              ...newMessages
+            ];
+
+            this.updateLastMessageId();
+
+            this.scrollToBottom();
+
+            this.cdr.markForCheck();
+
+          }
+
+          this.polling = false;
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Poll messages error:',
+            error
+          );
+
+          this.polling = false;
+
+        }
+
+      });
+
+  }
+
+
+  // ==========================================
+  // SCROLL TO BOTTOM
+  // ==========================================
+
+  scrollToBottom(): void {
+
+    setTimeout(() => {
+
+      const el = this.chatScrollContainer?.nativeElement;
+
+      if (el) {
+
+        el.scrollTop = el.scrollHeight;
+
+      }
 
     });
 
@@ -225,6 +367,8 @@ export class SupportTicketDetailsComponent
 
 
           this.updateLastMessageId();
+
+          this.scrollToBottom();
 
 
           this.messagesLoading = false;

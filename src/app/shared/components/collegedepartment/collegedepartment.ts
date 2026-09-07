@@ -70,6 +70,10 @@ export class CollegeDepartmentComponent implements OnInit {
 
     this.buildForm();
 
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     this.loadColleges();
     this.loadDepartments();
     this.loadMappings();

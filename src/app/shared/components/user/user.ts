@@ -61,6 +61,8 @@ export class UserComponent implements OnInit {
 
   userForm!: FormGroup;
 
+  showPassword = false;
+
   // ==========================
   // Data
   // ==========================
@@ -535,6 +537,16 @@ export class UserComponent implements OnInit {
   }
 
   // ==========================
+  // Toggle Password Visibility
+  // ==========================
+
+  togglePasswordVisibility(): void {
+
+    this.showPassword = !this.showPassword;
+
+  }
+
+  // ==========================
   // Save User
   // ==========================
 
@@ -694,6 +706,15 @@ export class UserComponent implements OnInit {
     this.editMode = true;
 
     /*
+     * Password is optional during edit —
+     * drop the required validator so a
+     * blank password doesn't block the form.
+     */
+
+    this.userForm.get('password')?.clearValidators();
+    this.userForm.get('password')?.updateValueAndValidity();
+
+    /*
      * Get role name safely.
      */
 
@@ -825,7 +846,7 @@ export class UserComponent implements OnInit {
       formValue.password.trim() !== ''
     ) {
 
-      payload.password =
+      payload.newPassword =
         formValue.password;
 
     }
@@ -978,6 +999,14 @@ export class UserComponent implements OnInit {
       isActive: true
 
     });
+
+    /*
+     * Back to create mode —
+     * password is required again.
+     */
+
+    this.userForm.get('password')?.setValidators([Validators.required]);
+    this.userForm.get('password')?.updateValueAndValidity();
 
     this.editMode = false;
 

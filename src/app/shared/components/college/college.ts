@@ -44,6 +44,8 @@ export class College implements OnInit {
 
   selectedCollegeId = 0;
 
+  showModal = false;
+
   constructor(
     private api: CollegeService,
     private fb: FormBuilder,
@@ -145,6 +147,38 @@ export class College implements OnInit {
   }
 
   //=====================================
+  // Modal Controls
+  //=====================================
+
+  openAddModal(): void {
+
+    if (!this.auth.hasPermission('CREATE_COLLEGE')) {
+
+      alert('You do not have permission to create colleges.');
+
+      return;
+
+    }
+
+    this.isEditMode = false;
+
+    this.selectedCollegeId = 0;
+
+    this.collegeForm.reset();
+
+    this.showModal = true;
+
+  }
+
+  closeModal(): void {
+
+    this.showModal = false;
+
+    this.resetForm();
+
+  }
+
+  //=====================================
   // Create College
   //=====================================
 
@@ -217,6 +251,8 @@ export class College implements OnInit {
       phoneNumber: college.phoneNumber
 
     });
+
+    this.showModal = true;
 
   }
 
@@ -321,6 +357,8 @@ export class College implements OnInit {
     this.isEditMode = false;
 
     this.selectedCollegeId = 0;
+
+    this.showModal = false;
 
   }
 

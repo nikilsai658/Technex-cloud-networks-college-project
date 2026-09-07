@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TicketService } from '../../../features/services/ticket/ticket-service';
+import { CollegeService } from '../../../features/services/college/college-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -35,8 +36,18 @@ export class AllTicketsComponent implements OnInit {
 
   connectedDropListIds: string[] = [];
 
+  // ==========================
+  // Filters
+  // ==========================
+
+  colleges: any[] = [];
+
+  selectedStatus = '';
+  selectedCollegeName = '';
+
   constructor(
     private ticketService: TicketService,
+    private collegeService: CollegeService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
@@ -45,6 +56,55 @@ export class AllTicketsComponent implements OnInit {
 
     this.connectedDropListIds =
       this.statusOptions.map(status => `drop-list-${status}`);
+
+    this.loadColleges();
+
+    this.getTickets();
+  }
+
+  // ==========================
+  // Load Colleges (filter)
+  // ==========================
+
+  loadColleges(): void {
+
+    this.collegeService.getcollege().subscribe({
+
+      next: (res: any) => {
+
+        this.colleges =
+          Array.isArray(res?.data)
+            ? res.data
+            : Array.isArray(res)
+              ? res
+              : [];
+
+        this.cdr.markForCheck();
+      },
+
+      error: (err) => {
+
+        console.error('Load Colleges Error:', err);
+
+        this.colleges = [];
+      }
+
+    });
+
+  }
+
+  // ==========================
+  // Filter Change
+  // ==========================
+
+  onFilterChange(): void {
+    this.getTickets();
+  }
+
+  clearFilters(): void {
+
+    this.selectedStatus = '';
+    this.selectedCollegeName = '';
 
     this.getTickets();
   }
@@ -56,7 +116,9 @@ export class AllTicketsComponent implements OnInit {
     this.errorMessage = '';
     this.cdr.markForCheck();
 
-    this.ticketService.getTickets().subscribe({
+    this.ticketService
+      .getTickets(this.selectedStatus, this.selectedCollegeName)
+      .subscribe({
 
       next: (res: any) => {
 
@@ -98,7 +160,7 @@ export class AllTicketsComponent implements OnInit {
 
       status,
 
-      label: status,
+      label: status === 'Resolved' ? 'In process' : status,
 
       tickets: this.tickets.filter(ticket =>
         (ticket.status || 'Open').toLowerCase() === status.toLowerCase()

@@ -195,7 +195,7 @@ export class StudentDomainMapComponent implements OnInit {
   // EDIT
   //============================
 
-  editMapping(item: any) {
+  /*editMapping(item: any) {
 
     this.isEditMode = true;
 
@@ -210,13 +210,13 @@ export class StudentDomainMapComponent implements OnInit {
     });
 
 
-  }
+  }*/
 
   //============================
   // UPDATE
   //============================
 
-  updateMapping() {
+  /*updateMapping() {
 
     if (!this.auth.hasPermission('UPDATE_STUDENT_DOMAIN_COURSE_MAP')) {
 
@@ -256,7 +256,7 @@ export class StudentDomainMapComponent implements OnInit {
 
     });
 
-  }
+  }*/
 
   //============================
   // DELETE

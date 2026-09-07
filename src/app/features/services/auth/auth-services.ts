@@ -6,7 +6,10 @@ import {Api} from '../../../core/api/api';
 export class AuthServices {
   constructor(private api:Api) {}
    login(data:any){
-   return this.api.POST('Auth/login',data);
+   return this.api.POST('Auth/login',data,{silent:true});
+  }
+  refreshToken(refreshToken:string){
+   return this.api.POST('Auth/refresh-token',{refreshToken});
   }
   forgotpassword(data:any) {
     return this.api.POST('Auth/forget-password',data);

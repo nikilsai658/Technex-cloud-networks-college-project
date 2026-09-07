@@ -11,6 +11,22 @@
   @apply w-full max-w-lg text-center;
 }
 
+/* Brand */
+
+.not-found-brand {
+  @apply flex items-center justify-center gap-2 mb-10;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f3e46;
+}
+
+.not-found-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
 /* Error icon */
 
 .not-found-icon {
@@ -18,8 +34,8 @@
   width: 76px;
   height: 76px;
   border-radius: 50%;
-  background: #e6f7f8;
-  color: #24c0c5;
+  background: #e7eaec;
+  color: #2f3e46;
 }
 
 .not-found-icon svg {
@@ -75,14 +91,14 @@
 }
 
 .home-button {
-  background: #24c0c5;
+  background: #2f3e46;
   color: white;
-  border: 1px solid #24c0c5;
+  border: 1px solid #2f3e46;
 }
 
 .home-button:hover {
-  background: #1da9ae;
-  border-color: #1da9ae;
+  background: #435861;
+  border-color: #435861;
   transform: translateY(-1px);
 }
 
@@ -93,13 +109,24 @@
 
 .back-button {
   background: white;
-  color: #475569;
-  border: 1px solid #cbd5e1;
+  color: #2f3e46;
+  border: 1.5px solid #2f3e46;
 }
 
 .back-button:hover {
-  background: #f1f5f9;
-  border-color: #94a3b8;
+  background: #2f3e46;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.back-button svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.back-button:hover svg {
+  transform: translateX(-3px);
 }
 
 /* Error reference */

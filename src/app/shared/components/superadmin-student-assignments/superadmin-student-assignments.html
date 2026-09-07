@@ -218,15 +218,33 @@
 
 
           <!-- Score -->
-          <div class="text-left lg:text-right">
+          <div class="flex items-center gap-4">
 
-            <p class="text-xs text-gray-500">
-              Score
-            </p>
+            <div class="text-left lg:text-right">
 
-            <p class="text-2xl font-bold text-cyan-600">
-              {{ assignment.score }}
-            </p>
+              <p class="text-xs text-gray-500">
+                Score
+              </p>
+
+              <p class="text-2xl font-bold text-cyan-600">
+                {{ assignment.score }}
+              </p>
+
+            </div>
+
+            <button
+              type="button"
+              (click)="viewCode(assignment)"
+              class="inline-flex items-center justify-center
+                     px-4 py-2 rounded-lg
+                     bg-[#24c0c5] text-white
+                     text-sm font-medium
+                     hover:bg-[#1eabb0]
+                     transition duration-200
+                     whitespace-nowrap"
+            >
+              View Code
+            </button>
 
           </div>
 

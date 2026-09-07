@@ -1,16 +1,25 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { CookieService } from 'ngx-cookie-service';
+import { tokenInterceptor } from './core/auth/token-interceptor';
+import { errorInterceptor } from './core/error/error-interceptor';
+import { loadingInterceptor } from './core/loading/loading-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
   provideBrowserGlobalErrorListeners(),
   provideRouter(routes),
-  provideClientHydration(withEventReplay()),
+  provideHttpClient(
+    withInterceptors([
+      tokenInterceptor,
+      errorInterceptor,
+      loadingInterceptor
+    ])
+  ),
    providePrimeNG({
             theme: {
                 preset: Aura

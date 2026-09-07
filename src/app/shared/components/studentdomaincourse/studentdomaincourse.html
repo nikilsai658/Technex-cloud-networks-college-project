@@ -39,7 +39,7 @@
 
     <form
   [formGroup]="studentDomainForm"
-  (ngSubmit)="isEditMode ? updateMapping() : createMapping()"
+  (ngSubmit)="createMapping()"
   class="space-y-6">
 
   <!-- Student Email -->
@@ -230,15 +230,6 @@
               <td class="px-5 py-4">
 
                 <div class="flex justify-center gap-3">
-
-                  <button
-                    *ngIf="auth.hasPermission('UPDATE_STUDENT_DOMAIN_COURSE_MAP')"
-                    (click)="editMapping(map)"
-                    class="px-4 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white">
-
-                    Edit
-
-                  </button>
 
                   <button
                     *ngIf="auth.hasPermission('DELETE_STUDENT_DOMAIN_COURSE_MAP')"

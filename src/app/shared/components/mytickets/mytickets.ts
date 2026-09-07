@@ -152,7 +152,7 @@ export class MyTicketComponent implements OnInit {
 
       status,
 
-      label: status,
+      label: status === 'Resolved' ? 'In process' : status,
 
       tickets: this.tickets.filter(ticket =>
         (ticket.status || 'Open').toLowerCase() === status.toLowerCase()
@@ -235,5 +235,7 @@ export class MyTicketComponent implements OnInit {
     ]);
 
   }
-
+  Raise_ticket(): void {
+    this.router.navigate(['/main/ticket']);
+  }
 }

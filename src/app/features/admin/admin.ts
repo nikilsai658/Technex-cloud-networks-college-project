@@ -81,15 +81,15 @@ export class Admin implements OnInit {
 
   ngOnInit(): void {
 
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     this.departmentForm = this.fb.group({
       name: ['', Validators.required],
       code: ['', Validators.required],
       collegeId: ['', Validators.required]
     });
+
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
     // Check login
     const token = this.cookie.get('token');

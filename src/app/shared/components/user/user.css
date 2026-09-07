@@ -111,6 +111,25 @@
   @apply bg-gray-100 cursor-not-allowed;
 }
 
+.password-field {
+  @apply relative;
+}
+
+.password-field input {
+  @apply pr-10;
+}
+
+.password-toggle {
+  @apply absolute top-1/2 right-3 -translate-y-1/2
+    flex items-center justify-center
+    text-gray-400 hover:text-[#24c0c5]
+    transition-colors duration-150;
+}
+
+.password-toggle svg {
+  @apply w-5 h-5;
+}
+
 /* ==========================
    ERROR
 ========================== */

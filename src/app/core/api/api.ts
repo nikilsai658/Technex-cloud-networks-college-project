@@ -21,7 +21,9 @@ export class Api {
   const token = this.cookie.get('token');
 
   if (!token) {
-    this.router.navigate(['/auth/login']);
+    // No token yet (e.g. the pre-login college-select page) — send the
+    // request without an Authorization header instead of redirecting;
+    // a 401 from the backend is still handled by handleError().
     return new HttpHeaders();
   }
 
@@ -36,7 +38,18 @@ private showAlert(message: string): void {
   }
 }
 
-private handleError(err: any) {
+private handleError(err: any, silent = false) {
+
+  // Silent mode: the caller renders its own inline error UI, so skip
+  // the blocking alert(s) — still clear stale auth on a 401 though.
+  if (silent) {
+    if (err.status === 401) {
+      this.cookie.delete('token', '/');
+      this.cookie.delete('refresh', '/');
+    }
+    return throwError(() => err);
+  }
+
   if (err.status === 400) {
     this.showAlert(err.error.message);
   } else if (err.status === 401) {
@@ -48,7 +61,10 @@ private handleError(err: any) {
   } else if (err.status === 403) {
     this.showAlert('Forbidden');
   } else if (err.status === 404) {
-    this.showAlert('Not Found');
+    // A 404 on a "get my records" style endpoint usually just means
+    // "nothing found yet" — let the calling component's own error
+    // handler decide how to render that instead of interrupting the
+    // user with a blocking alert.
   } else if (err.status === 500) {
     this.showAlert('Internal Server Error');
   } else {
@@ -58,7 +74,7 @@ private handleError(err: any) {
   return throwError(() => err);
 }
 
- POST(url: string, payload: any) {
+ POST(url: string, payload: any, options?: { silent?: boolean }) {
 
   return this.http.post(
     `http://localhost:5000/api/${url}`,
@@ -66,7 +82,7 @@ private handleError(err: any) {
     { headers: this.getHeaders() }
   ).pipe(
 
-    catchError((err) => this.handleError(err))
+    catchError((err) => this.handleError(err, options?.silent))
 
   );
 

@@ -32,6 +32,13 @@ export class TicketComponent {
 
   }
 
+  resetForm() {
+
+    this.ticketForm.reset();
+    this.cdr.markForCheck();
+
+  }
+
   submit() {
 
     if (this.ticketForm.invalid) {

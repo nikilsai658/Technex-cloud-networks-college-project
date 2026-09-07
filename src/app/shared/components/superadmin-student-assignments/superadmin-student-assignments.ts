@@ -7,6 +7,7 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { Superadmin } from '../../../features/services/superadmin/superadmin';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-superadmin-student-assignments',
@@ -32,7 +33,8 @@ export class SuperadminStudentAssignments implements OnInit {
 
   constructor(
     private api: Superadmin,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -95,6 +97,20 @@ export class SuperadminStudentAssignments implements OnInit {
         }
 
       });
+  }
+
+  viewCode(assignment: any): void {
+    this.router.navigate(
+  ['/main/superadmin-student-assignment-code'],
+  {
+    state: {
+      collegeId: this.collegeId,
+      domainId: this.domainId,
+      studentId: this.studentId,
+      assignmentId: assignment.assignmentId
+    }
+  }
+);
   }
 
 }

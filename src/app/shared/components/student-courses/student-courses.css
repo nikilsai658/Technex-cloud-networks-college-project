@@ -1,0 +1,390 @@
+@import "tailwindcss";
+
+/* =========================================================
+   COURSES PAGE
+========================================================= */
+
+@layer components {
+
+  .courses-page {
+    @apply min-h-screen bg-[#f8fafb] px-[22px] pt-[44px] pb-[35px];
+  }
+
+
+  /* =======================================================
+     HEADER
+  ======================================================= */
+
+  .courses-header {
+    @apply flex items-center justify-between
+           border-b border-[#e4e9ed]
+           pb-[28px] mb-[36px];
+  }
+
+  .courses-header-content {
+    @apply flex flex-col;
+  }
+
+  .courses-title {
+    @apply m-0
+           text-[32px]
+           leading-[38px]
+           font-bold
+           tracking-[-0.7px]
+           text-[#243746];
+  }
+
+  .courses-subtitle {
+    @apply mt-[6px]
+           mb-0
+           text-[13px]
+           leading-[20px]
+           text-[#55708a];
+  }
+
+  .courses-count {
+    @apply flex items-center
+           rounded-full
+           border border-[#dbe3e8]
+           bg-white
+           px-[14px]
+           py-[5px]
+           text-[12px]
+           font-medium
+           text-[#243746]
+           whitespace-nowrap;
+  }
+
+  .courses-count::before {
+    content: "";
+    @apply mr-[8px]
+           h-[7px]
+           w-[7px]
+           rounded-full
+           bg-[#2f3e46];
+  }
+
+
+  /* =======================================================
+     COURSES GRID
+  ======================================================= */
+
+  .courses-grid {
+    @apply grid
+           grid-cols-1
+           gap-[28px];
+  }
+
+  @media (min-width: 768px) {
+    .courses-grid {
+      @apply grid-cols-2;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .courses-grid {
+      @apply grid-cols-3;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .courses-grid {
+      @apply grid-cols-3;
+    }
+  }
+
+
+  /* =======================================================
+     COURSE CARD
+  ======================================================= */
+
+  .course-card {
+    @apply relative
+           overflow-hidden
+           rounded-[10px]
+           border border-[#e0e6ea]
+           bg-white
+           shadow-[0_1px_2px_rgba(15,23,42,0.04)]
+           transition-all
+           duration-200;
+  }
+
+  .course-card:hover {
+    @apply shadow-[0_8px_24px_rgba(15,23,42,0.08)];
+  }
+
+
+  /* =======================================================
+     CARD HEADER
+  ======================================================= */
+
+  .course-card-header {
+    @apply relative
+           h-[127px]
+           bg-[#2f3e46]
+           px-[21px]
+           pt-[21px];
+  }
+
+  .course-card-icon {
+    @apply flex
+           h-[31px]
+           w-[31px]
+           items-center
+           justify-center
+           rounded-[5px]
+           bg-[rgba(255,255,255,0.12)]
+           text-[16px]
+           text-white;
+  }
+
+  .course-card-icon span {
+    @apply leading-none;
+  }
+
+
+  /* =======================================================
+     CARD BODY
+  ======================================================= */
+
+  .course-card-body {
+    @apply relative
+           min-h-[198px]
+           bg-white
+           px-[21px]
+           pt-[22px]
+           pb-[22px];
+  }
+
+
+  /* =======================================================
+     COURSE NAME
+     
+     Positioned over the dark header to match screenshot
+  ======================================================= */
+
+  .course-name {
+    @apply absolute
+           left-[21px]
+           top-[-48px]
+           m-0
+           max-w-[calc(100%-42px)]
+           overflow-hidden
+           text-ellipsis
+           whitespace-nowrap
+           text-[17px]
+           leading-[23px]
+           font-semibold
+           tracking-[-0.25px]
+           text-white;
+  }
+
+
+  /* =======================================================
+     DESCRIPTION
+  ======================================================= */
+
+  .course-description {
+    @apply m-0
+           min-h-[42px]
+           text-[13px]
+           leading-[19px]
+           text-[#55708a];
+  }
+
+
+  /* =======================================================
+     INFORMATION ROW
+  ======================================================= */
+
+  .course-info {
+    @apply mt-[22px]
+           grid
+           grid-cols-2
+           gap-[8px];
+  }
+
+  .course-info-row {
+    @apply flex
+           items-center
+           justify-between
+           rounded-[7px]
+           border border-[#e0e7ec]
+           bg-[#f8fafb]
+           px-[13px]
+           py-[10px];
+  }
+
+  .course-info-label {
+    @apply text-[10px]
+           font-medium
+           uppercase
+           tracking-[0.4px]
+           text-[#7b8ea0];
+  }
+
+  .course-info-value {
+    @apply text-[12px]
+           font-medium
+           text-[#243746];
+  }
+
+
+  /* =======================================================
+     VIEW COURSE BUTTON
+  ======================================================= */
+
+  .view-course-btn {
+    @apply mt-[21px]
+           flex
+           h-[36px]
+           w-full
+           items-center
+           justify-center
+           gap-[8px]
+           rounded-[7px]
+           border border-[#2f3e46]
+           bg-white
+           px-[15px]
+           text-[11px]
+           font-semibold
+           uppercase
+           tracking-[0.1px]
+           text-[#172832]
+           transition-all
+           duration-200
+           cursor-pointer;
+  }
+
+  .view-course-btn::after {
+    content: "→";
+    @apply text-[17px]
+           font-normal
+           leading-none;
+  }
+
+  .view-course-btn:hover {
+    @apply bg-[#2f3e46]
+           text-white;
+  }
+
+
+  /* =======================================================
+     HOVER STATE
+     Gives the same filled-button appearance shown on the
+     third card in your screenshot.
+  ======================================================= */
+
+  .course-card:hover .view-course-btn {
+    @apply bg-[#2f3e46]
+           text-white;
+  }
+
+
+  /* =======================================================
+     LOADING SKELETON
+  ======================================================= */
+
+  .courses-grid-loading {
+    @apply grid
+           grid-cols-1
+           gap-[28px];
+  }
+
+  @media (min-width: 768px) {
+    .courses-grid-loading {
+      @apply grid-cols-2;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .courses-grid-loading {
+      @apply grid-cols-3;
+    }
+  }
+
+  .course-skeleton {
+    @apply h-[327px]
+           animate-pulse
+           rounded-[10px]
+           border border-[#e0e6ea]
+           bg-white;
+  }
+
+
+  /* =======================================================
+     NO COURSES
+  ======================================================= */
+
+  .no-courses {
+    @apply flex
+           min-h-[250px]
+           flex-col
+           items-center
+           justify-center
+           rounded-[10px]
+           border border-[#e0e6ea]
+           bg-white
+           text-center;
+  }
+
+  .no-courses-title {
+    @apply m-0
+           text-[20px]
+           font-semibold
+           text-[#2f3e46];
+  }
+
+  .no-courses-text {
+    @apply mt-[7px]
+           mb-0
+           text-[13px]
+           text-[#55708a];
+  }
+
+
+  /* =======================================================
+     RESPONSIVE
+  ======================================================= */
+
+  @media (max-width: 767px) {
+
+    .courses-page {
+      @apply px-[15px]
+             pt-[25px];
+    }
+
+    .courses-header {
+      @apply items-start
+             gap-[15px]
+             pb-[22px]
+             mb-[25px];
+    }
+
+    .courses-title {
+      @apply text-[27px]
+             leading-[32px];
+    }
+
+    .courses-subtitle {
+      @apply max-w-[230px]
+             text-[12px]
+             leading-[18px];
+    }
+
+    .courses-count {
+      @apply px-[10px]
+             py-[5px]
+             text-[11px];
+    }
+
+    .course-card-header {
+      @apply h-[125px];
+    }
+
+    .course-card-body {
+      @apply min-h-[200px];
+    }
+  }
+
+}
