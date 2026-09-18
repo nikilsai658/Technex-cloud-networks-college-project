@@ -3,47 +3,96 @@
   <div class="max-w-7xl mx-auto">
 
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div class="flex flex-col gap-4 mb-6 lg:flex-row lg:items-center lg:justify-between">
 
       <div>
+
+        <p class="text-xs font-semibold uppercase tracking-wider text-cyan-600 mb-1">
+          Superadmin &middot; Domain Report
+        </p>
 
         <h1 class="text-2xl font-bold text-gray-900">
           {{ domainName || 'Domain Students' }}
         </h1>
 
         <p class="text-sm text-gray-500 mt-1">
-          Students enrolled in this domain
+          Students enrolled in this domain and their assignment progress
         </p>
 
       </div>
 
       <!-- Domain Info -->
-      <div class="flex gap-3">
-         <button
-  type="button"
-  class="print-btn"
-  (click)="printContent()"
->
-  🖨 Print / Download
-</button>
+      <div class="flex flex-wrap items-center gap-3">
+
         <span
-          class="px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-600"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-600"
         >
-          College ID: {{ collegeId }}
+          <strong class="text-gray-800">College ID</strong> {{ collegeId }}
         </span>
 
         <span
-          class="px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-600"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-600"
         >
-          Domain ID: {{ domainId }}
+          <strong class="text-gray-800">Domain ID</strong> {{ domainId }}
         </span>
+
+        <button
+          type="button"
+          (click)="printContent()"
+          [disabled]="loading || students.length === 0"
+          class="inline-flex items-center gap-2 rounded-lg bg-[#2F3E46] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <svg
+            class="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M6 9V4h12v5M6 18H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2M6 14h12v6H6v-6Z"
+            />
+          </svg>
+          Print / Download
+        </button>
 
       </div>
 
     </div>
 
-    <div id="print-section">
-      <!-- Loading -->
+
+    <!-- Summary Stats -->
+    <div
+      *ngIf="!loading && students.length > 0"
+      class="grid grid-cols-2 gap-4 mb-6 sm:grid-cols-4"
+    >
+
+      <div class="bg-white border border-gray-200 rounded-xl p-4">
+        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Students</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">{{ students.length }}</p>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-xl p-4">
+        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Completed</p>
+        <p class="text-2xl font-bold text-green-600 mt-1">{{ totalCompleted }}</p>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-xl p-4">
+        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Pending</p>
+        <p class="text-2xl font-bold text-orange-600 mt-1">{{ totalPending }}</p>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-xl p-4">
+        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Avg Score</p>
+        <p class="text-2xl font-bold text-cyan-600 mt-1">{{ averageScore }}</p>
+      </div>
+
+    </div>
+
+
+    <!-- Loading -->
     <div
       *ngIf="loading"
       class="bg-white border border-gray-200 rounded-xl p-10 text-center"
@@ -63,7 +112,7 @@
     >
 
       <div class="text-4xl mb-3">
-        👨‍🎓
+        &#128118;&zwj;&#127891;
       </div>
 
       <h2 class="text-lg font-semibold text-gray-700">
@@ -108,66 +157,73 @@
       <!-- Table -->
       <div class="overflow-x-auto">
 
-        <table class="w-full min-w-[1100px]">
+        <table class="w-full min-w-[1200px]">
 
-          <thead class="bg-gray-50">
+          <thead style="background-color:#2F3E46" class="text-white">
 
             <tr>
 
               <th
                 class="px-6 py-4 text-left text-xs font-semibold
-                       text-gray-500 uppercase tracking-wider"
+                       uppercase tracking-wider"
               >
                 Student
               </th>
 
               <th
                 class="px-6 py-4 text-left text-xs font-semibold
-                       text-gray-500 uppercase tracking-wider"
+                       uppercase tracking-wider"
               >
                 Register Number
               </th>
 
               <th
                 class="px-6 py-4 text-left text-xs font-semibold
-                       text-gray-500 uppercase tracking-wider"
+                       uppercase tracking-wider"
               >
                 Year
               </th>
 
               <th
                 class="px-6 py-4 text-center text-xs font-semibold
-                       text-gray-500 uppercase tracking-wider"
+                       uppercase tracking-wider"
               >
                 Assignments
               </th>
 
               <th
                 class="px-6 py-4 text-center text-xs font-semibold
-                       text-gray-500 uppercase tracking-wider"
+                       uppercase tracking-wider"
               >
                 Completed
               </th>
 
               <th
                 class="px-6 py-4 text-center text-xs font-semibold
-                       text-gray-500 uppercase tracking-wider"
+                       uppercase tracking-wider"
               >
                 Pending
               </th>
 
               <th
                 class="px-6 py-4 text-center text-xs font-semibold
-                       text-gray-500 uppercase tracking-wider"
+                       uppercase tracking-wider"
               >
                 Attempts
               </th>
 
               <th
                 class="px-6 py-4 text-center text-xs font-semibold
-                       text-gray-500 uppercase tracking-wider"
+                       uppercase tracking-wider"
               >
                 Score
+              </th>
+
+              <th
+                class="px-6 py-4 text-center text-xs font-semibold
+                       uppercase tracking-wider"
+              >
+                Actions
               </th>
 
             </tr>
@@ -175,7 +231,7 @@
           </thead>
 
 
-          <tbody class="divide-y divide-gray-200">
+          <tbody class="divide-y divide-gray-100">
 
             <tr
               *ngFor="let student of students"
@@ -188,20 +244,20 @@
                 <div class="flex items-center gap-3">
 
                   <div
-                    class="w-10 h-10 rounded-full
+                    class="w-10 h-10 shrink-0 rounded-full
                            bg-cyan-100 flex items-center justify-center
                            text-cyan-700 font-semibold"
                   >
                     {{ student.studentName?.charAt(0)?.toUpperCase() }}
                   </div>
 
-                  <div>
+                  <div class="min-w-0">
 
-                    <p class="font-medium text-gray-900">
+                    <p class="font-medium text-gray-900 truncate">
                       {{ student.studentName }}
                     </p>
 
-                    <p class="text-sm text-gray-500">
+                    <p class="text-sm text-gray-500 truncate">
                       {{ student.studentEmail }}
                     </p>
 
@@ -308,23 +364,25 @@
                 </span>
 
               </td>
+
+              <!-- Actions -->
               <td class="px-6 py-4 text-center">
 
-  <button
-    type="button"
-    (click)="viewAssignments(student)"
-    class="inline-flex items-center justify-center
-           px-4 py-2 rounded-lg
-           bg-[#24c0c5] text-white
-           text-sm font-medium
-           hover:bg-[#1eabb0]
-           transition duration-200
-           whitespace-nowrap"
-  >
-    View Assignments
-   </button>
+                <button
+                  type="button"
+                  (click)="viewAssignments(student)"
+                  class="inline-flex items-center justify-center
+                         px-4 py-2 rounded-lg
+                         bg-[#24c0c5] text-white
+                         text-sm font-medium
+                         hover:bg-[#1eabb0]
+                         transition duration-200
+                         whitespace-nowrap"
+                >
+                  View Assignments
+                </button>
 
-   </td>
+              </td>
 
             </tr>
 
@@ -335,8 +393,6 @@
       </div>
 
     </div>
-    </div>
-    
 
   </div>
 

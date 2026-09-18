@@ -44,6 +44,8 @@ export class Course implements OnInit {
 
   selectedCourseId = 0;
 
+  showModal = false;
+
   constructor(
     private api: CourseService,
     private fb: FormBuilder,
@@ -118,6 +120,35 @@ export class Course implements OnInit {
   }
 
   //=====================================
+  // Modal Controls
+  //=====================================
+
+  openAddModal(): void {
+
+    if (!this.auth.hasPermission('CREATE_COURSE')) {
+      alert('No Permission');
+      return;
+    }
+
+    this.isEditMode = false;
+
+    this.selectedCourseId = 0;
+
+    this.courseForm.reset();
+
+    this.showModal = true;
+
+  }
+
+  closeModal(): void {
+
+    this.showModal = false;
+
+    this.resetForm();
+
+  }
+
+  //=====================================
   // Create Course
   //=====================================
 
@@ -180,6 +211,8 @@ export class Course implements OnInit {
       description: course.description
 
     });
+
+    this.showModal = true;
 
   }
 
@@ -282,6 +315,8 @@ export class Course implements OnInit {
     this.isEditMode = false;
 
     this.selectedCourseId = 0;
+
+    this.showModal = false;
 
   }
 

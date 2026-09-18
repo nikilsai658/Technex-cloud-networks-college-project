@@ -24,6 +24,15 @@
   display: flex;
   align-items: flex-start;
   gap: 16px;
+  min-width: 0;
+}
+
+.header-title {
+  min-width: 0;
+}
+
+.header-title h1 {
+  overflow-wrap: break-word;
 }
 
 .back-btn {
@@ -190,6 +199,15 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
+}
+
+.assignment-details {
+  min-width: 0;
+}
+
+.assignment-details h2 {
+  overflow-wrap: break-word;
 }
 
 .assignment-icon {
@@ -512,4 +530,28 @@
 .response-code strong {
   font-size: 18px;
   color: #065f46;
+}
+
+/* =====================================================
+   RESPONSIVE
+====================================================== */
+
+@media (max-width: 640px) {
+
+  .assignment-code-page {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .response-card {
+    flex-wrap: wrap;
+  }
+
+  .response-code {
+    align-items: flex-start;
+  }
+
+  .code-content {
+    max-height: 360px;
+  }
 }

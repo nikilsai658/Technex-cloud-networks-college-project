@@ -1,39 +1,38 @@
-<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+<div class="conversation-page">
 
-  <!-- Page Container -->
-  <div
-    class="mx-auto max-w-5xl overflow-hidden
-           rounded-xl border border-gray-200
-           bg-white shadow-sm">
+  <!-- ====================================== -->
+  <!-- PAGE CONTAINER -->
+  <!-- ====================================== -->
+
+  <div class="conversation-container">
 
 
     <!-- ====================================== -->
     <!-- HEADER -->
     <!-- ====================================== -->
 
-    <div
-      class="flex items-center justify-between
-             border-b border-gray-200
-             bg-white px-5 py-5">
+    <div class="conversation-header">
 
+      <!-- Left Header -->
+      <div class="conversation-header-left">
 
-      <!-- Title -->
-      <div>
+        <!-- Back Arrow -->
+        <span class="back-arrow">
+          ←
+        </span>
 
-        <h1
-          class="text-xl font-semibold
-                 text-gray-800">
+        <!-- Title -->
+        <div class="conversation-title-wrapper">
 
-          Conversation
+          <h1 class="conversation-title">
+            CONVERSATION
+          </h1>
 
-        </h1>
+          <p class="conversation-subtitle">
+            Chat with support team
+          </p>
 
-        <p
-          class="mt-1 text-sm text-gray-500">
-
-          Chat with the support team
-
-        </p>
+        </div>
 
       </div>
 
@@ -43,21 +42,15 @@
         type="button"
         (click)="refresh()"
         [disabled]="messagesLoading"
-        class="flex items-center gap-1.5
-               rounded-lg border
-               border-gray-200
-               bg-white px-4 py-2
-               text-sm text-gray-600
-               transition
-               hover:bg-gray-50
-               disabled:cursor-not-allowed
-               disabled:opacity-50">
+        class="refresh-button">
 
-        <span class="text-base">
+        <span class="refresh-icon">
           ↻
         </span>
 
-        Refresh
+        <span>
+          Refresh
+        </span>
 
       </button>
 
@@ -68,35 +61,27 @@
     <!-- CHAT AREA -->
     <!-- ====================================== -->
 
-    <div
-      class="chat-messages h-[500px]
-             overflow-y-auto bg-gray-50
-             px-5 py-5">
+    <div class="chat-messages">
 
 
-      <!-- Loading -->
+      <!-- ==================================== -->
+      <!-- LOADING -->
+      <!-- ==================================== -->
+
       <div
         *ngIf="
           messagesLoading &&
           messages.length === 0
         "
-        class="flex h-full items-center
-               justify-center">
+        class="loading-state">
 
-        <div class="text-center">
+        <div class="loading-content">
 
-          <div
-            class="mx-auto mb-3 h-7 w-7
-                   animate-spin rounded-full
-                   border-4 border-gray-200
-                   border-t-cyan-500">
+          <div class="loading-spinner">
           </div>
 
-          <p
-            class="text-sm text-gray-500">
-
+          <p class="loading-text">
             Loading conversation...
-
           </p>
 
         </div>
@@ -104,39 +89,29 @@
       </div>
 
 
-      <!-- No Messages -->
+      <!-- ==================================== -->
+      <!-- NO MESSAGES -->
+      <!-- ==================================== -->
+
       <div
         *ngIf="
           !messagesLoading &&
           messages.length === 0
         "
-        class="flex h-full items-center
-               justify-center">
+        class="empty-state">
 
-        <div class="text-center">
+        <div class="empty-content">
 
-          <div
-            class="mx-auto mb-3 flex h-12 w-12
-                   items-center justify-center
-                   rounded-full bg-gray-100
-                   text-xl">
-
+          <div class="empty-icon">
             💬
-
           </div>
 
-          <p
-            class="font-medium text-gray-600">
-
+          <p class="empty-title">
             No messages yet
-
           </p>
 
-          <p
-            class="mt-1 text-sm text-gray-400">
-
+          <p class="empty-subtitle">
             Start the conversation below.
-
           </p>
 
         </div>
@@ -150,39 +125,46 @@
 
       <div
         *ngIf="messages.length > 0"
-        class="space-y-5">
+        class="message-list">
 
 
-        <!-- Message -->
+        <!-- ================================== -->
+        <!-- MESSAGE -->
+        <!-- ================================== -->
+
         <div
           *ngFor="let msg of messages"
-          class="flex w-full"
+          class="message-row"
           [ngClass]="{
 
-            'justify-end':
+            'message-user':
               isMyMessage(msg),
 
-            'justify-start':
+            'message-support':
               isAdminMessage(msg)
 
           }">
 
 
-          <!-- Message Container -->
-          <div
-            class="max-w-[75%] md:max-w-[60%]">
+          <!-- ================================= -->
+          <!-- MESSAGE CONTENT -->
+          <!-- ================================= -->
+
+          <div class="message-content">
 
 
-            <!-- Sender -->
+            <!-- =============================== -->
+            <!-- SENDER -->
+            <!-- =============================== -->
+
             <div
-              class="mb-1 px-1 text-xs
-                     text-gray-400"
+              class="message-sender"
               [ngClass]="{
 
-                'text-right':
+                'sender-right':
                   isMyMessage(msg),
 
-                'text-left':
+                'sender-left':
                   isAdminMessage(msg)
 
               }">
@@ -192,41 +174,31 @@
             </div>
 
 
-            <!-- ================================= -->
+            <!-- =============================== -->
             <!-- MESSAGE BUBBLE -->
-            <!-- ================================= -->
+            <!-- =============================== -->
 
-            <div
-  class="px-4 py-3 shadow-sm"
-  [ngClass]="{
-    'rounded-2xl rounded-br-sm bg-cyan-500 text-white':
-      isMyMessage(msg),
+            <div class="message-bubble">
 
-    'rounded-2xl rounded-bl-sm border border-gray-200 bg-white text-gray-700':
-      isAdminMessage(msg)
-  }">
+              <p class="message-text">
+                {{ msg.message }}
+              </p>
 
-  <p
-    class="whitespace-pre-wrap break-words text-sm leading-6">
-    {{ msg.message }}
-  </p>
-
-</div>
+            </div>
 
 
-            <!-- ================================= -->
+            <!-- =============================== -->
             <!-- TIME -->
-            <!-- ================================= -->
+            <!-- =============================== -->
 
             <div
-              class="mt-1 px-1 text-[11px]
-                     text-gray-400"
+              class="message-time"
               [ngClass]="{
 
-                'text-right':
+                'time-right':
                   isMyMessage(msg),
 
-                'text-left':
+                'time-left':
                   isAdminMessage(msg)
 
               }">
@@ -250,10 +222,7 @@
 
     <div
       *ngIf="ticket?.status?.toLowerCase() === 'closed'"
-      class="border-t border-gray-200
-             bg-gray-50 px-5 py-5
-             text-center text-sm
-             text-gray-500">
+      class="ticket-closed">
 
       This ticket is closed. You can no longer send replies.
 
@@ -266,106 +235,91 @@
 
     <div
       *ngIf="ticket?.status?.toLowerCase() !== 'closed'"
-      class="border-t border-gray-200
-             bg-white px-5 py-5">
+      class="reply-section">
 
 
-      <div
-        class="flex items-end gap-3">
+      <!-- ==================================== -->
+      <!-- INPUT AREA -->
+      <!-- ==================================== -->
+
+      <div class="reply-wrapper">
 
 
         <!-- Textarea -->
-        <textarea
-          [(ngModel)]="message"
-          rows="3"
-          maxlength="1000"
-          [disabled]="sending"
-          placeholder="Write a reply to the support team..."
-          (keydown.enter)="sendOnEnter($event)"
-          class="min-h-[82px] flex-1
-                 resize-none rounded-xl
-                 border border-gray-300
-                 px-4 py-4 text-sm
-                 text-gray-700 outline-none
-                 transition
-                 placeholder:text-gray-400
-                 focus:border-cyan-500
-                 focus:ring-2
-                 focus:ring-cyan-100
-                 disabled:cursor-not-allowed
-                 disabled:bg-gray-100"></textarea>
+        <div class="textarea-wrapper">
+
+          <textarea
+            [(ngModel)]="message"
+            rows="3"
+            maxlength="1000"
+            [disabled]="sending"
+            placeholder="Type a message..."
+            (keydown.enter)="sendOnEnter($event)"
+            class="message-input">
+          </textarea>
 
 
-        <!-- Send Button -->
-        <button
-          type="button"
-          (click)="send()"
-          [disabled]="
-            sending ||
-            !message.trim() ||
-            message.length > maxMessageLength
-          "
-          class="flex h-[82px]
-                 min-w-[140px]
-                 items-center justify-center
-                 rounded-xl bg-cyan-500
-                 px-5 text-sm
-                 font-semibold text-white
-                 transition
-                 hover:bg-cyan-600
-                 disabled:cursor-not-allowed
-                 disabled:bg-gray-300">
+          <!-- Send Button -->
+          <button
+            type="button"
+            (click)="send()"
+            [disabled]="
+              sending ||
+              !message.trim() ||
+              message.length > maxMessageLength
+            "
+            class="send-button">
 
 
-          <!-- Sending -->
-          <ng-container
-            *ngIf="sending">
+            <!-- Sending -->
+            <ng-container
+              *ngIf="sending">
 
-            <span
-              class="mr-2 h-4 w-4
-                     animate-spin rounded-full
-                     border-2 border-white
-                     border-t-transparent">
-            </span>
+              <span class="send-spinner">
+              </span>
 
-            Sending...
+              <span class="sending-text">
+                Sending...
+              </span>
 
-          </ng-container>
+            </ng-container>
 
 
-          <!-- Normal -->
-          <ng-container
-            *ngIf="!sending">
+            <!-- Normal -->
+            <ng-container
+              *ngIf="!sending">
 
-            Send Reply
+              <span class="send-arrow">
+                ➤
+              </span>
 
-          </ng-container>
+            </ng-container>
 
-        </button>
+          </button>
+
+        </div>
 
       </div>
 
 
-      <!-- Bottom Information -->
-      <div
-        class="mt-2 flex items-center
-               justify-between">
+      <!-- ==================================== -->
+      <!-- BOTTOM INFORMATION -->
+      <!-- ==================================== -->
 
-        <p
-          class="text-xs text-gray-400">
+      <div class="reply-information">
 
+        <p class="reply-help-text">
           Your reply will be sent to the support team.
-
         </p>
 
         <span
-          class="text-xs"
+          class="character-count"
           [ngClass]="{
 
-            'text-red-500':
+            'character-limit':
               message.length >= maxMessageLength,
 
-            'text-gray-400':
+            'character-normal':
               message.length < maxMessageLength
 
           }">

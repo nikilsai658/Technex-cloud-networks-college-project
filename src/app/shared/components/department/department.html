@@ -1,11 +1,11 @@
-<div class="p-6">
+<div class="p-4 sm:p-6">
 
     <!-- Page Header -->
 
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
 
         <div>
-            <h2 class="text-2xl font-bold" style="color:#2F3E46" *ngIf="auth.hasPermission('VIEW_DEPARTMENT')">
+            <h2 class="text-xl sm:text-2xl font-bold" style="color:#2F3E46" *ngIf="auth.hasPermission('VIEW_DEPARTMENT')">
                 Departments
             </h2>
             <p class="text-sm text-gray-500 mt-1" *ngIf="auth.hasPermission('VIEW_DEPARTMENT')">
@@ -18,7 +18,7 @@
             type="button"
             (click)="openAddModal()"
             style="background-color:#2F3E46"
-            class="flex items-center gap-2 hover:opacity-90 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-opacity">
+            class="flex items-center justify-center gap-2 hover:opacity-90 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-opacity">
             <span class="text-lg leading-none">+</span>
             Add Department
         </button>
@@ -30,7 +30,8 @@
     <div class="bg-white rounded-xl shadow border border-gray-200 overflow-hidden"
          *ngIf="auth.hasPermission('VIEW_DEPARTMENT')">
 
-        <table class="w-full text-left">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left min-w-[640px]">
 
             <thead style="background-color:#2F3E46" class="text-white">
                 <tr>
@@ -85,6 +86,7 @@
             </tbody>
 
         </table>
+      </div>
 
     </div>
 

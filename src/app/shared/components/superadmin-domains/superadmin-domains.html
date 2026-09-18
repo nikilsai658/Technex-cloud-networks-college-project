@@ -1,16 +1,16 @@
-<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+<div class="domains-page">
 
-  <div class="max-w-7xl mx-auto">
+  <div class="domains-container">
 
     <!-- Header -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="domains-header">
 
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">
+        <h1 class="domains-title">
           Domains
         </h1>
 
-        <p class="text-sm text-gray-500 mt-1">
+        <p class="domains-subtitle">
           Manage college domains
         </p>
       </div>
@@ -21,9 +21,9 @@
     <!-- Loading -->
     <div
       *ngIf="loading"
-      class="flex justify-center items-center py-16"
+      class="domains-loading"
     >
-      <div class="text-gray-500 text-sm">
+      <div class="loading-text">
         Loading domains...
       </div>
     </div>
@@ -32,18 +32,18 @@
     <!-- No Domains -->
     <div
       *ngIf="!loading && domains.length === 0"
-      class="bg-white border border-gray-200 rounded-xl p-10 text-center"
+      class="empty-domains"
     >
 
-      <div class="text-gray-400 text-4xl mb-3">
+      <div class="empty-icon">
         📚
       </div>
 
-      <h2 class="text-lg font-semibold text-gray-700">
+      <h2 class="empty-title">
         No Domains Found
       </h2>
 
-      <p class="text-sm text-gray-500 mt-1">
+      <p class="empty-description">
         There are no domains available for this college.
       </p>
 
@@ -53,45 +53,46 @@
     <!-- Domain Cards -->
     <div
       *ngIf="!loading && domains.length > 0"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      class="domains-grid"
     >
 
       <div
         *ngFor="let domain of domains"
-        class="bg-white rounded-xl border border-gray-200 p-6
-               hover:shadow-lg transition-shadow duration-200"
+        class="domain-card"
       >
 
         <!-- Top -->
-        <div class="flex items-start justify-between gap-3 mb-5">
+        <div class="domain-card-header">
 
-          <div>
+          <div class="domain-info">
 
-            <h2 class="text-xl font-bold text-gray-900">
+            <h2 class="domain-name">
               {{ domain.domainName }}
             </h2>
 
-            <p class="text-xs text-gray-400 mt-1">
+            <p class="domain-id">
               Domain ID: {{ domain.domainId }}
             </p>
 
           </div>
 
+
           <!-- Status -->
-          <span
-            class="px-3 py-1 text-xs font-medium
-                   rounded-full bg-cyan-50 text-cyan-600"
-          >
+          <span class="domain-status">
+
+            <span class="status-dot"></span>
+
             Active
+
           </span>
 
         </div>
 
 
         <!-- Description -->
-        <div class="mb-6">
+        <div class="domain-description-wrapper">
 
-          <p class="text-sm text-gray-500 leading-6">
+          <p class="domain-description">
             {{ domain.description || 'No description available' }}
           </p>
 
@@ -99,29 +100,21 @@
 
 
         <!-- Students -->
-        <div
-          class="flex items-center justify-between
-                 bg-gray-50 rounded-lg px-4 py-3 mb-5"
-        >
+        <div class="students-section">
 
-          <div class="flex items-center gap-3">
+          <div class="students-content">
 
-            <div
-              class="w-10 h-10 rounded-lg
-                     bg-cyan-100 flex items-center justify-center"
-            >
-              <span class="text-cyan-600 text-lg">
-                👨‍🎓
-              </span>
+            <div class="student-icon">
+              <span>🎓</span>
             </div>
 
-            <div>
+            <div class="students-info">
 
-              <p class="text-xs text-gray-500">
-                Total Students
+              <p class="students-label">
+                TOTAL STUDENTS
               </p>
 
-              <p class="text-lg font-bold text-gray-900">
+              <p class="students-count">
                 {{ domain.totalStudents }}
               </p>
 
@@ -136,11 +129,7 @@
         <button
           type="button"
           (click)="viewDomain(domain)"
-          class="w-full bg-[#24c0c5] text-white
-                 py-2.5 px-4 rounded-lg
-                 font-medium text-sm
-                 hover:bg-[#1eabb0]
-                 transition duration-200"
+          class="view-domain-button"
         >
           View Domain
         </button>

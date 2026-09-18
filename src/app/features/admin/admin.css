@@ -17,9 +17,50 @@
     width:100%;
 }
 .header{
-    position: sticky;
-    top: 0;
     width: 100%;
-    z-index: 100;
-    background: white;
+}
+
+/*
+  app-header is position:fixed (see header.css). The router-outlet
+  wrapper is pinned below it and fills the rest of the viewport, so
+  the page itself never scrolls/moves - only the content inside
+  this panel scrolls.
+*/
+.admin-content{
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    /*
+      position:fixed always creates a new stacking context. Without an
+      explicit z-index here, this whole subtree (including any page's
+      "fixed inset-0" Add/Edit modal, which escapes this box visually
+      but not its stacking context) paints BELOW the header's explicit
+      z-30. Give it a number so modals correctly render above the
+      header, while staying below the sidebar (z-1000) and its
+      backdrop overlay (z-40) so those still cover it when open.
+    */
+    z-index: 35;
+}
+
+@media (min-width: 640px) {
+    .admin-content{
+        top: 64px;
+    }
+}
+
+@media (min-width: 768px) {
+    .admin-content{
+        top: 72px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .admin-content{
+        top: 80px;
+    }
 }

@@ -1,6 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
@@ -57,6 +58,8 @@ import { StudentAssignment } from "../../shared/components/studentassignment/stu
 })
 export class Admin implements OnInit {
 
+  @ViewChild('adminContent') adminContent!: ElementRef<HTMLDivElement>;
+
   departments: any[] = [];
 
   departmentForm!: FormGroup;
@@ -103,6 +106,15 @@ export class Admin implements OnInit {
     if (this.auth.hasPermission('VIEW_DEPARTMENT')) {
       this.loadDepartments();
     }
+
+    // Scroll the content panel back to top on every route change.
+    // withInMemoryScrolling only resets window scroll, but .admin-content
+    // (not the window) is the element that actually scrolls - see admin.css.
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.adminContent?.nativeElement.scrollTo({ top: 0 });
+      });
   }
 
   //=====================================

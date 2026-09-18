@@ -10,6 +10,8 @@ import {
   CommonModule
 } from '@angular/common';
 
+import { RouterLink } from '@angular/router';
+
 import {
   FormBuilder,
   FormGroup,
@@ -32,7 +34,8 @@ import { RolepermissionService } from '../../../features/services/rolepermission
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './rolepermission.html',
   styleUrls: ['./rolepermission.css']
@@ -41,19 +44,20 @@ export class RolePermissionComponent implements OnInit {
 
   rolePermissionForm!: FormGroup;
 
+  rawMappings: any[] = [];
   mappings: any[] = [];
   filteredMappings: any[] = [];
 
   roles: any[] = [];
   permissions: any[] = [];
+  roleNames: string[] = [];
 
   submitted = false;
   loading = false;
-
-  editMode = false;
-  selectedId: number | null = null;
+  showModal = false;
 
   searchText = '';
+  roleNameFilter = '';
 
   //=====================================
   // PAGINATION
@@ -98,6 +102,20 @@ export class RolePermissionComponent implements OnInit {
 
   }
 
+  //==========================
+  // MODAL
+  //==========================
+
+  openAddModal(): void {
+    this.resetForm();
+    this.showModal = true;
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.resetForm();
+  }
+
   //=====================================
   // LOAD ROLES
   //=====================================
@@ -109,7 +127,7 @@ export class RolePermissionComponent implements OnInit {
       next: (res: any) => {
 
         this.roles = res.data || [];
-        
+
         this.cd.detectChanges();
 
       },
@@ -136,6 +154,8 @@ export class RolePermissionComponent implements OnInit {
 
         this.permissions = res.data || [];
 
+        this.buildMappings();
+
         this.cd.detectChanges();
 
       },
@@ -153,6 +173,9 @@ export class RolePermissionComponent implements OnInit {
   //=====================================
   // LOAD MAPPINGS
   //=====================================
+  // API returns mappings split into two groups
+  // (adminRolePermissions / collegeRolePermissions);
+  // merge them into a single flat list for display.
 
   loadMappings(): void {
 
@@ -165,17 +188,25 @@ export class RolePermissionComponent implements OnInit {
 
         next: (res: any) => {
 
-          this.mappings = res.data || [];
+          const data = res?.data || {};
 
-          this.filteredMappings = [...this.mappings];
+          const admin = (data.adminRolePermissions || [])
+            .map((x: any) => ({ ...x, groupType: 'Admin' }));
 
-          this.currentPage = 1;
+          const college = (data.collegeRolePermissions || [])
+            .map((x: any) => ({ ...x, groupType: 'College' }));
+
+          this.rawMappings = [...admin, ...college];
+
+          this.buildMappings();
 
           this.cd.detectChanges();
 
         },
 
         error: () => {
+
+          this.rawMappings = [];
 
           this.mappings = [];
 
@@ -188,12 +219,40 @@ export class RolePermissionComponent implements OnInit {
   }
 
   //=====================================
+  // BUILD MAPPINGS (enrich + filter)
+  //=====================================
+
+  buildMappings(): void {
+
+    this.mappings = this.rawMappings.map(item => {
+
+      const permission = this.permissions.find(p => p.id === item.permissionId);
+
+      return {
+        ...item,
+        permissionCode: item.permissionCode || permission?.code || '',
+        permissionName: item.permissionName || permission?.name || item.permissionCode || ''
+      };
+
+    });
+
+    this.roleNames = Array.from(
+      new Set(this.mappings.map(m => m.roleName).filter(Boolean))
+    ).sort();
+
+    this.applyFilters();
+
+  }
+
+  //=====================================
   // SAVE
   //=====================================
 
   save(): void {
 
     this.submitted = true;
+
+    if (!this.auth.hasPermission('CREATE_ROLE_PERMISSION')) return;
 
     if (this.rolePermissionForm.invalid) {
 
@@ -216,7 +275,7 @@ export class RolePermissionComponent implements OnInit {
 
           this.loadMappings();
 
-          this.resetForm();
+          this.closeModal();
 
         }
 
@@ -256,10 +315,6 @@ export class RolePermissionComponent implements OnInit {
 
     this.submitted = false;
 
-    this.editMode = false;
-
-    this.selectedId = null;
-
     this.rolePermissionForm.reset({
 
       roleName: '',
@@ -273,20 +328,37 @@ export class RolePermissionComponent implements OnInit {
   }
 
   //=====================================
-  // SEARCH
+  // SEARCH / FILTER
   //=====================================
 
   search(): void {
 
+    this.applyFilters();
+
+  }
+
+  onRoleFilterChange(): void {
+
+    this.applyFilters();
+
+  }
+
+  applyFilters(): void {
+
     const value = this.searchText.toLowerCase();
 
-    this.filteredMappings = this.mappings.filter(x =>
+    this.filteredMappings = this.mappings.filter(x => {
 
-      x.roleName.toLowerCase().includes(value) ||
+      const matchesSearch = !value ||
+        (x.roleName || '').toLowerCase().includes(value) ||
+        (x.permissionCode || '').toLowerCase().includes(value) ||
+        (x.permissionName || '').toLowerCase().includes(value);
 
-      x.permissionCode.toLowerCase().includes(value)
+      const matchesRole = !this.roleNameFilter || x.roleName === this.roleNameFilter;
 
-    );
+      return matchesSearch && matchesRole;
+
+    });
 
     this.currentPage = 1;
 
@@ -309,6 +381,50 @@ export class RolePermissionComponent implements OnInit {
     return Array.from(
       { length: this.totalPages },
       (_, i) => i + 1
+    );
+
+  }
+
+  get visiblePages(): (number | '...')[] {
+
+    const total = this.totalPages;
+    const current = this.currentPage;
+    const pages: (number | '...')[] = [];
+
+    for (let i = 1; i <= total; i++) {
+
+      const isEdge = i === 1 || i === total;
+      const isNearCurrent = i >= current - 1 && i <= current + 1;
+
+      if (isEdge || isNearCurrent) {
+
+        pages.push(i);
+
+      } else if (pages[pages.length - 1] !== '...') {
+
+        pages.push('...');
+
+      }
+
+    }
+
+    return pages;
+
+  }
+
+  get rangeStart(): number {
+
+    return this.filteredMappings.length === 0
+      ? 0
+      : (this.currentPage - 1) * this.pageSize + 1;
+
+  }
+
+  get rangeEnd(): number {
+
+    return Math.min(
+      this.currentPage * this.pageSize,
+      this.filteredMappings.length
     );
 
   }

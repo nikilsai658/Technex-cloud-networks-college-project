@@ -19,7 +19,7 @@ import {
   FormsModule
 } from '@angular/forms';
 
-import { finalize } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { Auth } from '../../../core/auth/auth';
@@ -28,6 +28,7 @@ import { CollegeService } from '../../../features/services/college/college-servi
 import { DepartmentService } from '../../../features/services/department/department-service';
 import { BranchService } from '../../../features/services/branch/branch-service';
 import { RoleService } from '../../../features/services/role/role-service';
+import { Superadmin } from '../../../features/services/superadmin/superadmin';
 
 @Component({
   selector: 'app-user',
@@ -49,6 +50,7 @@ export class UserComponent implements OnInit {
     private departmentService: DepartmentService,
     private branchService: BranchService,
     private roleService: RoleService,
+    private superadmin: Superadmin,
     public auth: Auth,
     private router: Router,
     private cdr: ChangeDetectorRef,
@@ -76,12 +78,23 @@ export class UserComponent implements OnInit {
   selectedFile: File | null = null;
 
   // ==========================
+  // Bulk Upload Results
+  // ==========================
+
+  uploadId: string | null = null;
+  uploadResultsLoading = false;
+  showUploadResults = false;
+  successUsers: any[] = [];
+  failedUsers: any[] = [];
+
+  // ==========================
   // UI
   // ==========================
 
   loading = false;
   submitted = false;
   editMode = false;
+  showModal = false;
 
   selectedUserId: number | null = null;
 
@@ -178,6 +191,26 @@ export class UserComponent implements OnInit {
 
   get f() {
     return this.userForm.controls;
+  }
+
+  // ==========================
+  // Modal Controls
+  // ==========================
+
+  openAddModal(): void {
+
+    this.resetForm();
+
+    this.showModal = true;
+
+  }
+
+  closeModal(): void {
+
+    this.showModal = false;
+
+    this.resetForm();
+
   }
 
   // ==========================
@@ -283,26 +316,15 @@ export class UserComponent implements OnInit {
             res
           );
 
-          if (Array.isArray(res)) {
+          this.users = this.extractArray(res);
 
-            this.users = res;
+          this.users.forEach((user: any) => {
 
-          }
-          else if (Array.isArray(res?.data)) {
+            user.isLocked = false;
 
-            this.users = res.data;
+          });
 
-          }
-          else if (Array.isArray(res?.items)) {
-
-            this.users = res.items;
-
-          }
-          else {
-
-            this.users = [];
-
-          }
+          this.loadLockedStudents();
 
           this.totalRecords =
             this.users.length;
@@ -773,6 +795,8 @@ export class UserComponent implements OnInit {
       roleName
     );
 
+    this.showModal = true;
+
     this.cdr.detectChanges();
 
   }
@@ -1014,6 +1038,8 @@ export class UserComponent implements OnInit {
 
     this.submitted = false;
 
+    this.showModal = false;
+
   }
 
   // ==========================
@@ -1154,6 +1180,70 @@ export class UserComponent implements OnInit {
       start,
       start + this.pageSize
     );
+
+  }
+
+  get totalPages(): number {
+
+    return Math.max(
+      1,
+      Math.ceil(
+        this.totalRecords /
+        this.pageSize
+      )
+    );
+
+  }
+
+  get visiblePages(): (number | '...')[] {
+
+    const total = this.totalPages;
+    const current = this.page;
+    const pages: (number | '...')[] = [];
+
+    for (let i = 1; i <= total; i++) {
+
+      const isEdge = i === 1 || i === total;
+      const isNearCurrent = i >= current - 1 && i <= current + 1;
+
+      if (isEdge || isNearCurrent) {
+
+        pages.push(i);
+
+      } else if (pages[pages.length - 1] !== '...') {
+
+        pages.push('...');
+
+      }
+
+    }
+
+    return pages;
+
+  }
+
+  get rangeStart(): number {
+
+    return this.totalRecords === 0
+      ? 0
+      : (this.page - 1) * this.pageSize + 1;
+
+  }
+
+  get rangeEnd(): number {
+
+    return Math.min(
+      this.page * this.pageSize,
+      this.totalRecords
+    );
+
+  }
+
+  goToPage(page: number): void {
+
+    if (page < 1 || page > this.totalPages) return;
+
+    this.page = page;
 
   }
 
@@ -1327,6 +1417,205 @@ export class UserComponent implements OnInit {
   }
 
   // ==========================
+  // Load Locked Students
+  // ==========================
+  // Source of truth for lock state comes from
+  // SuperAdmin/students/locked — cross-reference
+  // its ids against the loaded users so locked
+  // students show "Unlock" and the rest show "Lock".
+  // ==========================
+
+  loadLockedStudents(): void {
+
+    this.superadmin.student1ocked().subscribe({
+
+      next: (res: any) => {
+
+        console.log('Locked Students Response:', res);
+
+        const lockedIds = this.extractIds(res, ['studentId', 'StudentId', 'id', 'Id', 'userId', 'UserId']);
+
+        this.users.forEach((user: any) => {
+
+          const userId = user?.id ?? user?.userId ?? user?.studentId;
+
+          user.isLocked = lockedIds.has(this.normalizeId(userId));
+
+        });
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Load Locked Students Error:', err);
+
+      }
+
+    });
+
+  }
+
+  // ==========================
+  // Response Helpers
+  // ==========================
+
+  extractArray(res: any): any[] {
+
+    if (Array.isArray(res)) {
+      return res;
+    }
+
+    if (Array.isArray(res?.data)) {
+      return res.data;
+    }
+
+    if (Array.isArray(res?.items)) {
+      return res.items;
+    }
+
+    if (Array.isArray(res?.result)) {
+      return res.result;
+    }
+
+    if (Array.isArray(res?.students)) {
+      return res.students;
+    }
+
+    if (Array.isArray(res?.lockedStudents)) {
+      return res.lockedStudents;
+    }
+
+    return [];
+
+  }
+
+  extractIds(res: any, keys: string[]): Set<string> {
+
+    const ids = this.extractArray(res)
+      .map((item: any) => {
+
+        if (item && typeof item === 'object') {
+
+          for (const key of keys) {
+
+            if (item[key] !== undefined && item[key] !== null) {
+              return item[key];
+            }
+
+          }
+
+          return undefined;
+
+        }
+
+        return item;
+
+      })
+      .filter((id: any) => id !== undefined && id !== null);
+
+    return new Set(ids.map((id: any) => this.normalizeId(id)));
+
+  }
+
+  // Ids may be numeric (colleges) or GUID strings (students) —
+  // compare as trimmed lowercase strings so both shapes match.
+  normalizeId(id: any): string {
+
+    return String(id).trim().toLowerCase();
+
+  }
+
+  // ==========================
+  // Lock / Unlock Student
+  // ==========================
+
+  lockUser(user: any): void {
+
+    if (
+      !confirm(
+        `Lock "${user?.fullName || user?.email}"? This user will lose access.`
+      )
+    ) {
+
+      return;
+
+    }
+
+    this.superadmin
+      .studentlock(user.id, {})
+      .subscribe({
+
+        next: () => {
+
+          user.isLocked = true;
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Lock User Error:',
+            err
+          );
+
+          alert(
+            err?.error?.message ||
+            'Unable to lock user.'
+          );
+
+        }
+
+      });
+
+  }
+
+  unlockUser(user: any): void {
+
+    if (
+      !confirm(
+        `Unlock "${user?.fullName || user?.email}"?`
+      )
+    ) {
+
+      return;
+
+    }
+
+    this.superadmin
+      .studentunlock(user.id, {})
+      .subscribe({
+
+        next: () => {
+
+          user.isLocked = false;
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Unlock User Error:',
+            err
+          );
+
+          alert(
+            err?.error?.message ||
+            'Unable to unlock user.'
+          );
+
+        }
+
+      });
+
+  }
+
+  // ==========================
   // Refresh
   // ==========================
 
@@ -1452,29 +1741,63 @@ export class UserComponent implements OnInit {
 
     this.loading = true;
 
+    this.showUploadResults = false;
+
+    this.successUsers = [];
+
+    this.failedUsers = [];
+
     this.userService
       .uploadUsers(
         this.selectedFile
+      )
+      .pipe(
+        finalize(() => {
+
+          this.loading = false;
+
+        })
       )
       .subscribe({
 
         next: (res: any) => {
 
-          this.loading = false;
-
-          alert(
-            'File Uploaded Successfully'
+          console.log(
+            'Upload Response:',
+            res
           );
+
+          const uploadId =
+            res?.uploadId ??
+            res?.data?.uploadId ??
+            res?.id ??
+            res?.data?.id ??
+            null;
 
           this.selectedFile = null;
 
           this.loadUsers();
 
+          if (uploadId) {
+
+            this.uploadId = uploadId;
+
+            this.loadUploadResults(
+              uploadId
+            );
+
+          }
+          else {
+
+            alert(
+              'File Uploaded Successfully'
+            );
+
+          }
+
         },
 
         error: (err) => {
-
-          this.loading = false;
 
           console.error(
             'Upload Error:',
@@ -1486,5 +1809,361 @@ export class UserComponent implements OnInit {
       });
 
   }
+
+  // ==========================
+  // Load Bulk Upload Results
+  // ==========================
+
+  loadUploadResults(
+    uploadId: string
+  ): void {
+
+    this.uploadResultsLoading = true;
+
+    forkJoin({
+
+      success:
+        this.userService.successusers(
+          uploadId
+        ),
+
+      failed:
+        this.userService.failedusers(
+          uploadId
+        )
+
+    })
+      .pipe(
+        finalize(() => {
+
+          this.uploadResultsLoading = false;
+
+          this.showUploadResults = true;
+
+        })
+      )
+      .subscribe({
+
+        next: (res: any) => {
+
+          console.log(
+            'Upload Results:',
+            res
+          );
+
+          this.successUsers =
+            this.extractList(
+              res.success
+            );
+
+          this.failedUsers =
+            this.extractList(
+              res.failed
+            );
+
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Load Upload Results Error:',
+            err
+          );
+
+          this.successUsers = [];
+
+          this.failedUsers = [];
+
+        }
+
+      });
+
+  }
+
+  // ==========================
+  // Extract List Helper
+  // ==========================
+
+  extractList(res: any): any[] {
+
+    if (Array.isArray(res)) {
+
+      return res;
+
+    }
+
+    if (Array.isArray(res?.data)) {
+
+      return res.data;
+
+    }
+
+    if (Array.isArray(res?.items)) {
+
+      return res.items;
+
+    }
+
+    return [];
+
+  }
+
+  // ==========================
+  // Close Upload Results
+  // ==========================
+
+  closeUploadResults(): void {
+
+    this.showUploadResults = false;
+
+    this.successUsers = [];
+
+    this.failedUsers = [];
+
+    this.uploadId = null;
+
+  }
+  printSuccessUsers(): void {
+  if (!this.successUsers?.length) {
+    return;
+  }
+
+  const rows = this.successUsers.map((user: any) => `
+    <tr>
+      <td>${this.escapeHtml(user?.fullName ?? user?.name ?? '-')}</td>
+      <td>${this.escapeHtml(user?.email ?? '-')}</td>
+      <td>${this.escapeHtml(user?.roleName ?? user?.role ?? '-')}</td>
+    </tr>
+  `).join('');
+
+  const printWindow = window.open('', '_blank', 'width=1000,height=700');
+
+  if (!printWindow) {
+    return;
+  }
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Successfully Created Users</title>
+
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          padding: 30px;
+          color: #2F3E46;
+        }
+
+        h1 {
+          margin-bottom: 5px;
+        }
+
+        .subtitle {
+          color: #666;
+          margin-bottom: 25px;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+        }
+
+        th,
+        td {
+          border: 1px solid #ddd;
+          padding: 12px;
+          text-align: left;
+        }
+
+        th {
+          background: #2F3E46;
+          color: white;
+        }
+
+        .success {
+          color: #15803d;
+          font-weight: bold;
+        }
+
+        @media print {
+          body {
+            padding: 10px;
+          }
+        }
+      </style>
+    </head>
+
+    <body>
+
+      <h1>Successfully Created Users</h1>
+
+      <div class="subtitle">
+        Total Successful Users:
+        <strong class="success">
+          ${this.successUsers.length}
+        </strong>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${rows}
+        </tbody>
+      </table>
+
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+
+  printWindow.focus();
+
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 300);
+}
+
+
+printFailedUsers(): void {
+  if (!this.failedUsers?.length) {
+    return;
+  }
+
+  const rows = this.failedUsers.map((user: any) => `
+    <tr>
+      <td>${this.escapeHtml(user?.fullName ?? user?.name ?? '-')}</td>
+      <td>${this.escapeHtml(user?.email ?? '-')}</td>
+      <td>${this.escapeHtml(
+        user?.reason ??
+        user?.error ??
+        user?.errorMessage ??
+        user?.message ??
+        '-'
+      )}</td>
+    </tr>
+  `).join('');
+
+  const printWindow = window.open('', '_blank', 'width=1000,height=700');
+
+  if (!printWindow) {
+    return;
+  }
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Failed Users</title>
+
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          padding: 30px;
+          color: #2F3E46;
+        }
+
+        h1 {
+          margin-bottom: 5px;
+        }
+
+        .subtitle {
+          color: #666;
+          margin-bottom: 25px;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+        }
+
+        th,
+        td {
+          border: 1px solid #ddd;
+          padding: 12px;
+          text-align: left;
+          vertical-align: top;
+        }
+
+        th {
+          background: #2F3E46;
+          color: white;
+        }
+
+        .failed {
+          color: #dc2626;
+          font-weight: bold;
+        }
+
+        @media print {
+          body {
+            padding: 10px;
+          }
+        }
+      </style>
+    </head>
+
+    <body>
+
+      <h1>Failed Users</h1>
+
+      <div class="subtitle">
+        Total Failed Users:
+        <strong class="failed">
+          ${this.failedUsers.length}
+        </strong>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${rows}
+        </tbody>
+      </table>
+
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+
+  printWindow.focus();
+
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 300);
+}
+
+
+/**
+ * Prevent HTML/content from breaking the print page.
+ */
+private escapeHtml(value: any): string {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 }

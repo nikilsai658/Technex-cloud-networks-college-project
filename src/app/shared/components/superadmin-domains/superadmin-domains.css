@@ -1,0 +1,276 @@
+/* =========================================
+   DOMAINS PAGE
+   ========================================= */
+@import "tailwindcss";
+.domains-page {
+  @apply min-h-screen bg-[#f8fafc] p-4 sm:p-6 lg:p-8;
+}
+
+
+/* =========================================
+   MAIN CONTAINER
+   ========================================= */
+
+.domains-container {
+  @apply mx-auto max-w-7xl;
+}
+
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.domains-header {
+  @apply flex items-center justify-between mb-8;
+}
+
+.domains-title {
+  @apply text-[36px] leading-[1.1] font-bold text-[#111827] tracking-[-0.8px];
+}
+
+.domains-subtitle {
+  @apply mt-2 text-[16px] leading-5 text-[#64748b];
+}
+
+
+/* =========================================
+   LOADING
+   ========================================= */
+
+.domains-loading {
+  @apply flex items-center justify-center py-16;
+}
+
+.loading-text {
+  @apply text-sm text-[#64748b];
+}
+
+
+/* =========================================
+   EMPTY STATE
+   ========================================= */
+
+.empty-domains {
+  @apply rounded-2xl border border-[#e5eaf0] bg-white p-10 text-center;
+}
+
+.empty-icon {
+  @apply mb-3 text-4xl text-[#94a3b8];
+}
+
+.empty-title {
+  @apply text-lg font-semibold text-[#475569];
+}
+
+.empty-description {
+  @apply mt-1 text-sm text-[#64748b];
+}
+
+
+/* =========================================
+   DOMAIN GRID
+   ========================================= */
+
+.domains-grid {
+  @apply grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+
+/* =========================================
+   DOMAIN CARD
+   ========================================= */
+
+.domain-card {
+  @apply flex flex-col
+         min-h-[294px]
+         rounded-[16px]
+         border border-[#e3e9ef]
+         bg-white
+         p-6
+         shadow-[0_2px_8px_rgba(15,23,42,0.04)]
+         transition-shadow duration-200;
+}
+
+.domain-card:hover {
+  @apply shadow-[0_6px_18px_rgba(15,23,42,0.08)];
+}
+
+
+/* =========================================
+   CARD HEADER
+   ========================================= */
+
+.domain-card-header {
+  @apply flex items-start justify-between gap-3;
+}
+
+.domain-info {
+  @apply min-w-0;
+}
+
+.domain-name {
+  @apply text-[20px] leading-6 font-bold text-[#172033] tracking-[-0.35px];
+}
+
+.domain-id {
+  @apply mt-1 text-[12px] leading-4 text-[#8ba0bd];
+}
+
+
+/* =========================================
+   STATUS
+   ========================================= */
+
+.domain-status {
+  @apply inline-flex shrink-0 items-center gap-1
+         rounded-full
+         border border-[#a7efd3]
+         bg-[#effdf8]
+         px-2.5 py-1
+         text-[12px]
+         leading-4
+         font-semibold
+         text-[#008f69];
+}
+
+.status-dot {
+  @apply h-1.5 w-1.5 rounded-full bg-[#00a879];
+}
+
+
+/* =========================================
+   DESCRIPTION / TAG
+   ========================================= */
+
+.domain-description-wrapper {
+  @apply mt-5;
+}
+
+.domain-description {
+  @apply inline-flex
+         max-w-full
+         rounded-md
+         bg-[#f3f6f9]
+         px-2.5 py-1
+         text-[12px]
+         leading-4
+         font-mono
+         text-[#64748b];
+}
+
+
+/* =========================================
+   STUDENT SECTION
+   ========================================= */
+
+.students-section {
+  @apply mt-4
+         flex items-center
+         rounded-xl
+         border border-[#edf1f5]
+         bg-[#f8fafc]
+         px-3.5 py-4;
+}
+
+.students-content {
+  @apply flex items-center gap-3;
+}
+
+
+/* =========================================
+   STUDENT ICON
+   ========================================= */
+
+.student-icon {
+  @apply flex h-10 w-10 shrink-0
+         items-center justify-center
+         rounded-lg
+         border border-[#dcecf5]
+         bg-[#e5f5fc]
+         shadow-[0_1px_2px_rgba(15,23,42,0.03)];
+}
+
+.student-icon span {
+  @apply text-[17px] leading-none;
+}
+
+
+/* =========================================
+   STUDENT INFORMATION
+   ========================================= */
+
+.students-info {
+  @apply flex flex-col;
+}
+
+.students-label {
+  @apply text-[11px]
+         leading-4
+         font-medium
+         uppercase
+         tracking-[0.5px]
+         text-[#8ba0bd];
+}
+
+.students-count {
+  @apply mt-0.5 text-[18px] leading-5 font-bold text-[#172033];
+}
+
+
+/* =========================================
+   VIEW BUTTON
+   ========================================= */
+
+.view-domain-button {
+  @apply mt-6
+         w-full
+         rounded-[11px]
+         bg-[#344f59]
+         px-4 py-2.5
+         text-[14px]
+         leading-5
+         font-semibold
+         text-white
+         shadow-[0_4px_8px_rgba(52,79,89,0.18)]
+         transition-all
+         duration-200
+         cursor-pointer;
+}
+
+.view-domain-button:hover {
+  @apply bg-[#2d454e]
+         shadow-[0_5px_10px_rgba(52,79,89,0.22)];
+}
+
+.view-domain-button:active {
+  @apply translate-y-px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 640px) {
+
+  .domains-page {
+    @apply p-4;
+  }
+
+  .domains-header {
+    @apply mb-6;
+  }
+
+  .domains-title {
+    @apply text-[30px];
+  }
+
+  .domains-subtitle {
+    @apply text-sm;
+  }
+
+  .domain-card {
+    @apply min-h-0 p-5;
+  }
+
+}
