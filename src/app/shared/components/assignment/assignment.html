@@ -77,7 +77,8 @@
             <th class="px-4 py-3 text-left">Time</th>
             <th class="px-4 py-3 text-left">Memory</th>
             <th class="px-4 py-3 text-left">Status</th>
-            <th class="px-4 py-3 text-center">Actions</th>
+            <th class="px-4 py-3 text-center"
+                *ngIf="auth.hasPermission('UPDATE_ASSIGNMENT') || auth.hasPermission('DELETE_ASSIGNMENT')">Actions</th>
 
           </tr>
 
@@ -94,7 +95,7 @@
             </td>
 
             <td class="px-4 py-3 font-semibold">
-              {{ assignment.title }}
+              <span appEllipsis>{{ assignment.title }}</span>
             </td>
 
             <td class="px-4 py-3">
@@ -125,7 +126,8 @@
 
             </td>
 
-            <td class="px-4 py-3">
+            <td class="px-4 py-3"
+                *ngIf="auth.hasPermission('UPDATE_ASSIGNMENT') || auth.hasPermission('DELETE_ASSIGNMENT')">
 
               <div class="flex justify-center gap-2">
 
@@ -155,7 +157,7 @@
 
           <tr *ngIf="assignments.length === 0">
 
-            <td colspan="8" class="text-center py-8 text-gray-500">
+            <td [attr.colspan]="(auth.hasPermission('UPDATE_ASSIGNMENT') || auth.hasPermission('DELETE_ASSIGNMENT')) ? 8 : 7"class="text-center py-8 text-gray-500">
 
               No Assignments Found
 
@@ -217,7 +219,7 @@
 
             <p class="text-xs text-red-500 mt-1"
                *ngIf="assignmentForm.get('title')?.invalid && assignmentForm.get('title')?.touched">
-              Title is required
+              {{ assignmentForm.get('title') | fieldError:'Title' }}
             </p>
 
           </div>
@@ -234,6 +236,10 @@
               rows="2"
               formControlName="description"
               class="w-full border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent"></textarea>
+            <p class="text-xs text-red-500 mt-1"
+               *ngIf="assignmentForm.get('description')?.invalid && assignmentForm.get('description')?.touched">
+              {{ assignmentForm.get('description') | fieldError:'Description' }}
+            </p>
 
           </div>
 
@@ -252,7 +258,7 @@
 
             <p class="text-xs text-red-500 mt-1"
                *ngIf="assignmentForm.get('questionId')?.invalid && assignmentForm.get('questionId')?.touched">
-              Question Id is required
+              {{ assignmentForm.get('questionId') | fieldError:'Question Id' }}
             </p>
 
           </div>
@@ -268,12 +274,12 @@
             <input
               type="text"
               formControlName="platform"
-              placeholder="Technex, LeetCode, HackerRank..."
+              placeholder="LeetCode, HackerRank..."
               class="w-full border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
             <p class="text-xs text-red-500 mt-1"
                *ngIf="assignmentForm.get('platform')?.invalid && assignmentForm.get('platform')?.touched">
-              Platform is required
+              {{ assignmentForm.get('platform') | fieldError:'Platform' }}
             </p>
 
           </div>
@@ -290,6 +296,10 @@
               type="text"
               formControlName="contestId"
               class="w-full border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+            <p class="text-xs text-red-500 mt-1"
+               *ngIf="assignmentForm.get('contestId')?.invalid && assignmentForm.get('contestId')?.touched">
+              {{ assignmentForm.get('contestId') | fieldError:'Contest Id' }}
+            </p>
 
           </div>
 
@@ -305,6 +315,10 @@
               type="text"
               formControlName="challengeUrl"
               class="w-full border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+            <p class="text-xs text-red-500 mt-1"
+               *ngIf="assignmentForm.get('challengeUrl')?.invalid && assignmentForm.get('challengeUrl')?.touched">
+              {{ assignmentForm.get('challengeUrl') | fieldError:'Challenge URL' }}
+            </p>
 
           </div>
 
@@ -346,6 +360,10 @@
               type="number"
               formControlName="score"
               class="w-full border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+            <p class="text-xs text-red-500 mt-1"
+               *ngIf="assignmentForm.get('score')?.invalid && assignmentForm.get('score')?.touched">
+              {{ assignmentForm.get('score') | fieldError:'Score' }}
+            </p>
 
           </div>
 
@@ -362,6 +380,10 @@
               formControlName="languageSupport"
               placeholder="Java, C#, Python..."
               class="w-full border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+            <p class="text-xs text-red-500 mt-1"
+               *ngIf="assignmentForm.get('languageSupport')?.invalid && assignmentForm.get('languageSupport')?.touched">
+              {{ assignmentForm.get('languageSupport') | fieldError:'Language support' }}
+            </p>
 
           </div>
 
@@ -377,6 +399,10 @@
               type="text"
               formControlName="iframeUrl"
               class="w-full border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+            <p class="text-xs text-red-500 mt-1"
+               *ngIf="assignmentForm.get('iframeUrl')?.invalid && assignmentForm.get('iframeUrl')?.touched">
+              {{ assignmentForm.get('iframeUrl') | fieldError:'Iframe URL' }}
+            </p>
 
           </div>
 
@@ -392,6 +418,10 @@
               type="number"
               formControlName="timeLimit"
               class="w-full border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+            <p class="text-xs text-red-500 mt-1"
+               *ngIf="assignmentForm.get('timeLimit')?.invalid && assignmentForm.get('timeLimit')?.touched">
+              {{ assignmentForm.get('timeLimit') | fieldError:'Time limit' }}
+            </p>
 
           </div>
 
@@ -405,8 +435,13 @@
 
             <input
               type="number"
+              placeholder="16-2000"
               formControlName="memoryLimit"
               class="w-full border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+            <p class="text-xs text-red-500 mt-1"
+               *ngIf="assignmentForm.get('memoryLimit')?.invalid && assignmentForm.get('memoryLimit')?.touched">
+              {{ assignmentForm.get('memoryLimit') | fieldError:'Memory limit' }}
+            </p>
 
           </div>
 

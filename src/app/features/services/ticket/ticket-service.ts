@@ -20,11 +20,12 @@ export class TicketService {
 
     return this.api.GET('Ticket', params);
   }
-  getTicketById(id:number){
-    return this.api.GET(`Ticket/${id}`);
+  // silent: skip the blocking error alert (used by background polling)
+  getTicketById(id:number, silent = false){
+    return this.api.GET(`Ticket/${id}`, undefined, { silent });
   }
-  getticketmy(){
-    return this.api.GET('Ticket/my');
+  getticketmy(silent = false){
+    return this.api.GET('Ticket/my', undefined, { silent });
   }
   createTicket(data:any){
     return this.api.POST('Ticket',data);

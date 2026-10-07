@@ -1,9 +1,10 @@
-import {
-  Component,
+import { tokenStorage } from '../../../core/auth/token-storage';
+import { Component,
   OnInit,
   Inject,
   PLATFORM_ID,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  inject
 } from '@angular/core';
 
 import {
@@ -25,17 +26,26 @@ import { CookieService } from 'ngx-cookie-service';
 import { Auth } from '../../../core/auth/auth';
 import { AssignmentService } from '../../../features/services/assignment/assignment-service';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-assignment',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, FieldErrorPipe
   ],
   templateUrl: './assignment.html',
   styleUrls: ['./assignment.css']
 })
 export class AssignmentComponent implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
 
   assignments: any[] = [];
 
@@ -63,31 +73,31 @@ export class AssignmentComponent implements OnInit {
 
     this.assignmentForm = this.fb.group({
 
-      title: ['', Validators.required],
+      title: ['', [...AppValidators.requiredText, Validators.minLength(3), Validators.maxLength(200)]],
 
-      description: [''],
+      description: ['', Validators.maxLength(5000)],
 
-      questionId: ['', Validators.required],
+      questionId: ['', [...AppValidators.requiredText, Validators.maxLength(100)]],
 
-      platform: ['', Validators.required],
+      platform: ['', [...AppValidators.requiredText, Validators.maxLength(50), AppValidators.title]],
 
       difficulty: ['', Validators.required],
 
-      score: [1, Validators.required],
+      score: [1, [Validators.required, Validators.min(1), Validators.max(1000), AppValidators.integer]],
 
-      languageSupport: [''],
+      languageSupport: ['', Validators.maxLength(200)],
 
-      iframeUrl: [''],
+      iframeUrl: ['', AppValidators.url],
 
-      timeLimit: [1, Validators.required],
+      timeLimit: [1, [Validators.required, Validators.min(1), Validators.max(600), AppValidators.integer]],
 
-      memoryLimit: [1, Validators.required],
+      memoryLimit: [1, [Validators.required, Validators.min(1), Validators.max(4096), AppValidators.integer]],
 
       isActive: [true],
 
-      contestId: [null],
+      contestId: [null, Validators.maxLength(100)],
 
-      challengeUrl: [''],
+      challengeUrl: ['', AppValidators.url],
 
       testCases: this.fb.array([this.createTestCase(true)])
 
@@ -95,7 +105,7 @@ export class AssignmentComponent implements OnInit {
 
     if (!isPlatformBrowser(this.platformId)) return;
 
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
       this.router.navigate(['/auth/login']);
@@ -133,7 +143,7 @@ export class AssignmentComponent implements OnInit {
   removeTestCase(index: number): void {
 
     if (this.testCases.length === 1) {
-      alert('At least one test case is required');
+      this.toast.warning('At least one test case is required');
       return;
     }
 
@@ -148,7 +158,7 @@ export class AssignmentComponent implements OnInit {
   openAddModal(): void {
 
     if (!this.auth.hasPermission('CREATE_ASSIGNMENT')) {
-      alert('Permission Denied');
+      this.toast.error('Permission Denied');
       return;
     }
 
@@ -211,7 +221,7 @@ export class AssignmentComponent implements OnInit {
   createAssignment(): void {
 
     if (!this.auth.hasPermission('CREATE_ASSIGNMENT')) {
-      alert('Permission Denied');
+      this.toast.error('Permission Denied');
       return;
     }
 
@@ -223,9 +233,9 @@ export class AssignmentComponent implements OnInit {
     this.api.createAssign(this.assignmentForm.value)
       .subscribe({
 
-        next: () => {
+        next: (res: any) => {
 
-          alert('Assignment Created Successfully');
+          this.toast.successFrom(res, 'Assignment Added Successfully');
 
           this.resetForm();
 
@@ -246,7 +256,7 @@ export class AssignmentComponent implements OnInit {
   editAssignment(item: any): void {
 
     if (!this.auth.hasPermission('UPDATE_ASSIGNMENT')) {
-      alert('Permission Denied');
+      this.toast.error('Permission Denied');
       return;
     }
 
@@ -309,7 +319,7 @@ export class AssignmentComponent implements OnInit {
   updateAssignment(): void {
 
     if (!this.auth.hasPermission('UPDATE_ASSIGNMENT')) {
-      alert('Permission Denied');
+      this.toast.error('Permission Denied');
       return;
     }
 
@@ -323,9 +333,9 @@ export class AssignmentComponent implements OnInit {
       this.assignmentForm.value
     ).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Assignment Updated Successfully');
+        this.toast.successFrom(res, 'Assignment Updated Successfully');
 
         this.resetForm();
 
@@ -343,21 +353,21 @@ export class AssignmentComponent implements OnInit {
   // DELETE
   //=========================
 
-  deleteAssignment(id: number): void {
+  async deleteAssignment(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_ASSIGNMENT')) {
-      alert('Permission Denied');
+      this.toast.error('Permission Denied');
       return;
     }
 
-    if (!confirm('Delete Assignment?')) return;
+    if (!(await this.confirmDialog.confirmDelete('this assignment'))) return;
 
     this.api.deleteAssign(id)
       .subscribe({
 
-        next: () => {
+        next: (res: any) => {
 
-          alert('Deleted Successfully');
+          this.toast.successFrom(res, 'Deleted Successfully');
 
           this.loadAssignments();
 

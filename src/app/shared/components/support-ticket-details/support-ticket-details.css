@@ -1,0 +1,496 @@
+@reference "../../../../styles.css";
+
+/*
+  Support ticket details — brand theme (#2F3E46 + cyan accent).
+  Status colours match All Tickets: green = open, amber = in progress, slate = closed.
+  Breakpoints: phone (< 640px) → tablet (640–1023px) → desktop (≥ 1024px, two columns).
+*/
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.std-page {
+  @apply min-h-screen bg-[#f8fafc] px-3 py-4 sm:p-6 lg:p-8;
+}
+
+.std-container {
+  @apply mx-auto max-w-6xl;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.std-back {
+  @apply mb-3 -ml-2 inline-flex items-center gap-1.5 rounded-lg px-2 py-1
+         text-sm font-medium text-slate-500
+         transition-colors duration-200
+         hover:bg-white hover:text-[#2F3E46] sm:mb-4;
+}
+
+.std-back svg {
+  @apply h-4 w-4;
+}
+
+.std-header {
+  @apply mb-5 flex flex-col gap-4 sm:mb-7
+         lg:flex-row lg:items-center lg:justify-between;
+}
+
+.std-header-main {
+  @apply flex min-w-0 items-center gap-3 sm:gap-4;
+}
+
+.std-header-icon {
+  @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-xl
+         bg-[#2F3E46] text-white sm:h-12 sm:w-12;
+  box-shadow: 0 8px 20px rgba(47, 62, 70, 0.16);
+}
+
+.std-header-icon svg {
+  @apply h-5 w-5 sm:h-6 sm:w-6;
+}
+
+.std-eyebrow {
+  @apply mb-0.5 block text-[11px] font-bold tracking-[0.16em] text-[#2F3E46]/70 sm:text-xs;
+}
+
+.std-title {
+  @apply m-0 flex flex-wrap items-baseline gap-x-2
+         text-xl font-bold tracking-tight text-[#2F3E46] sm:text-3xl;
+}
+
+.std-title-id {
+  @apply text-base font-semibold text-slate-400 sm:text-xl;
+}
+
+.std-subtitle {
+  @apply mt-1 hidden text-sm leading-6 text-slate-500 sm:block;
+}
+
+
+/* ---------- Status switch ---------- */
+
+.std-status-control {
+  @apply flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3;
+}
+
+.std-status-control-label {
+  @apply text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400;
+}
+
+.std-segmented {
+  @apply flex w-full rounded-xl border border-slate-200 bg-white p-1 shadow-sm
+         sm:inline-flex sm:w-auto;
+}
+
+.std-segment {
+  @apply inline-flex flex-1 items-center justify-center gap-2 rounded-lg
+         px-2 py-2 text-sm font-semibold text-slate-500
+         transition-all duration-200
+         hover:bg-slate-50 hover:text-slate-700
+         disabled:cursor-not-allowed disabled:opacity-60
+         sm:flex-none sm:px-3.5;
+}
+
+.std-segment:focus-visible {
+  @apply outline-2 outline-offset-2 outline-cyan-600;
+}
+
+.std-segment.is-active {
+  @apply text-white shadow-sm;
+}
+
+.std-segment-open.is-active     { @apply bg-emerald-600 hover:bg-emerald-600 hover:text-white; }
+.std-segment-inprogress.is-active { @apply bg-amber-500 hover:bg-amber-500 hover:text-white; }
+.std-segment-closed.is-active   { @apply bg-slate-600 hover:bg-slate-600 hover:text-white; }
+
+.std-segment-open .std-dot      { @apply bg-emerald-500; }
+.std-segment-inprogress .std-dot  { @apply bg-amber-500; }
+.std-segment-closed .std-dot    { @apply bg-slate-400; }
+.std-segment.is-active .std-dot { @apply bg-white; }
+
+
+/* =========================================================
+   LOADING / ERROR
+========================================================= */
+
+.std-loading {
+  @apply flex flex-col items-center justify-center gap-3 py-20 text-sm text-slate-500;
+}
+
+.std-loading-sm {
+  @apply h-full py-10;
+}
+
+.std-spinner {
+  @apply h-9 w-9 animate-spin rounded-full border-4 border-slate-200 border-t-[#2F3E46];
+}
+
+.std-error {
+  @apply rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-600;
+}
+
+.std-error button {
+  @apply mt-3 font-semibold text-red-700 underline underline-offset-4;
+}
+
+
+/* =========================================================
+   LAYOUT + CARDS
+========================================================= */
+
+.std-grid {
+  @apply grid grid-cols-1 items-start gap-4 sm:gap-6 lg:grid-cols-3;
+}
+
+.std-card {
+  @apply min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white;
+  box-shadow: 0 10px 35px rgba(47, 62, 70, 0.07);
+}
+
+.std-card-head {
+  @apply flex items-center justify-between gap-3
+         border-b border-slate-100 px-4 py-3.5 sm:px-5 sm:py-4;
+}
+
+.std-card-head h2 {
+  @apply m-0 text-base font-bold text-slate-800;
+}
+
+.std-card-sub {
+  @apply mt-0.5 flex items-center gap-1.5 text-xs text-slate-500;
+}
+
+.std-card-body {
+  @apply p-4 sm:p-5;
+}
+
+
+/* =========================================================
+   DETAILS CARD
+========================================================= */
+
+.std-details {
+  @apply border-t-4 border-t-[#2F3E46] lg:sticky lg:top-6;
+}
+
+.std-id-badge {
+  @apply rounded-md bg-slate-100 px-2 py-1 font-mono text-xs font-semibold text-slate-500;
+}
+
+.std-label {
+  @apply mb-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400;
+}
+
+.std-subject {
+  @apply m-0 text-base font-bold leading-snug text-slate-800 sm:text-lg;
+  overflow-wrap: anywhere;
+}
+
+
+/* ---------- Status pill ---------- */
+
+.std-pill {
+  @apply mt-3 inline-flex items-center gap-1.5 rounded-full border
+         px-2.5 py-1 text-xs font-semibold;
+}
+
+.std-dot {
+  @apply inline-block h-1.5 w-1.5 shrink-0 rounded-full;
+}
+
+.std-pill-open     { @apply border-emerald-200 bg-emerald-50 text-emerald-700; }
+.std-pill-inprogress { @apply border-amber-200 bg-amber-50 text-amber-700; }
+.std-pill-closed   { @apply border-slate-200 bg-slate-100 text-slate-600; }
+
+.std-pill-open .std-dot     { @apply bg-emerald-500; }
+.std-pill-inprogress .std-dot { @apply bg-amber-500; }
+.std-pill-closed .std-dot   { @apply bg-slate-400; }
+
+
+/* ---------- Meta list ---------- */
+
+/* Phone + desktop sidebar: stacked rows. Tablet: side by side. */
+.std-meta {
+  @apply my-5 grid grid-cols-1 divide-y divide-slate-100 rounded-xl
+         border border-slate-100 bg-slate-50/60
+         sm:grid-cols-2 sm:divide-x sm:divide-y-0
+         lg:grid-cols-1 lg:divide-x-0 lg:divide-y;
+}
+
+.std-meta-row {
+  @apply min-w-0 px-4 py-3;
+}
+
+.std-meta-row dt {
+  @apply mb-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400;
+}
+
+.std-meta-row dd {
+  @apply m-0;
+}
+
+.std-meta-value {
+  @apply flex items-center gap-2 text-sm font-medium text-slate-700;
+}
+
+.std-meta-value svg {
+  @apply h-4 w-4 shrink-0 text-slate-400;
+}
+
+.std-person {
+  @apply flex items-center gap-3;
+}
+
+.std-person-name {
+  @apply m-0 truncate text-sm font-semibold text-slate-800;
+}
+
+.std-person-email {
+  @apply m-0 text-xs text-slate-500;
+  overflow-wrap: anywhere;
+}
+
+
+/* ---------- Avatars ---------- */
+
+.std-avatar {
+  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full
+         text-sm font-bold;
+}
+
+.std-avatar-student {
+  @apply bg-cyan-50 text-cyan-700 ring-1 ring-cyan-100;
+}
+
+.std-avatar-admin {
+  @apply bg-[#2F3E46] text-white;
+}
+
+
+/* ---------- Description ---------- */
+
+.std-description {
+  @apply max-h-48 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50
+         p-4 text-sm leading-6 text-slate-600 whitespace-pre-line
+         lg:max-h-72;
+  overflow-wrap: anywhere;
+}
+
+
+/* ---------- Close button ---------- */
+
+.std-close-btn {
+  @apply mt-5 flex w-full items-center justify-center gap-2 rounded-xl
+         border border-red-200 bg-white px-4 py-2.5
+         text-sm font-semibold text-red-600
+         transition-colors duration-200
+         hover:border-red-300 hover:bg-red-50
+         disabled:cursor-not-allowed disabled:opacity-50
+         sm:mt-6;
+}
+
+.std-close-btn svg {
+  @apply h-4 w-4;
+}
+
+
+/* =========================================================
+   CONVERSATION CARD
+========================================================= */
+
+.std-chat {
+  @apply flex flex-col lg:col-span-2;
+}
+
+.std-live-dot {
+  @apply inline-block h-2 w-2 shrink-0 rounded-full bg-emerald-500;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+}
+
+.std-icon-btn {
+  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-lg
+         border border-slate-200 text-slate-500
+         transition-colors duration-200
+         hover:bg-slate-50 hover:text-[#2F3E46]
+         disabled:opacity-50;
+}
+
+.std-icon-btn svg {
+  @apply h-4 w-4;
+}
+
+.std-icon-btn:disabled svg {
+  @apply animate-spin;
+}
+
+
+/* ---------- Message list ---------- */
+
+/* Height follows the screen on phones/tablets, fixed on desktop */
+.std-messages {
+  @apply h-[60vh] min-h-80 max-h-[560px] space-y-4 overflow-y-auto
+         bg-slate-50/70 px-3 py-4
+         sm:space-y-5 sm:px-6 sm:py-5
+         lg:h-[480px];
+  overscroll-behavior: contain;
+}
+
+.std-empty {
+  @apply flex h-full flex-col items-center justify-center px-4 text-center text-slate-400;
+}
+
+.std-empty svg {
+  @apply mb-3 h-10 w-10 text-slate-300;
+}
+
+.std-empty p {
+  @apply m-0 text-sm font-semibold text-slate-500;
+}
+
+.std-empty span {
+  @apply mt-1 text-xs;
+}
+
+.std-msg {
+  @apply flex items-end gap-2 sm:gap-2.5;
+}
+
+.std-msg-admin {
+  @apply flex-row-reverse;
+}
+
+.std-msg .std-avatar {
+  @apply h-7 w-7 text-[11px] sm:h-8 sm:w-8 sm:text-xs;
+}
+
+.std-msg-content {
+  @apply flex min-w-0 max-w-[85%] flex-col sm:max-w-[70%];
+}
+
+.std-msg-admin .std-msg-content {
+  @apply items-end;
+}
+
+.std-msg-meta {
+  @apply mb-1 flex flex-wrap items-baseline gap-x-2 px-1 text-[11px] text-slate-400;
+}
+
+.std-msg-meta strong {
+  @apply font-semibold text-slate-600;
+}
+
+.std-msg-admin .std-msg-meta {
+  @apply flex-row-reverse;
+}
+
+.std-bubble {
+  @apply rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed shadow-sm whitespace-pre-wrap
+         sm:px-4;
+  overflow-wrap: anywhere;
+}
+
+.std-msg-student .std-bubble {
+  @apply rounded-bl-md border border-slate-200 bg-white text-slate-700;
+}
+
+.std-msg-admin .std-bubble {
+  @apply rounded-br-md bg-[#2F3E46] text-white;
+}
+
+
+/* ---------- Composer ---------- */
+
+.std-composer {
+  @apply border-t border-slate-100 bg-white p-3 sm:p-4;
+}
+
+.std-composer-box {
+  @apply rounded-xl border border-slate-300 bg-white
+         transition-shadow duration-200;
+}
+
+.std-composer-box:focus-within {
+  @apply border-[#2F3E46];
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
+}
+
+/* Grows with the text (where supported) up to a limit, then scrolls */
+.std-composer textarea {
+  @apply block max-h-40 min-h-14 w-full resize-none rounded-t-xl border-0 bg-transparent
+         px-3.5 pt-3 pb-1 text-sm leading-6 text-slate-700 placeholder-slate-400
+         outline-none sm:px-4;
+  field-sizing: content;
+}
+
+.std-composer textarea[readonly] {
+  @apply cursor-wait text-slate-400;
+}
+
+.std-composer-footer {
+  @apply flex items-center justify-between gap-3 px-3 pb-3 pt-1;
+}
+
+.std-hint {
+  @apply m-0 min-w-0 text-xs text-slate-400;
+}
+
+/* Keyboard hints are for desktop — phones have their own send key */
+.std-hint-keys {
+  @apply hidden md:inline;
+}
+
+.std-hint kbd {
+  @apply rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5
+         font-sans text-[10px] font-semibold text-slate-500;
+}
+
+.std-send-btn {
+  @apply inline-flex shrink-0 items-center gap-2 rounded-lg bg-[#2F3E46] px-4 py-2
+         text-sm font-semibold text-white shadow-sm
+         transition-all duration-200
+         hover:bg-[#24313a] hover:shadow-md
+         disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none;
+}
+
+.std-send-btn:focus-visible {
+  @apply outline-2 outline-offset-2 outline-cyan-600;
+}
+
+.std-send-btn svg {
+  @apply h-4 w-4 rotate-90;
+}
+
+
+/* ---------- Closed banner ---------- */
+
+.std-closed {
+  @apply flex items-center justify-center gap-2 border-t border-slate-100
+         bg-slate-50 px-4 py-4 text-center text-sm font-medium text-slate-500;
+}
+
+.std-closed svg {
+  @apply h-4 w-4 shrink-0 text-slate-400;
+}
+
+
+/* =========================================================
+   MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .std-segment,
+  .std-send-btn,
+  .std-back,
+  .std-close-btn,
+  .std-composer-box {
+    transition: none;
+  }
+
+  .std-icon-btn:disabled svg {
+    animation: none;
+  }
+}

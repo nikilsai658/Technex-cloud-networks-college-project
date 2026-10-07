@@ -90,7 +90,7 @@
               f['fullName'].invalid
             "
           >
-            Full name is required
+            {{ f['fullName'] | fieldError:'Full name' }}
           </small>
 
         </div>
@@ -114,20 +114,10 @@
             class="error"
             *ngIf="
               submitted &&
-              f['email'].errors?.['required']
+              f['email'].invalid
             "
           >
-            Email is required
-          </small>
-
-          <small
-            class="error"
-            *ngIf="
-              submitted &&
-              f['email'].errors?.['email']
-            "
-          >
-            Enter a valid email
+            {{ f['email'] | fieldError:'Email' }}
           </small>
 
         </div>
@@ -205,11 +195,10 @@
             class="error"
             *ngIf="
               submitted &&
-              !editMode &&
               f['password'].invalid
             "
           >
-            Password is required
+            {{ f['password'] | fieldError:'Password' }}
           </small>
 
         </div>
@@ -375,6 +364,13 @@
             max="4"
           />
 
+          <small
+            class="error"
+            *ngIf="submitted && f['yearNumber'].invalid"
+          >
+            {{ f['yearNumber'] | fieldError:'Year' }}
+          </small>
+
         </div>
 
 
@@ -393,6 +389,13 @@
             max="8"
           />
 
+          <small
+            class="error"
+            *ngIf="submitted && f['semester'].invalid"
+          >
+            {{ f['semester'] | fieldError:'Semester' }}
+          </small>
+
         </div>
 
 
@@ -404,10 +407,19 @@
           </label>
 
           <input
-            type="text"
+            type="tel"
+            inputmode="numeric"
+            maxlength="10"
             formControlName="phoneNumber"
-            placeholder="Enter phone number"
+            placeholder="Enter 10-digit phone number"
           />
+
+          <small
+            class="error"
+            *ngIf="submitted && f['phoneNumber'].invalid"
+          >
+            {{ f['phoneNumber'] | fieldError:'Phone number' }}
+          </small>
 
         </div>
 
@@ -423,7 +435,15 @@
             type="text"
             formControlName="registerNumber"
             placeholder="Enter register number"
+            maxlength="20"
           />
+
+          <small
+            class="error"
+            *ngIf="submitted && f['registerNumber'].invalid"
+          >
+            {{ f['registerNumber'] | fieldError:'Register number' }}
+          </small>
 
         </div>
 
@@ -471,20 +491,18 @@
           *ngIf="!editMode"
           type="submit"
           class="save-btn"
-          [disabled]="loading"
+          [disabled]="saving"
         >
-          <span *ngIf="!loading">Save</span>
-          <span *ngIf="loading">Processing...</span>
+          Save
         </button>
 
         <button
           *ngIf="editMode"
           type="submit"
           class="update-btn"
-          [disabled]="loading"
+          [disabled]="saving"
         >
-          <span *ngIf="!loading">Update</span>
-          <span *ngIf="loading">Processing...</span>
+          Update
         </button>
 
       </div>
@@ -527,12 +545,112 @@
 
     </div>
 
+    <!-- Upload Progress -->
+    <div class="progress-panel" *ngIf="uploadProgress">
+
+      <div class="progress-top">
+
+        <div class="progress-file">
+          <div
+            class="progress-icon"
+            [class.is-done]="uploadStatusKey === 'completed'"
+            [class.is-error]="uploadStatusKey === 'failed'"
+          >
+            <span *ngIf="uploadStatusKey === 'completed'">✓</span>
+            <span *ngIf="uploadStatusKey === 'failed'">!</span>
+            <span
+              *ngIf="uploadStatusKey !== 'completed' && uploadStatusKey !== 'failed'"
+              class="progress-spinner"
+            ></span>
+          </div>
+
+          <div>
+            <p class="progress-filename">
+              {{ uploadProgress.fileName || uploadFileName }}
+            </p>
+            <p class="progress-message">
+              {{ uploadProgress.message || uploadProgress.stage }}
+            </p>
+          </div>
+        </div>
+
+        <span
+          class="progress-status"
+          [ngClass]="'status-' + (uploadStatusKey || 'pending')"
+        >
+          {{ uploadProgress.stage || uploadProgress.status }}
+        </span>
+
+      </div>
+
+      <!-- Bar -->
+      <div class="progress-bar-row">
+
+        <div class="progress-track">
+          <!-- Before rows are known, show plain upload % -->
+          <div
+            *ngIf="!uploadProgress.totalRows"
+            class="progress-fill progress-fill-neutral"
+            [style.width.%]="progressPercent"
+          ></div>
+
+          <ng-container *ngIf="uploadProgress.totalRows">
+            <div
+              class="progress-fill progress-fill-success"
+              [style.width.%]="successBarWidth"
+            ></div>
+            <div
+              class="progress-fill progress-fill-failed"
+              [style.width.%]="failedBarWidth"
+            ></div>
+          </ng-container>
+        </div>
+
+        <span class="progress-percent">{{ progressPercent }}%</span>
+
+      </div>
+
+      <p class="progress-rows" *ngIf="uploadProgress.totalRows">
+        Processed
+        <strong>{{ uploadProgress.processedRows }}</strong>
+        of
+        <strong>{{ uploadProgress.totalRows }}</strong>
+        rows
+      </p>
+
+      <!-- Counters -->
+      <div class="progress-stats">
+
+        <div class="stat-tile">
+          <span class="stat-label">Total</span>
+          <span class="stat-value">{{ uploadProgress.totalRows || 0 }}</span>
+        </div>
+
+        <div class="stat-tile">
+          <span class="stat-label">Processed</span>
+          <span class="stat-value">{{ uploadProgress.processedRows || 0 }}</span>
+        </div>
+
+        <div class="stat-tile stat-success">
+          <span class="stat-label"><i class="dot dot-success"></i>Success</span>
+          <span class="stat-value">{{ uploadProgress.successCount || 0 }}</span>
+        </div>
+
+        <div class="stat-tile stat-failed">
+          <span class="stat-label"><i class="dot dot-failed"></i>Failed</span>
+          <span class="stat-value">{{ uploadProgress.failedCount || 0 }}</span>
+        </div>
+
+      </div>
+
+    </div>
+
     <!-- Upload Results Loading -->
     <div
-      class="loading"
+      class="progress-loading"
       *ngIf="uploadResultsLoading"
     >
-      Processing uploaded users...
+      Loading upload results...
     </div>
 
     <!-- Upload Results -->
@@ -587,14 +705,36 @@
 
       </div>
 
+      <!-- Tabs -->
+      <div class="result-tabs">
+        <button
+          type="button"
+          class="result-tab tab-success"
+          [class.active]="activeResultTab === 'success'"
+          (click)="activeResultTab = 'success'"
+        >
+          Success
+          <span class="tab-count">{{ successUsers.length }}</span>
+        </button>
+        <button
+          type="button"
+          class="result-tab tab-failed"
+          [class.active]="activeResultTab === 'failed'"
+          (click)="activeResultTab = 'failed'"
+        >
+          Failed
+          <span class="tab-count">{{ failedUsers.length || uploadErrors.length }}</span>
+        </button>
+      </div>
+
       <!-- Success Users -->
-      <div class="upload-results-block" *ngIf="successUsers.length">
+      <div class="upload-results-block" *ngIf="activeResultTab === 'success'">
 
-        <h3 class="upload-results-title upload-results-title-success">
-          Successfully Created Users
-        </h3>
+        <div class="empty-state" *ngIf="!successUsers.length">
+          No users were created from this file.
+        </div>
 
-        <div class="table-wrapper">
+        <div class="table-wrapper" *ngIf="successUsers.length">
           <table>
             <thead>
               <tr>
@@ -605,8 +745,8 @@
             </thead>
             <tbody>
               <tr *ngFor="let user of successUsers">
-                <td>{{ user?.fullName ?? user?.name ?? '-' }}</td>
-                <td>{{ user?.email ?? '-' }}</td>
+                <td><span appEllipsis>{{ user?.fullName ?? user?.name ?? '-' }}</span></td>
+                <td><span appEllipsis>{{ user?.email ?? '-' }}</span></td>
                 <td>{{ user?.roleName ?? user?.role ?? '-' }}</td>
               </tr>
             </tbody>
@@ -616,13 +756,27 @@
       </div>
 
       <!-- Failed Users -->
-      <div class="upload-results-block" *ngIf="failedUsers.length">
+      <div class="upload-results-block" *ngIf="activeResultTab === 'failed'">
 
-        <h3 class="upload-results-title upload-results-title-failed">
-          Failed Users
-        </h3>
+        <div
+          class="empty-state"
+          *ngIf="!failedUsers.length && !uploadErrors.length"
+        >
+          No failed rows. 🎉
+        </div>
 
-        <div class="table-wrapper">
+        <!-- Fallback: error messages from the status API -->
+        <ul
+          class="error-list"
+          *ngIf="!failedUsers.length && uploadErrors.length"
+        >
+          <li *ngFor="let err of uploadErrors; let i = index">
+            <span class="error-index">{{ i + 1 }}</span>
+            <span>{{ err }}</span>
+          </li>
+        </ul>
+
+        <div class="table-wrapper" *ngIf="failedUsers.length">
           <table>
             <thead>
               <tr>
@@ -633,21 +787,14 @@
             </thead>
             <tbody>
               <tr *ngFor="let user of failedUsers">
-                <td>{{ user?.fullName ?? user?.name ?? '-' }}</td>
-                <td>{{ user?.email ?? '-' }}</td>
-                <td>{{ user?.reason ?? user?.error ?? user?.errorMessage ?? user?.message ?? '-' }}</td>
+                <td><span appEllipsis>{{ user?.fullName ?? user?.name ?? '-' }}</span></td>
+                <td><span appEllipsis>{{ user?.email ?? '-' }}</span></td>
+                <td><span appEllipsis>{{ user?.reason ?? user?.error ?? user?.errorMessage ?? user?.message ?? '-' }}</span></td>
               </tr>
             </tbody>
           </table>
         </div>
 
-      </div>
-
-      <div
-        class="empty-state"
-        *ngIf="!successUsers.length && !failedUsers.length"
-      >
-        No results returned for this upload.
       </div>
 
     </div>
@@ -1012,7 +1159,7 @@
             <!-- Name -->
             <td>
 
-              {{
+              <span appEllipsis>{{
                 user.fullName ||
                 (
                   (user.firstName || '') +
@@ -1020,14 +1167,14 @@
                   (user.lastName || '')
                 ).trim() ||
                 '-'
-              }}
+              }}</span>
 
             </td>
 
 
             <!-- Email -->
             <td>
-              {{ user.email || '-' }}
+              <span appEllipsis>{{ user.email || '-' }}</span>
             </td>
 
 
@@ -1046,19 +1193,19 @@
 
             <!-- College -->
             <td>
-              {{ user.collegeName || '-' }}
+              <span appEllipsis>{{ user.collegeName || '-' }}</span>
             </td>
 
 
             <!-- Department -->
             <td>
-              {{ user.departmentName || '-' }}
+              <span appEllipsis>{{ user.departmentName || '-' }}</span>
             </td>
 
 
             <!-- Branch -->
             <td>
-              {{ user.branchName || '-' }}
+              <span appEllipsis>{{ user.branchName || '-' }}</span>
             </td>
 
 

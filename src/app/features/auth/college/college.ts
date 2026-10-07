@@ -3,6 +3,7 @@ import {ButtonModule} from 'primeng/button';
 import { Logo } from '../../../shared/logo/logo';
 import { FormBuilder, FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import {Router} from '@angular/router';
@@ -10,7 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CollegeService } from '../../services/college/college-service';
 @Component({
   selector: 'app-college',
-  imports: [Logo,ButtonModule,FormsModule,SelectModule,ReactiveFormsModule],
+  imports: [Logo,ButtonModule,FormsModule,SelectModule,FloatLabelModule,ReactiveFormsModule],
   templateUrl: './college.html',
   styleUrl: './college.css',
 })

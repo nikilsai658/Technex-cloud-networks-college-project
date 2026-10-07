@@ -42,11 +42,10 @@ import { YearUpdation } from './shared/components/year-updation/year-updation';
 import { authGuard } from './core/auth/auth-guard';
 import { assignmentGuard } from './core/guards/assignment-guard';
 import { permissionGuard } from './core/guards/permission-guard';
+import { defaultMainRoute } from './core/guards/default-route';
 import { NotFoundComponent } from './shared/components/page-not-found/page-not-found';
 import { Viewcertificate } from './shared/components/viewcertificate/viewcertificate';
-import { ChangePassword } from './shared/components/change-password/change-password';
-export const routes: Routes = [
-
+import { ChangePassword } from './shared/components/change-password/change-password';export const routes: Routes = [
   {
     path: '',redirectTo: 'home',pathMatch: 'full'
   },
@@ -66,16 +65,15 @@ export const routes: Routes = [
     path: 'main',component: Admin,canActivate: [authGuard],canActivateChild: [authGuard, permissionGuard],children: [
 
       {
-        path: '',redirectTo: 'student-domain', pathMatch: 'full'
+        path: '',redirectTo: defaultMainRoute, pathMatch: 'full'
       },
       {
         path: 'student-domain', component: StudentDomain, data: { permission: 'VIEW_STUDENT_DOMAIN' }
       },
 
       {
-        path: 'student-courses',component: StudentCourses
+        path: 'student-courses',component: StudentCourses,data: { permission: 'VIEW_STUDENT_COURSES' }
       },
-
       {
         path: 'student-assignments', component: StudentAssignments
       },
@@ -90,7 +88,7 @@ export const routes: Routes = [
         path:'department-management',component:Department, data: { permission: 'VIEW_DEPARTMENT' }
       },
       {
-        path:'branch-management',component:Branch, data: { permission: 'UPDATE_BRANCH' }
+        path:'branch-management',component:Branch, data: { permission: 'VIEW_BRANCH' }
       },
       {
         path:'domain',component:DomainComponent, data: { permission: 'VIEW_DOMAIN' }
@@ -99,7 +97,7 @@ export const routes: Routes = [
         path:'course',component:Course, data: { permission: 'VIEW_COURSE' }
       },
       {
-        path:'assignment',component:AssignmentComponent, data: { permission: 'UPDATE_ASSIGNMENT' }
+        path:'assignment',component:AssignmentComponent, data: { permission: 'VIEW_ASSIGNMENT' }
       },
       {
         path:'year',component:Year, data: { permission: 'VIEW_YEAR' }
@@ -108,7 +106,7 @@ export const routes: Routes = [
         path:'year-updation',component:YearUpdation, data: { permission: 'UPDATE_YEAR' }
       },
       {
-        path:'user',component:UserComponent, data: { permission: 'VIEW_COURSE' }
+        path:'user',component:UserComponent, data: { permission: 'VIEW_USER' }
       },
       {
         path:'role',component:Role, data: { permission: 'VIEW_ROLE' }
@@ -129,16 +127,16 @@ export const routes: Routes = [
         path:'ticket',component:TicketComponent, data: { permission: 'CREATE_TICKET' }
       },
       {
-      path:'mytickets',component:MyTicketComponent
+      path:'mytickets',component:MyTicketComponent,data:{permission:'VIEW_MY_TICKETS'}
       },
       {
-        path:'replyticket/:id',component:ReplyTicketComponent
+        path:'replyticket/:id',component:ReplyTicketComponent,data:{permission:'REPLY_TICKET'}
       },
       {
         path:'alltickets',component:AllTicketsComponent, data: { permission: 'VIEW_ALL_TICKETS' }
       },
       {
-        path: 'support-ticket-details/:id',component: SupportTicketDetailsComponent
+        path: 'support-ticket-details/:id',component: SupportTicketDetailsComponent,data: { permission: 'VIEW_ALL_TICKETS' }
       },
       {
         path:'college-department-mapping',component:CollegeDepartmentComponent, data: { permission: 'VIEW_COLLEGE_DEPARTMENT' }
@@ -165,19 +163,19 @@ export const routes: Routes = [
         path:'superamin-colleges', component:SuperAdmin, data: { permission: 'VIEW_SUPERADMIN_COLLEGES' }
       },
       {
-        path:'superadmin-domains', component:SuperadminDomains
+        path:'superadmin-domains', component:SuperadminDomains,data:{permission:'VIEW_SUPERADMIN_COLLEGE_DOMAINS'}
       },
       {
-        path:'superadmin-domain-students', component:SuperadminDomainStudents
+        path:'superadmin-domain-students', component:SuperadminDomainStudents,data:{permission:'VIEW_SUPERADMIN_DOMAIN_STUDENTS'}
       },
       {
-        path:'superadmin-student-assignments',component:SuperadminStudentAssignments
+        path:'superadmin-student-assignments',component:SuperadminStudentAssignments,data:{permission:'VIEW_SUPERADMIN_STUDENT_ASSIGNMENTS'}
       },
       {
-        path:'superadmin-student-assignment-code',component:SuperadminStudentAssignmentCode
+        path:'superadmin-student-assignment-code',component:SuperadminStudentAssignmentCode,data:{permission:'VIEW_SUPERADMIN_STUDENT_ASSIGNMENTS'}
       },
       {
-        path:'view-certificate',component:Viewcertificate
+        path:'view-certificate',component:Viewcertificate,data:{permission:'VIEW_STUDENT_DOMAIN'}
       },
       {
         path:'change_password',component:ChangePassword

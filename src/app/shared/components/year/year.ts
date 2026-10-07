@@ -1,9 +1,10 @@
-import {
-  Component,
+import { tokenStorage } from '../../../core/auth/token-storage';
+import { Component,
   OnInit,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
 
 import {
@@ -24,17 +25,25 @@ import { CookieService } from 'ngx-cookie-service';
 import { Auth } from '../../../core/auth/auth';
 import { YearService } from '../../../features/services/year/year-service';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
 @Component({
   selector: 'app-year',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, FieldErrorPipe
   ],
   templateUrl: './year.html',
   styleUrls: ['./year.css']
 })
 export class Year implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
 
   years: any[] = [];
 
@@ -60,7 +69,7 @@ export class Year implements OnInit {
 
     this.yearForm = this.fb.group({
 
-      yearNumber: ['', Validators.required],
+      yearNumber: ['', [Validators.required, Validators.min(1), Validators.max(4), AppValidators.integer]],
 
       semester: ['', Validators.required]
 
@@ -70,7 +79,7 @@ export class Year implements OnInit {
       return;
     }
 
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
 
@@ -146,7 +155,7 @@ export class Year implements OnInit {
 
     if (!this.auth.hasPermission('CREATE_YEAR')) {
 
-      alert('Permission Denied');
+      this.toast.error('Permission Denied');
 
       return;
 
@@ -178,7 +187,7 @@ export class Year implements OnInit {
 
     if (!this.auth.hasPermission('CREATE_YEAR')) {
 
-      alert('Permission Denied');
+      this.toast.error('Permission Denied');
 
       return;
 
@@ -194,9 +203,9 @@ export class Year implements OnInit {
 
     this.api.createYear(this.yearForm.value).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Year Created Successfully');
+        this.toast.successFrom(res, 'Year Added Successfully');
 
         this.resetForm();
 
@@ -222,7 +231,7 @@ export class Year implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_YEAR')) {
 
-      alert('Permission Denied');
+      this.toast.error('Permission Denied');
 
       return;
 
@@ -252,7 +261,7 @@ export class Year implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_YEAR')) {
 
-      alert('Permission Denied');
+      this.toast.error('Permission Denied');
 
       return;
 
@@ -274,9 +283,9 @@ export class Year implements OnInit {
 
     ).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Year Updated Successfully');
+        this.toast.successFrom(res, 'Year Updated Successfully');
 
         this.resetForm();
 
@@ -298,17 +307,17 @@ export class Year implements OnInit {
   // Delete
   //==============================
 
-  deleteYear(id: number): void {
+  async deleteYear(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_YEAR')) {
 
-      alert('Permission Denied');
+      this.toast.error('Permission Denied');
 
       return;
 
     }
 
-    if (!confirm('Delete this Year?')) {
+    if (!(await this.confirmDialog.confirmDelete('this year'))) {
 
       return;
 
@@ -316,9 +325,9 @@ export class Year implements OnInit {
 
     this.api.deleteYear(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Year Deleted Successfully');
+        this.toast.successFrom(res, 'Year Deleted Successfully');
 
         this.loadYears();
 

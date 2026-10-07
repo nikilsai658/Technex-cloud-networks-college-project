@@ -1,42 +1,57 @@
-<div class="login">
-     <app-logo></app-logo>
-    <h1 class="companyname">Technex Cloud Networks </h1>
-    <span class="companyname">Pvt Ltd</span>
-   <form class="form" [formGroup]="Form" (ngSubmit)="onSubmit()">
+<div class="auth-page">
+    <div class="auth-card">
+        <app-logo></app-logo>
+        <h1 class="companyname">Technex Cloud Networks</h1>
+        <span class="companyname">Pvt Ltd</span>
 
-    <p-floatlabel>
-        <input
-            pInputText
-            formControlName="userNameOrEmail"
-            id="on_label"
-            name="email"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">Username or Email</label>
-    </p-floatlabel>
-    <p-floatlabel>
-        <p-password
-            name="password"
-            formControlName="password"
-            inputStyleClass="custom-password"
-            inputId="over_label"
-            [feedback]="false"
-            [toggleMask]="true" 
-            autocomplete="off">
-        </p-password>
-        <label for="over_label" class="p-floatlabel">Password</label>
-    </p-floatlabel>
+        <form class="auth-form" [formGroup]="Form" (ngSubmit)="onSubmit()">
+            <div class="auth-heading">
+                <h2>Sign in</h2>
+                <p>Enter your credentials to continue</p>
+            </div>
 
-    <p-button label="Login" type="submit" [loading]="loading"></p-button>
+            <div class="auth-field">
+                <p-floatlabel variant="on">
+                    <input
+                        pInputText
+                        formControlName="userNameOrEmail"
+                        id="on_label"
+                        name="email"
+                        autocomplete="off" />
+                    <label for="on_label">Username or Email</label>
+                </p-floatlabel>
+                <small class="field-error" *ngIf="Form.get('userNameOrEmail')?.invalid && Form.get('userNameOrEmail')?.touched">
+                    {{ Form.get('userNameOrEmail') | fieldError:'Username or email' }}
+                </small>
+            </div>
 
-    <p *ngIf="errorMessage" class="login-error">
-        {{ errorMessage }}
-    </p>
-</form>
-<div class="f">
-    <div><a routerLink="/auth/forgot-password" class="forgot">
-  forgot password?
-</a></div>
-<div> &nbsp;&nbsp;&nbsp;<a routerLink="/auth/college" class="forgot">select college
-</a></div>
-</div>
+            <div class="auth-field">
+                <p-floatlabel variant="on">
+                    <p-password
+                        name="password"
+                        formControlName="password"
+                        inputId="over_label"
+                        [feedback]="false"
+                        [toggleMask]="true"
+                        autocomplete="off">
+                    </p-password>
+                    <label for="over_label">Password</label>
+                </p-floatlabel>
+                <small class="field-error" *ngIf="Form.get('password')?.invalid && Form.get('password')?.touched">
+                    {{ Form.get('password') | fieldError:'Password' }}
+                </small>
+            </div>
+
+            <p-button label="Login" type="submit" [loading]="loading"></p-button>
+
+            <p *ngIf="errorMessage" class="auth-message">
+                {{ errorMessage }}
+            </p>
+        </form>
+
+        <div class="auth-links">
+            <a routerLink="/auth/forgot-password" class="auth-link">Forgot password?</a>
+            <a routerLink="/auth/college" class="auth-link">Select college</a>
+        </div>
+    </div>
 </div>

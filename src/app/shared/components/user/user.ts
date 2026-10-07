@@ -1,9 +1,10 @@
-import {
-  Component,
+import { Component,
   OnInit,
+  OnDestroy,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
 
 import {
@@ -19,7 +20,7 @@ import {
   FormsModule
 } from '@angular/forms';
 
-import { finalize, forkJoin } from 'rxjs';
+import { finalize, forkJoin, Subscription, switchMap, takeWhile, timer } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { Auth } from '../../../core/auth/auth';
@@ -30,18 +31,28 @@ import { BranchService } from '../../../features/services/branch/branch-service'
 import { RoleService } from '../../../features/services/role/role-service';
 import { Superadmin } from '../../../features/services/superadmin/superadmin';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    FieldErrorPipe
   ],
   templateUrl: './user.html',
   styleUrls: ['./user.css']
 })
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnDestroy {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
   Math = Math;
   constructor(
     private fb: FormBuilder,
@@ -88,10 +99,23 @@ export class UserComponent implements OnInit {
   failedUsers: any[] = [];
 
   // ==========================
+  // Bulk Upload Progress
+  // ==========================
+
+  uploadProgress: any = null;
+  uploadErrors: string[] = [];
+  uploadFileName = '';
+  activeResultTab: 'success' | 'failed' = 'success';
+  private progressSub: Subscription | null = null;
+
+  // ==========================
   // UI
   // ==========================
 
   loading = false;
+
+  // Separate from `loading` so the user-list fetch doesn't lock the form buttons.
+  saving = false;
   submitted = false;
   editMode = false;
   showModal = false;
@@ -120,6 +144,9 @@ export class UserComponent implements OnInit {
   // ==========================
 
   searchText = '';
+
+  // Unfiltered copy of loaded users, so search never loses rows
+  allUsers: any[] = [];
 
   // ==========================
   // Pagination
@@ -223,20 +250,28 @@ export class UserComponent implements OnInit {
 
       fullName: [
         '',
-        Validators.required
+        [
+          ...AppValidators.requiredText,
+          Validators.minLength(3),
+          Validators.maxLength(100),
+          AppValidators.personName
+        ]
       ],
 
       email: [
         '',
         [
           Validators.required,
-          Validators.email
+          AppValidators.email
         ]
       ],
 
       password: [
         '',
-        Validators.required
+        [
+          Validators.required,
+          AppValidators.strongPassword
+        ]
       ],
 
       // IMPORTANT:
@@ -252,13 +287,13 @@ export class UserComponent implements OnInit {
 
       branchName: [null],
 
-      yearNumber: [null],
+      yearNumber: [null, [Validators.min(1), Validators.max(4), AppValidators.integer]],
 
-      semester: [null],
+      semester: [null, [Validators.min(1), Validators.max(8), AppValidators.integer]],
 
-      phoneNumber: [null],
+      phoneNumber: [null, AppValidators.phone],
 
-      registerNumber: [null],
+      registerNumber: [null, [Validators.maxLength(20), AppValidators.registerNumber]],
 
       isActive: [true]
 
@@ -316,13 +351,15 @@ export class UserComponent implements OnInit {
             res
           );
 
-          this.users = this.extractArray(res);
+          this.allUsers = this.extractArray(res);
 
-          this.users.forEach((user: any) => {
+          this.allUsers.forEach((user: any) => {
 
             user.isLocked = false;
 
           });
+
+          this.users = this.filterBySearch(this.allUsers);
 
           this.loadLockedStudents();
 
@@ -352,6 +389,8 @@ export class UserComponent implements OnInit {
             'Load Users Error:',
             err
           );
+
+          this.allUsers = [];
 
           this.users = [];
 
@@ -611,7 +650,7 @@ export class UserComponent implements OnInit {
 
     }
 
-    this.loading = true;
+    this.saving = true;
 
     const formValue =
       this.userForm.value;
@@ -667,7 +706,8 @@ export class UserComponent implements OnInit {
       .pipe(
         finalize(() => {
 
-          this.loading = false;
+          this.saving = false;
+          this.cdr.detectChanges();
 
         })
       )
@@ -680,9 +720,9 @@ export class UserComponent implements OnInit {
             res
           );
 
-          alert(
+          this.toast.success(
             res?.message ||
-            'User created successfully'
+            'User Added Successfully'
           );
 
           this.resetForm();
@@ -696,11 +736,6 @@ export class UserComponent implements OnInit {
           console.error(
             'Create User Error:',
             err
-          );
-
-          alert(
-            err?.error?.message ||
-            'Unable to create user.'
           );
 
         }
@@ -733,7 +768,8 @@ export class UserComponent implements OnInit {
      * blank password doesn't block the form.
      */
 
-    this.userForm.get('password')?.clearValidators();
+    // Still validate strength if a new password is typed.
+    this.userForm.get('password')?.setValidators([AppValidators.strongPassword]);
     this.userForm.get('password')?.updateValueAndValidity();
 
     /*
@@ -880,7 +916,7 @@ export class UserComponent implements OnInit {
       payload
     );
 
-    this.loading = true;
+    this.saving = true;
 
     this.userService
       .updateUser(
@@ -890,7 +926,8 @@ export class UserComponent implements OnInit {
       .pipe(
         finalize(() => {
 
-          this.loading = false;
+          this.saving = false;
+          this.cdr.detectChanges();
 
         })
       )
@@ -903,7 +940,7 @@ export class UserComponent implements OnInit {
             res
           );
 
-          alert(
+          this.toast.success(
             res?.message ||
             'Updated Successfully'
           );
@@ -921,11 +958,6 @@ export class UserComponent implements OnInit {
             err
           );
 
-          alert(
-            err?.error?.message ||
-            'Unable to update user.'
-          );
-
         }
 
       });
@@ -936,12 +968,10 @@ export class UserComponent implements OnInit {
   // Delete User
   // ==========================
 
-  deleteUser(id: number): void {
+  async deleteUser(id: number): Promise<void> {
 
     if (
-      !confirm(
-        'Are you sure you want to delete this user?'
-      )
+      !(await this.confirmDialog.confirmDelete('this user'))
     ) {
 
       return;
@@ -963,7 +993,7 @@ export class UserComponent implements OnInit {
 
         next: (res: any) => {
 
-          alert(
+          this.toast.success(
             res?.message ||
             'User deleted successfully.'
           );
@@ -977,11 +1007,6 @@ export class UserComponent implements OnInit {
           console.error(
             'Delete User Error:',
             err
-          );
-
-          alert(
-            err?.error?.message ||
-            'Unable to delete user.'
           );
 
         }
@@ -1029,7 +1054,7 @@ export class UserComponent implements OnInit {
      * password is required again.
      */
 
-    this.userForm.get('password')?.setValidators([Validators.required]);
+    this.userForm.get('password')?.setValidators([Validators.required, AppValidators.strongPassword]);
     this.userForm.get('password')?.updateValueAndValidity();
 
     this.editMode = false;
@@ -1058,52 +1083,56 @@ export class UserComponent implements OnInit {
 
   searchUsers(): void {
 
-    const search =
-      this.searchText
-        ?.trim()
-        .toLowerCase();
-
-    if (!search) {
-
-      this.loadUsers();
-
-      return;
-
-    }
-
     this.users =
-      (this.users ?? []).filter(
-        (x: any) =>
-
-          x?.firstName
-            ?.toLowerCase()
-            .includes(search) ||
-
-          x?.lastName
-            ?.toLowerCase()
-            .includes(search) ||
-
-          x?.fullName
-            ?.toLowerCase()
-            .includes(search) ||
-
-          x?.userName
-            ?.toLowerCase()
-            .includes(search) ||
-
-          x?.email
-            ?.toLowerCase()
-            .includes(search) ||
-
-          x?.roleName
-            ?.toLowerCase()
-            .includes(search)
-      );
+      this.filterBySearch(this.allUsers);
 
     this.totalRecords =
       this.users.length;
 
     this.page = 1;
+
+  }
+
+  private filterBySearch(list: any[]): any[] {
+
+    const search =
+      (this.searchText ?? '')
+        .trim()
+        .toLowerCase();
+
+    if (!search) {
+
+      return [...(list ?? [])];
+
+    }
+
+    return (list ?? []).filter((x: any) => {
+
+      const combinedName =
+        `${x?.firstName ?? ''} ${x?.lastName ?? ''}`;
+
+      const fields = [
+        x?.firstName,
+        x?.lastName,
+        combinedName,
+        x?.fullName,
+        x?.name,
+        x?.userName,
+        x?.username,
+        x?.email,
+        x?.roleName,
+        x?.role?.name
+      ];
+
+      return fields.some(
+        (value: any) =>
+          value != null &&
+          String(value)
+            .toLowerCase()
+            .includes(search)
+      );
+
+    });
 
   }
 
@@ -1531,12 +1560,10 @@ export class UserComponent implements OnInit {
   // Lock / Unlock Student
   // ==========================
 
-  lockUser(user: any): void {
+  async lockUser(user: any): Promise<void> {
 
     if (
-      !confirm(
-        `Lock "${user?.fullName || user?.email}"? This user will lose access.`
-      )
+      !(await this.confirmDialog.confirm({ title: 'Lock user', message: `Lock "${user?.fullName || user?.email}"? This user will lose access.`, okLabel: 'Lock', tone: 'danger' }))
     ) {
 
       return;
@@ -1547,9 +1574,11 @@ export class UserComponent implements OnInit {
       .studentlock(user.id, {})
       .subscribe({
 
-        next: () => {
+        next: (res: any) => {
 
           user.isLocked = true;
+
+          this.toast.successFrom(res, 'User Locked Successfully');
 
           this.cdr.detectChanges();
 
@@ -1562,23 +1591,16 @@ export class UserComponent implements OnInit {
             err
           );
 
-          alert(
-            err?.error?.message ||
-            'Unable to lock user.'
-          );
-
         }
 
       });
 
   }
 
-  unlockUser(user: any): void {
+  async unlockUser(user: any): Promise<void> {
 
     if (
-      !confirm(
-        `Unlock "${user?.fullName || user?.email}"?`
-      )
+      !(await this.confirmDialog.confirm({ title: 'Unlock user', message: `Unlock "${user?.fullName || user?.email}"? This user will regain access.`, okLabel: 'Unlock', tone: 'default' }))
     ) {
 
       return;
@@ -1589,9 +1611,11 @@ export class UserComponent implements OnInit {
       .studentunlock(user.id, {})
       .subscribe({
 
-        next: () => {
+        next: (res: any) => {
 
           user.isLocked = false;
+
+          this.toast.successFrom(res, 'User Unlocked Successfully');
 
           this.cdr.detectChanges();
 
@@ -1602,11 +1626,6 @@ export class UserComponent implements OnInit {
           console.error(
             'Unlock User Error:',
             err
-          );
-
-          alert(
-            err?.error?.message ||
-            'Unable to unlock user.'
           );
 
         }
@@ -1731,7 +1750,7 @@ export class UserComponent implements OnInit {
 
     if (!this.selectedFile) {
 
-      alert(
+      this.toast.warning(
         'Please select a file'
       );
 
@@ -1746,6 +1765,24 @@ export class UserComponent implements OnInit {
     this.successUsers = [];
 
     this.failedUsers = [];
+
+    this.stopProgressPolling();
+
+    this.uploadErrors = [];
+
+    this.uploadFileName = this.selectedFile.name;
+
+    // Show the panel right away while the file is being sent
+    this.uploadProgress = {
+      status: 'Uploading',
+      stage: 'Uploading file',
+      totalRows: 0,
+      processedRows: 0,
+      successCount: 0,
+      failedCount: 0,
+      percentComplete: 0,
+      message: 'Sending file to server...'
+    };
 
     this.userService
       .uploadUsers(
@@ -1768,6 +1805,8 @@ export class UserComponent implements OnInit {
           );
 
           const uploadId =
+            res?.jobId ??
+            res?.data?.jobId ??
             res?.uploadId ??
             res?.data?.uploadId ??
             res?.id ??
@@ -1776,22 +1815,22 @@ export class UserComponent implements OnInit {
 
           this.selectedFile = null;
 
-          this.loadUsers();
-
           if (uploadId) {
 
             this.uploadId = uploadId;
 
-            this.loadUploadResults(
+            this.startProgressPolling(
               uploadId
             );
 
           }
           else {
 
-            alert(
-              'File Uploaded Successfully'
-            );
+            this.uploadProgress = null;
+
+            this.loadUsers();
+
+            this.toast.successFrom(res, 'File Uploaded Successfully');
 
           }
 
@@ -1804,9 +1843,184 @@ export class UserComponent implements OnInit {
             err
           );
 
+          this.uploadProgress = null;
+
+          this.cdr.detectChanges();
+
         }
 
       });
+
+  }
+
+  // ==========================
+  // Poll Bulk Upload Progress
+  // ==========================
+
+  startProgressPolling(
+    jobId: string
+  ): void {
+
+    this.stopProgressPolling();
+
+    this.progressSub = timer(0, 1000)
+      .pipe(
+        switchMap(() =>
+          this.userService.progress(jobId)
+        ),
+        takeWhile(
+          (res: any) => !this.isUploadFinished(res?.data),
+          true
+        )
+      )
+      .subscribe({
+
+        next: (res: any) => {
+
+          const data = res?.data;
+
+          if (!data) {
+            return;
+          }
+
+          this.uploadProgress = data;
+
+          this.uploadErrors =
+            data?.result?.errors ?? [];
+
+          if (this.isUploadFinished(data)) {
+
+            this.onUploadFinished(
+              jobId,
+              data
+            );
+
+          }
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Upload Progress Error:',
+            err
+          );
+
+          this.uploadProgress = {
+            ...this.uploadProgress,
+            status: 'Failed',
+            message: 'Could not read upload progress.'
+          };
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
+
+  }
+
+  stopProgressPolling(): void {
+
+    this.progressSub?.unsubscribe();
+
+    this.progressSub = null;
+
+  }
+
+  isUploadFinished(data: any): boolean {
+
+    const status =
+      (data?.status ?? '').toLowerCase();
+
+    return status === 'completed' || status === 'failed';
+
+  }
+
+  onUploadFinished(
+    jobId: string,
+    data: any
+  ): void {
+
+    this.loadUsers();
+
+    this.activeResultTab =
+      data?.successCount ? 'success' : 'failed';
+
+    if ((data?.status ?? '').toLowerCase() === 'failed') {
+
+      this.toast.error(data?.message || 'Bulk upload failed');
+
+    }
+    else if (data?.failedCount) {
+
+      this.toast.warning(
+        `${data.successCount} users created, ${data.failedCount} failed`
+      );
+
+    }
+    else {
+
+      this.toast.success(
+        `${data?.successCount ?? 0} users uploaded successfully`
+      );
+
+    }
+
+    this.loadUploadResults(jobId);
+
+  }
+
+  get progressPercent(): number {
+
+    const p = this.uploadProgress;
+
+    if (!p) {
+      return 0;
+    }
+
+    if (typeof p.percentComplete === 'number') {
+      return Math.min(100, Math.max(0, Math.round(p.percentComplete)));
+    }
+
+    return p.totalRows
+      ? Math.round((p.processedRows / p.totalRows) * 100)
+      : 0;
+
+  }
+
+  // Width of the green / red segments inside the progress bar
+  get successBarWidth(): number {
+
+    const p = this.uploadProgress;
+
+    return p?.totalRows
+      ? (p.successCount / p.totalRows) * 100
+      : 0;
+
+  }
+
+  get failedBarWidth(): number {
+
+    const p = this.uploadProgress;
+
+    return p?.totalRows
+      ? (p.failedCount / p.totalRows) * 100
+      : 0;
+
+  }
+
+  get uploadStatusKey(): string {
+
+    return (this.uploadProgress?.status ?? '').toLowerCase();
+
+  }
+
+  ngOnDestroy(): void {
+
+    this.stopProgressPolling();
 
   }
 
@@ -1913,6 +2127,12 @@ export class UserComponent implements OnInit {
   // ==========================
 
   closeUploadResults(): void {
+
+    this.stopProgressPolling();
+
+    this.uploadProgress = null;
+
+    this.uploadErrors = [];
 
     this.showUploadResults = false;
 

@@ -19,6 +19,7 @@ export interface RunResult {
   error?: string | null;
   time: number;
   memory: number;
+
 }
 
 export interface SubmitResult {

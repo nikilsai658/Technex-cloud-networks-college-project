@@ -1,0 +1,104 @@
+/* Same look as the "Ticket Raised Successfully" tag, shared app-wide */
+
+.toast-stack {
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 420px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #ffffff;
+  cursor: pointer;
+  pointer-events: auto;
+  animation: toast-in 0.25s ease forwards;
+}
+
+.toast svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  white-space: pre-line;
+  word-break: break-word;
+}
+
+.toast-success {
+  background: #2F3E46;
+  box-shadow: 0 10px 25px rgba(47, 62, 70, 0.35);
+}
+
+.toast-success svg {
+  color: #4ade80;
+}
+
+.toast-error {
+  background: #dc2626;
+  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
+}
+
+.toast-warning {
+  background: #d97706;
+  box-shadow: 0 10px 25px rgba(217, 119, 6, 0.3);
+}
+
+.toast-info {
+  background: #0891b2;
+  box-shadow: 0 10px 25px rgba(8, 145, 178, 0.3);
+}
+
+.toast-leaving {
+  animation: toast-out 0.25s ease forwards;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 640px) {
+  .toast-stack {
+    top: 72px;
+    right: 16px;
+    left: 16px;
+    align-items: stretch;
+  }
+
+  .toast {
+    max-width: none;
+  }
+}

@@ -184,7 +184,11 @@
                         *ngIf="auth.hasPermission('UPDATE_YEAR')"
                         type="submit"
                         [disabled]="loading"
-                        class="flex-1 bg-[#24c0c5] hover:bg-[#1eb3b8] text-white py-3 rounded-lg font-bold disabled:opacity-60">
+                        class="flex-1 flex items-center justify-center gap-2 bg-[#24c0c5] hover:bg-[#1eb3b8] text-white py-3 rounded-lg font-bold disabled:opacity-60 disabled:cursor-not-allowed">
+
+                        <span
+                            *ngIf="loading"
+                            class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
 
                         {{ loading ? 'Promoting...' : 'Promote Students' }}
 
@@ -262,7 +266,11 @@
                 type="button"
                 (click)="uploadPromoteFile()"
                 [disabled]="uploadLoading || !selectedFile"
-                class="bg-[#24c0c5] hover:bg-[#1eb3b8] text-white px-6 py-3 rounded-lg font-bold disabled:opacity-60">
+                class="flex items-center justify-center gap-2 bg-[#24c0c5] hover:bg-[#1eb3b8] text-white px-6 py-3 rounded-lg font-bold disabled:opacity-60 disabled:cursor-not-allowed">
+
+                <span
+                    *ngIf="uploadLoading"
+                    class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
 
                 {{ uploadLoading ? 'Uploading...' : 'Upload & Promote' }}
 

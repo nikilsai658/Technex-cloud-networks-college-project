@@ -78,7 +78,8 @@
                             Semester
                         </th>
 
-                        <th class="px-5 py-4 text-center">
+                        <th class="px-5 py-4 text-center"
+                            *ngIf="auth.hasPermission('UPDATE_YEAR') || auth.hasPermission('DELETE_YEAR')">
                             Actions
                         </th>
 
@@ -104,7 +105,8 @@
                             Semester {{ year.semester }}
                         </td>
 
-                        <td class="px-5 py-4">
+                        <td class="px-5 py-4"
+                            *ngIf="auth.hasPermission('UPDATE_YEAR') || auth.hasPermission('DELETE_YEAR')">
 
                             <div class="flex justify-center gap-3">
 
@@ -135,7 +137,7 @@
                     <tr *ngIf="years.length === 0">
 
                         <td
-                            colspan="4"
+                            [attr.colspan]="(auth.hasPermission('UPDATE_YEAR') || auth.hasPermission('DELETE_YEAR')) ? 4 : 3"
                             class="text-center py-10 text-gray-500">
 
                             No Years Found
@@ -188,6 +190,8 @@
 
                     <input
                         type="number"
+                        min="1"
+                        max="4"
                         formControlName="yearNumber"
                         placeholder="Enter Year Number"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
@@ -196,7 +200,7 @@
                         class="text-xs text-red-500 mt-1"
                         *ngIf="yearForm.get('yearNumber')?.invalid && yearForm.get('yearNumber')?.touched">
 
-                        Year Number is required
+                        {{ yearForm.get('yearNumber') | fieldError:'Year number' }}
 
                     </p>
 

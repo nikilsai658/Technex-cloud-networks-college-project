@@ -43,6 +43,8 @@ export class SuperadminStudentAssignments implements OnInit {
     this.collegeId = history.state.collegeId;
     this.domainId = history.state.domainId;
     this.studentId = history.state.studentId;
+    this.studentName = history.state.studentName ?? '';
+    this.studentEmail = history.state.studentEmail ?? '';
 
     // Validate IDs
     if (

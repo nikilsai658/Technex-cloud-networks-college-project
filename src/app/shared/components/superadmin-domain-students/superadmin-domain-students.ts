@@ -1,23 +1,28 @@
-import {
-  ChangeDetectionStrategy,
+import { ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnInit
+  OnInit,
+  inject
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { Superadmin } from '../../../features/services/superadmin/superadmin';
 import { Router } from '@angular/router';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-superadmin-domain-students',
   standalone: true,
-  imports: [CommonModule],
+  imports: [Ellipsis, CommonModule],
   templateUrl: './superadmin-domain-students.html',
   styleUrl: './superadmin-domain-students.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SuperadminDomainStudents implements OnInit {
+
+  private toast = inject(ToastService);
+
 
   students: any[] = [];
 
@@ -115,6 +120,8 @@ export class SuperadminDomainStudents implements OnInit {
       {
         state: {
           studentId: student.studentId,
+          studentName: student.studentName,
+          studentEmail: student.studentEmail,
           collegeId: this.collegeId,
           domainId: this.domainId,
         }
@@ -131,7 +138,7 @@ export class SuperadminDomainStudents implements OnInit {
     const printWindow = window.open('', '_blank', 'width=1100,height=750');
 
     if (!printWindow) {
-      alert('Please allow popups for this website.');
+      this.toast.warning('Please allow popups for this website.');
       return;
     }
 

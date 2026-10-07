@@ -6,7 +6,7 @@ import {
   OnInit
 } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import {
@@ -59,7 +59,8 @@ export class ReplyTicketComponent
     private route: ActivatedRoute,
     private router: Router,
     private ticketService: TicketService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private location: Location
   ) {}
 
 
@@ -317,7 +318,69 @@ export class ReplyTicketComponent
 
       this.loadMessages();
 
+      this.pollTicketStatus();
+
     }, this.pollingInterval);
+  }
+
+
+  // ==========================================
+  // POLL TICKET STATUS
+  // ==========================================
+
+  private statusPolling = false;
+
+  /*
+   * Silent refresh so a status change made
+   * by the admin (e.g. Closed) shows up
+   * here without reloading the page.
+   */
+  private pollTicketStatus(): void {
+
+    if (
+      this.statusPolling ||
+      !this.ticketId ||
+      !this.ticket
+    ) {
+      return;
+    }
+
+    this.statusPolling = true;
+
+    this.ticketService
+      .getTicketById(this.ticketId, true)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.statusPolling = false;
+
+          const latest = res?.data ?? null;
+
+          if (
+            latest?.status &&
+            latest.status !== this.ticket?.status
+          ) {
+
+            this.ticket = {
+              ...this.ticket,
+              status: latest.status
+            };
+
+            if (this.isClosed()) {
+              this.message = '';
+            }
+
+            this.cdr.markForCheck();
+          }
+        },
+
+        error: () => {
+
+          this.statusPolling = false;
+        }
+
+      });
   }
 
 
@@ -345,7 +408,67 @@ export class ReplyTicketComponent
       return;
     }
 
+    if (this.isClosed()) {
+      return;
+    }
+
     this.sending = true;
+
+    this.cdr.markForCheck();
+
+    /*
+     * The admin may have closed the ticket
+     * since our last status poll. Check the
+     * latest status first so a message is
+     * never posted to a closed ticket.
+     */
+    this.ticketService
+      .getTicketById(this.ticketId, true)
+      .subscribe({
+
+        next: (res: any) => {
+
+          const latest = res?.data ?? null;
+
+          if (latest?.status) {
+
+            this.ticket = {
+              ...this.ticket,
+              status: latest.status
+            };
+          }
+
+          if (this.isClosed()) {
+
+            this.message = '';
+
+            this.sending = false;
+
+            this.cdr.markForCheck();
+
+            return;
+          }
+
+          this.postReply(text);
+        },
+
+        error: () => {
+
+          this.postReply(text);
+        }
+
+      });
+  }
+
+  private isClosed(): boolean {
+
+    return (
+      this.ticket?.status
+        ?.toLowerCase() === 'closed'
+    );
+  }
+
+  private postReply(text: string): void {
 
     this.forceScrollOnNextLoad = true;
 
@@ -386,6 +509,9 @@ export class ReplyTicketComponent
           this.sending = false;
 
           this.cdr.markForCheck();
+
+          // The server may have rejected it because the ticket was closed
+          this.pollTicketStatus();
         }
 
       });
@@ -532,6 +658,18 @@ export class ReplyTicketComponent
   back(): void {
 
     this.stopPolling();
+
+    /*
+     * Go to the previous page. If the ticket
+     * was opened directly (no history),
+     * fall back to My Tickets.
+     */
+    if (window.history.length > 1) {
+
+      this.location.back();
+
+      return;
+    }
 
     this.router.navigate([
       '/main/my-tickets'

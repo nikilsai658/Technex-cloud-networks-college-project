@@ -1,10 +1,16 @@
+import { tokenStorage } from '../../../core/auth/token-storage';
 import {
   Component,
   OnInit,
   Inject,
   PLATFORM_ID,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  inject
 } from '@angular/core';
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
 
 import {
   CommonModule,
@@ -26,13 +32,14 @@ import { Auth } from '../../../core/auth/auth';
 import { CourseAssignmnetService } from '../../../features/services/courseassignment/course-assignmnet-service';
 import { CourseService } from '../../../features/services/course/course-service';
 import { AssignmentService } from '../../../features/services/assignment/assignment-service';
+import { Ellipsis } from '../../directives/ellipsis';
 
 @Component({
   selector: 'app-courseassignmentmap',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule, FieldErrorPipe,
     FormsModule,
     RouterLink
   ],
@@ -40,6 +47,9 @@ import { AssignmentService } from '../../../features/services/assignment/assignm
   styleUrls: ['./courseassignment.css']
 })
 export class CourseAssignmentMapComponent implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
 
   courseAssignmentForm!: FormGroup;
 
@@ -80,7 +90,7 @@ export class CourseAssignmentMapComponent implements OnInit {
       return;
     }
 
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
 
@@ -106,7 +116,7 @@ export class CourseAssignmentMapComponent implements OnInit {
 
       assignmentTitle: ['', Validators.required],
 
-      sequenceNo: [1, Validators.required],
+      sequenceNo: [1, [Validators.required, Validators.min(1), Validators.max(999), AppValidators.integer]],
 
       isMandatory: [true],
 
@@ -248,7 +258,9 @@ export class CourseAssignmentMapComponent implements OnInit {
 
       this.api.updatecourseassignment(this.selectedId, payload).subscribe({
 
-        next: () => {
+        next: (res: any) => {
+
+          this.toast.successFrom(res, 'Course Assignment Updated Successfully');
 
           this.loadMappings();
 
@@ -264,7 +276,9 @@ export class CourseAssignmentMapComponent implements OnInit {
 
       this.api.createcourseassignment(payload).subscribe({
 
-        next: () => {
+        next: (res: any) => {
+
+          this.toast.successFrom(res, 'Course Assignment Added Successfully');
 
           this.loadMappings();
 
@@ -314,15 +328,17 @@ export class CourseAssignmentMapComponent implements OnInit {
   // DELETE
   //============================
 
-  delete(id: number) {
+  async delete(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_COURSE_ASSIGNMENT_MAP')) return;
 
-    if (!confirm('Delete this mapping?')) return;
+    if (!(await this.confirmDialog.confirmDelete('this mapping'))) return;
 
     this.api.deletecourseassignment(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
+
+        this.toast.successFrom(res, 'Course Assignment Deleted Successfully');
 
         this.loadMappings();
 

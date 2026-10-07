@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit
 } from '@angular/core';
 
@@ -20,6 +21,8 @@ import {
 import { Router } from '@angular/router';
 
 import { TicketService } from '../../../features/services/ticket/ticket-service';
+import { Ellipsis } from '../../directives/ellipsis';
+import { TICKET_STATUSES, normalizeTicketStatus, ticketStatusLabel } from '../../models/ticket-status';
 
 interface KanbanColumn {
   status: string;
@@ -31,7 +34,7 @@ interface KanbanColumn {
   selector: 'app-my-ticket',
   standalone: true,
 
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -43,7 +46,7 @@ interface KanbanColumn {
 
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MyTicketComponent implements OnInit {
+export class MyTicketComponent implements OnInit, OnDestroy {
 
   // =====================================
   // TICKETS
@@ -55,12 +58,23 @@ export class MyTicketComponent implements OnInit {
 
   errorMessage = '';
 
-  statusOptions: string[] =
-    ['Open', 'Resolved', 'Closed'];
+  statusOptions: string[] = [...TICKET_STATUSES];
 
   columns: KanbanColumn[] = [];
 
   connectedDropListIds: string[] = [];
+
+  // Background refresh so status changes made by the admin show up
+  // without reloading the page.
+  private pollHandle: ReturnType<typeof setInterval> | null = null;
+
+  private readonly POLL_INTERVAL_MS = 5000;
+
+  private refreshing = false;
+
+  private dragging = false;
+
+  private pendingUpdates = 0;
 
 
   constructor(
@@ -81,6 +95,101 @@ export class MyTicketComponent implements OnInit {
 
     this.getMyTickets();
 
+    this.pollHandle = setInterval(
+      () => this.refreshTickets(),
+      this.POLL_INTERVAL_MS
+    );
+
+  }
+
+  ngOnDestroy(): void {
+
+    if (this.pollHandle) {
+
+      clearInterval(this.pollHandle);
+
+      this.pollHandle = null;
+
+    }
+
+  }
+
+
+  // =====================================
+  // SILENT REFRESH
+  // =====================================
+
+  // Unlike getMyTickets() this never shows the loading spinner, and it
+  // skips while a card is being dragged or a move is still saving.
+  private refreshTickets(): void {
+
+    if (
+      this.loading ||
+      this.refreshing ||
+      this.dragging ||
+      this.pendingUpdates > 0
+    ) {
+      return;
+    }
+
+    this.refreshing = true;
+
+    this.ticketService
+      .getticketmy(true)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.refreshing = false;
+
+          if (this.dragging || this.pendingUpdates > 0) {
+            return;
+          }
+
+          const latest: any[] = res?.data || [];
+
+          if (!this.ticketsChanged(latest)) {
+            return;
+          }
+
+          this.tickets = latest;
+
+          this.buildColumns();
+
+          this.cdr.markForCheck();
+
+        },
+
+        error: () => {
+
+          this.refreshing = false;
+
+        }
+
+      });
+
+  }
+
+  private ticketsChanged(latest: any[]): boolean {
+
+    if (latest.length !== this.tickets.length) {
+      return true;
+    }
+
+    const current = new Map(
+      this.tickets.map(t => [t.id, t.status])
+    );
+
+    return latest.some(t => current.get(t.id) !== t.status);
+
+  }
+
+  onDragStarted(): void {
+    this.dragging = true;
+  }
+
+  onDragEnded(): void {
+    this.dragging = false;
   }
 
 
@@ -152,10 +261,10 @@ export class MyTicketComponent implements OnInit {
 
       status,
 
-      label: status === 'Resolved' ? 'In process' : status,
+      label: ticketStatusLabel(status),
 
       tickets: this.tickets.filter(ticket =>
-        (ticket.status || 'Open').toLowerCase() === status.toLowerCase()
+        normalizeTicketStatus(ticket.status) === status
       )
 
     }));
@@ -180,6 +289,11 @@ export class MyTicketComponent implements OnInit {
     const ticket = event.previousContainer.data[event.previousIndex];
     const previousStatus = ticket.status;
 
+    // Only an admin can reopen a closed ticket
+    if (previousStatus?.toLowerCase() === 'closed') {
+      return;
+    }
+
     transferArrayItem(
       event.previousContainer.data,
       event.container.data,
@@ -191,6 +305,8 @@ export class MyTicketComponent implements OnInit {
 
     this.cdr.markForCheck();
 
+    this.pendingUpdates++;
+
 
     this.ticketService
       .updateTicketstatus(ticket.id, { status: column.status })
@@ -198,9 +314,12 @@ export class MyTicketComponent implements OnInit {
 
         next: () => {
           // status change persisted
+          this.pendingUpdates--;
         },
 
         error: (err) => {
+
+          this.pendingUpdates--;
 
           console.error(
             'Error updating ticket status:',

@@ -1,9 +1,10 @@
-import {
-  Component,
+import { tokenStorage } from '../../../core/auth/token-storage';
+import { Component,
   OnInit,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
 
 import {
@@ -28,6 +29,8 @@ import { CollegeService } from '../../../features/services/college/college-servi
 import { DepartmentService } from '../../../features/services/department/department-service';
 import { BranchService } from '../../../features/services/branch/branch-service';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { AppValidators } from '../../validators/app-validators';
 @Component({
   selector: 'app-year-updation',
   standalone: true,
@@ -39,6 +42,9 @@ import { BranchService } from '../../../features/services/branch/branch-service'
   styleUrls: ['./year-updation.css']
 })
 export class YearUpdation implements OnInit {
+
+  private toast = inject(ToastService);
+
 
   promoteForm!: FormGroup;
 
@@ -76,7 +82,7 @@ export class YearUpdation implements OnInit {
       return;
     }
 
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
       this.router.navigate(['/auth/login']);
@@ -117,7 +123,7 @@ export class YearUpdation implements OnInit {
 
       collegeCode: [''],
 
-      studentEmail: ['', [Validators.required, Validators.email]],
+      studentEmail: ['', [Validators.required, AppValidators.email]],
 
       domainName: ['', Validators.required],
 
@@ -258,7 +264,7 @@ export class YearUpdation implements OnInit {
   promoteYear(): void {
 
     if (!this.auth.hasPermission('UPDATE_YEAR')) {
-      alert('You do not have permission to promote years.');
+      this.toast.error('You do not have permission to promote years.');
       return;
     }
 
@@ -283,11 +289,14 @@ export class YearUpdation implements OnInit {
     this.loading = true;
 
     this.yearService.YearUpdate(payload)
-      .pipe(finalize(() => this.loading = false))
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.cd.detectChanges();
+      }))
       .subscribe({
 
-        next: () => {
-          alert('Students Promoted Successfully');
+        next: (res: any) => {
+          this.toast.successFrom(res, 'Students Promoted Successfully');
           this.resetForm();
         },
 
@@ -316,23 +325,26 @@ export class YearUpdation implements OnInit {
   uploadPromoteFile(): void {
 
     if (!this.auth.hasPermission('UPDATE_YEAR')) {
-      alert('You do not have permission to promote years.');
+      this.toast.error('You do not have permission to promote years.');
       return;
     }
 
     if (!this.selectedFile) {
-      alert('Please select a file');
+      this.toast.warning('Please select a file');
       return;
     }
 
     this.uploadLoading = true;
 
     this.yearService.YearUpdatewithDomain(this.selectedFile)
-      .pipe(finalize(() => this.uploadLoading = false))
+      .pipe(finalize(() => {
+        this.uploadLoading = false;
+        this.cd.detectChanges();
+      }))
       .subscribe({
 
-        next: () => {
-          alert('Students Promoted Successfully');
+        next: (res: any) => {
+          this.toast.successFrom(res, 'Students Promoted Successfully');
           this.selectedFile = null;
         },
 
@@ -351,7 +363,7 @@ export class YearUpdation implements OnInit {
   /*promoteSingleWithDomain(): void {
 
     if (!this.auth.hasPermission('UPDATE_YEAR')) {
-      alert('You do not have permission to promote years.');
+      this.toast.error('You do not have permission to promote years.');
       return;
     }
 
@@ -376,8 +388,8 @@ export class YearUpdation implements OnInit {
       .pipe(finalize(() => this.singlePromoteLoading = false))
       .subscribe({
 
-        next: () => {
-          alert('Student Promoted Successfully');
+        next: (res: any) => {
+          this.toast.successFrom(res, 'Student Promoted Successfully');
           this.resetSinglePromoteForm();
         },
 

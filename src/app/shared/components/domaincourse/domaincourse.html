@@ -110,12 +110,12 @@
 
                         <!-- Domain -->
                         <td class="px-5 py-4 font-semibold">
-                            {{ item.domainName }}
+                            <span appEllipsis>{{ item.domainName }}</span>
                         </td>
 
                         <!-- Course -->
                         <td class="px-5 py-4">
-                            {{ item.courseName }}
+                            <span appEllipsis>{{ item.courseName }}</span>
                         </td>
 
                         <!-- Year -->
@@ -269,11 +269,13 @@
                         </label>
                         <input
                             type="number"
+                            min="1"
+                            max="4"
                             formControlName="yearNumber"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
                         <p class="text-xs text-red-500 mt-1"
                            *ngIf="submitted && domainCourseForm.get('yearNumber')?.invalid">
-                            Year is required
+                            {{ domainCourseForm.get('yearNumber') | fieldError:'Year' }}
                         </p>
                     </div>
 
@@ -283,11 +285,13 @@
                         </label>
                         <input
                             type="number"
+                            min="1"
+                            max="2"
                             formControlName="semester"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
                         <p class="text-xs text-red-500 mt-1"
                            *ngIf="submitted && domainCourseForm.get('semester')?.invalid">
-                            Semester is required
+                            {{ domainCourseForm.get('semester') | fieldError:'Semester' }}
                         </p>
                     </div>
 

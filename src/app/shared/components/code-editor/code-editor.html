@@ -24,7 +24,7 @@
             <button
                 class="reset-btn"
                 type="button"
-                [disabled]="isRunning || isSubmitting"
+                [disabled]="!editorReady || isRunning || isSubmitting"
                 (click)="resetCode()">
 
                 Reset
@@ -34,7 +34,7 @@
             <button
                 class="run-btn"
                 type="button"
-                [disabled]="isRunning || isSubmitting"
+                [disabled]="!editorReady || isRunning || isSubmitting"
                 (click)="onRunClick()">
 
                 {{ isRunning ? 'Running...' : 'Run Code' }}
@@ -44,7 +44,7 @@
             <button
                 class="submit-btn"
                 type="button"
-                [disabled]="isRunning || isSubmitting"
+                [disabled]="!editorReady || isRunning || isSubmitting"
                 (click)="onSubmitClick()">
 
                 {{ isSubmitting ? 'Submitting...' : 'Submit' }}
@@ -59,8 +59,17 @@
 
     <div
         #editorContainer
-        class="editor-container">
+        class="editor-container"
+        [hidden]="editorFailed">
     </div>
+
+    <!-- Fallback if the Monaco editor could not load -->
+    <textarea
+        *ngIf="editorFailed"
+        class="editor-container editor-fallback"
+        spellcheck="false"
+        [(ngModel)]="fallbackCode">
+    </textarea>
 
     <!-- Custom Input -->
 

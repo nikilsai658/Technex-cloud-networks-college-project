@@ -63,5 +63,4 @@ export class UserStore {
       localStorage.removeItem('user');
     }
   }
-
 }

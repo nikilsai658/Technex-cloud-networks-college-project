@@ -128,7 +128,7 @@
 
                         <!-- Role -->
                         <td class="px-5 py-4 font-semibold">
-                            {{ item.roleName }}
+                            <span appEllipsis>{{ item.roleName }}</span>
                         </td>
 
                         <!-- Type -->
@@ -144,7 +144,7 @@
 
                         <!-- Permission -->
                         <td class="px-5 py-4">
-                            {{ item.permissionName || item.permissionCode }}
+                            <span appEllipsis>{{ item.permissionName || item.permissionCode }}</span>
                         </td>
 
                         <!-- Delegate -->

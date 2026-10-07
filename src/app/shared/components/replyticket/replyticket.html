@@ -17,9 +17,14 @@
       <div class="conversation-header-left">
 
         <!-- Back Arrow -->
-        <span class="back-arrow">
+        <button
+          type="button"
+          (click)="back()"
+          class="back-arrow"
+          aria-label="Go back"
+          title="Back">
           ←
-        </span>
+        </button>
 
         <!-- Title -->
         <div class="conversation-title-wrapper">

@@ -1,71 +1,127 @@
-<div class="resetpassword">
-    <h1 class="companyname">Technex Cloud Networks </h1>
-    <span class="companyname">Pvt Ltd</span>
-   <form class="form" [formGroup]="Form" (ngSubmit)="onSubmit()">
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="fullName"
-            id="on_label"
-            name="text"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">Username or Email</label>
-    </p-floatlabel>
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="firstName"
-            id="on_label"
-            name="text"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">Username or Email</label>
-    </p-floatlabel>
-    <p-floatlabel>
-        <input
-            pInputText
-            formControlName="middleName"
-            id="on_label"
-            name="text"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">middle Name</label>
-    </p-floatlabel>
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="lastName"
-            id="on_label"
-            name="text"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">last Name</label>
-    </p-floatlabel>
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="phoneNumber"
-            id="on_label"
-            name="number"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">phoneNumber</label>
-    </p-floatlabel>
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="alternatePhoneNumber"
-            id="on_label"
-            name="number"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">Alternate PhoneNumber</label>
-    </p-floatlabel>
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="alternateEmail"
-            id="on_label"
-            name="email"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">Alternate Email</label>
-    </p-floatlabel>
+<div class="auth-page">
+    <div class="auth-card auth-card--wide">
+        <app-logo></app-logo>
+        <h1 class="companyname">Technex Cloud Networks</h1>
+        <span class="companyname">Pvt Ltd</span>
 
-    <p-button label="submit" type="submit"></p-button>
-</form>
+        <form class="auth-form" [formGroup]="Form" (ngSubmit)="onSubmit()">
+            <div class="auth-heading">
+                <h2>Complete your profile</h2>
+                <p>Tell us a little about yourself</p>
+            </div>
+
+            <div class="auth-field">
+                <p-floatlabel variant="on">
+                    <input
+                        pInputText
+                        formControlName="fullName"
+                        id="fullName"
+                        maxlength="100"
+                        autocomplete="off" />
+                    <label for="fullName">Full Name</label>
+                </p-floatlabel>
+                <small class="field-error" *ngIf="Form.get('fullName')?.invalid && Form.get('fullName')?.touched">
+                    {{ Form.get('fullName') | fieldError:'Full name' }}
+                </small>
+            </div>
+
+            <div class="auth-grid">
+                <div class="auth-field">
+                    <p-floatlabel variant="on">
+                        <input
+                            pInputText
+                            formControlName="firstName"
+                            id="firstName"
+                            maxlength="50"
+                            autocomplete="off" />
+                        <label for="firstName">First Name</label>
+                    </p-floatlabel>
+                    <small class="field-error" *ngIf="Form.get('firstName')?.invalid && Form.get('firstName')?.touched">
+                        {{ Form.get('firstName') | fieldError:'First name' }}
+                    </small>
+                </div>
+
+                <div class="auth-field">
+                    <p-floatlabel variant="on">
+                        <input
+                            pInputText
+                            formControlName="middleName"
+                            id="middleName"
+                            maxlength="50"
+                            autocomplete="off" />
+                        <label for="middleName">Middle Name (optional)</label>
+                    </p-floatlabel>
+                    <small class="field-error" *ngIf="Form.get('middleName')?.invalid && Form.get('middleName')?.touched">
+                        {{ Form.get('middleName') | fieldError:'Middle name' }}
+                    </small>
+                </div>
+
+                <div class="auth-field">
+                    <p-floatlabel variant="on">
+                        <input
+                            pInputText
+                            formControlName="lastName"
+                            id="lastName"
+                            maxlength="50"
+                            autocomplete="off" />
+                        <label for="lastName">Last Name</label>
+                    </p-floatlabel>
+                    <small class="field-error" *ngIf="Form.get('lastName')?.invalid && Form.get('lastName')?.touched">
+                        {{ Form.get('lastName') | fieldError:'Last name' }}
+                    </small>
+                </div>
+
+                <div class="auth-field">
+                    <p-floatlabel variant="on">
+                        <input
+                            pInputText
+                            type="tel"
+                            inputmode="numeric"
+                            maxlength="10"
+                            formControlName="phoneNumber"
+                            id="phoneNumber"
+                            autocomplete="off" />
+                        <label for="phoneNumber">Phone Number</label>
+                    </p-floatlabel>
+                    <small class="field-error" *ngIf="Form.get('phoneNumber')?.invalid && Form.get('phoneNumber')?.touched">
+                        {{ Form.get('phoneNumber') | fieldError:'Phone number' }}
+                    </small>
+                </div>
+
+                <div class="auth-field">
+                    <p-floatlabel variant="on">
+                        <input
+                            pInputText
+                            type="tel"
+                            inputmode="numeric"
+                            maxlength="10"
+                            formControlName="alternatePhoneNumber"
+                            id="alternatePhoneNumber"
+                            autocomplete="off" />
+                        <label for="alternatePhoneNumber">Alternate Phone (optional)</label>
+                    </p-floatlabel>
+                    <small class="field-error" *ngIf="Form.get('alternatePhoneNumber')?.invalid && Form.get('alternatePhoneNumber')?.touched">
+                        {{ Form.get('alternatePhoneNumber') | fieldError:'Alternate phone number' }}
+                    </small>
+                </div>
+
+                <div class="auth-field">
+                    <p-floatlabel variant="on">
+                        <input
+                            pInputText
+                            type="email"
+                            formControlName="alternateEmail"
+                            id="alternateEmail"
+                            autocomplete="off" />
+                        <label for="alternateEmail">Alternate Email (optional)</label>
+                    </p-floatlabel>
+                    <small class="field-error" *ngIf="Form.get('alternateEmail')?.invalid && Form.get('alternateEmail')?.touched">
+                        {{ Form.get('alternateEmail') | fieldError:'Alternate email' }}
+                    </small>
+                </div>
+            </div>
+
+            <p-button label="Submit" type="submit"></p-button>
+        </form>
+    </div>
 </div>

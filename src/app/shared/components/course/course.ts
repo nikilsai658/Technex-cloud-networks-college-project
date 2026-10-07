@@ -1,9 +1,10 @@
-import {
-  Component,
+import { tokenStorage } from '../../../core/auth/token-storage';
+import { Component,
   OnInit,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
 
 import {
@@ -24,17 +25,26 @@ import { CookieService } from 'ngx-cookie-service';
 import { Auth } from '../../../core/auth/auth';
 import { CourseService } from '../../../features/services/course/course-service';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-course',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, FieldErrorPipe
   ],
   templateUrl: './course.html',
   styleUrls: ['./course.css']
 })
 export class Course implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
 
   courses: any[] = [];
 
@@ -60,9 +70,9 @@ export class Course implements OnInit {
 
     this.courseForm = this.fb.group({
 
-      name: ['', Validators.required],
+      name: ['', [...AppValidators.requiredText, Validators.minLength(2), Validators.maxLength(100), AppValidators.title]],
 
-      description: ['', Validators.required]
+      description: ['', [...AppValidators.requiredText, Validators.minLength(10), Validators.maxLength(1000)]]
 
     });
 
@@ -70,7 +80,7 @@ export class Course implements OnInit {
       return;
     }
 
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
       this.router.navigate(['/auth/login']);
@@ -126,7 +136,7 @@ export class Course implements OnInit {
   openAddModal(): void {
 
     if (!this.auth.hasPermission('CREATE_COURSE')) {
-      alert('No Permission');
+      this.toast.error('No Permission');
       return;
     }
 
@@ -155,7 +165,7 @@ export class Course implements OnInit {
   createCourse(): void {
 
     if (!this.auth.hasPermission('CREATE_COURSE')) {
-      alert('No Permission');
+      this.toast.error('No Permission');
       return;
     }
 
@@ -169,9 +179,9 @@ export class Course implements OnInit {
 
     this.api.createCourse(this.courseForm.value).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Course Created Successfully');
+        this.toast.successFrom(res, 'Course Added Successfully');
 
         this.resetForm();
 
@@ -196,7 +206,7 @@ export class Course implements OnInit {
   editCourse(course: any): void {
 
     if (!this.auth.hasPermission('UPDATE_COURSE')) {
-      alert('No Permission');
+      this.toast.error('No Permission');
       return;
     }
 
@@ -223,7 +233,7 @@ export class Course implements OnInit {
   updateCourse(): void {
 
     if (!this.auth.hasPermission('UPDATE_COURSE')) {
-      alert('No Permission');
+      this.toast.error('No Permission');
       return;
     }
 
@@ -243,9 +253,9 @@ export class Course implements OnInit {
 
     ).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Course Updated Successfully');
+        this.toast.successFrom(res, 'Course Updated Successfully');
 
         this.resetForm();
 
@@ -267,22 +277,22 @@ export class Course implements OnInit {
   // Delete Course
   //=====================================
 
-  deleteCourse(id: number): void {
+  async deleteCourse(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_COURSE')) {
-      alert('No Permission');
+      this.toast.error('No Permission');
       return;
     }
 
-    if (!confirm('Delete this Course?')) {
+    if (!(await this.confirmDialog.confirmDelete('this course'))) {
       return;
     }
 
     this.api.deleteCourse(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Course Deleted Successfully');
+        this.toast.successFrom(res, 'Course Deleted Successfully');
 
         this.loadCourses();
 

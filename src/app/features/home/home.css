@@ -1,16 +1,849 @@
-@reference "../../../styles.css";
-.header{
-    @apply flex flex-wrap items-center justify-between gap-2 p-2 bg-gray-100;
+@import "tailwindcss";
+
+/* =========================================================
+   FOUNDATION
+========================================================= */
+
+:host {
+  @apply block w-full;
 }
-img{
-    @apply w-[30px] rounded-lg inline-flex mr-3 shrink-0;
+
+.landing-container {
+  @apply min-h-screen w-full overflow-x-hidden bg-white
+         text-slate-800 antialiased;
 }
-.title{
-    @apply text-sm sm:text-base md:text-[20px] font-bold text-[#2F3E46] inline-flex items-center;
+
+img {
+  @apply max-w-full;
 }
-:host ::ng-deep .p-button {
-    @apply  h-[30px] rounded-lg bg-[#2f3e46f6] font-bold border-none;
+
+* {
+  box-sizing: border-box;
 }
-:host ::ng-deep .p-button:hover{
-    @apply bg-[#2f3e46e2] border-none;
+
+/* Keeps section headings clear of the fixed header */
+.scroll-target {
+  scroll-margin-top: 72px;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header-nav {
+  @apply fixed left-0 top-0 z-50 flex h-[72px] w-full
+         items-center justify-between gap-4
+         border-b border-white/10 px-5 text-white
+         sm:px-8 lg:px-12;
+  background: rgba(47, 62, 70, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.logo-container {
+  @apply flex min-w-0 items-center gap-3 text-white no-underline;
+}
+
+.logo-img {
+  @apply h-10 w-10 shrink-0 rounded-xl object-cover
+         ring-1 ring-white/20;
+}
+
+.company-title {
+  @apply truncate text-sm font-semibold tracking-wide sm:text-base;
+}
+
+/* Checkbox that drives the mobile menu (visually hidden, still focusable) */
+.nav-toggle {
+  @apply absolute h-px w-px overflow-hidden opacity-0;
+}
+
+/* Mobile: dropdown panel under the header */
+.nav-links {
+  @apply invisible absolute left-0 top-full flex w-full
+         flex-col gap-1 border-b border-white/10 px-5 pb-5 pt-3
+         opacity-0 shadow-2xl transition-all duration-300;
+  background: #2f3e46;
+  transform: translateY(-8px);
+}
+
+.nav-toggle:checked ~ .nav-links {
+  @apply visible opacity-100;
+  transform: translateY(0);
+}
+
+.nav-item {
+  @apply relative rounded-lg px-3 py-3 text-sm font-medium
+         text-slate-300 no-underline transition-colors duration-300
+         hover:bg-white/5 hover:text-white;
+}
+
+.nav-item.active {
+  @apply bg-white/10 text-white;
+}
+
+.auth-container {
+  @apply flex shrink-0 items-center gap-3;
+}
+
+.login-btn {
+  @apply rounded-xl bg-white px-5 py-2.5 text-xs font-bold
+         tracking-wider text-slate-950 no-underline
+         transition-all duration-300
+         hover:-translate-y-0.5 hover:bg-cyan-300;
+}
+
+.nav-burger {
+  @apply flex h-10 w-10 cursor-pointer flex-col items-center
+         justify-center gap-[5px] rounded-xl border border-white/15
+         transition-colors duration-300 hover:bg-white/10;
+}
+
+.nav-burger span {
+  @apply block h-0.5 w-5 rounded-full bg-white
+         transition-all duration-300;
+}
+
+.nav-toggle:checked ~ .auth-container .nav-burger span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle:checked ~ .auth-container .nav-burger span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle:checked ~ .auth-container .nav-burger span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.nav-toggle:focus-visible ~ .auth-container .nav-burger {
+  outline: 2px solid #22d3ee;
+  outline-offset: 3px;
+}
+
+/* Desktop: inline nav with underline indicator */
+@media (min-width: 1024px) {
+
+  .nav-links {
+    @apply visible static w-auto flex-row items-center gap-8
+           border-0 p-0 opacity-100 shadow-none;
+    background: transparent;
+    transform: none;
+  }
+
+  .nav-item {
+    @apply rounded-none px-0 py-2 hover:bg-transparent;
+  }
+
+  .nav-item::after {
+    content: "";
+    @apply absolute bottom-0 left-0 h-0.5 w-full origin-left
+           scale-x-0 rounded-full bg-cyan-400
+           transition-transform duration-300;
+  }
+
+  .nav-item:hover::after,
+  .nav-item.active::after {
+    @apply scale-x-100;
+  }
+
+  .nav-item.active {
+    @apply bg-transparent;
+  }
+
+  .nav-burger {
+    @apply hidden;
+  }
+}
+
+
+/* =========================================================
+   BUTTONS & SHARED TEXT
+========================================================= */
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2.5
+         rounded-xl bg-cyan-400 px-7 py-3.5 text-sm font-bold
+         text-slate-950 no-underline transition-all duration-300
+         hover:-translate-y-0.5 hover:bg-cyan-300
+         hover:shadow-lg hover:shadow-cyan-400/30;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center rounded-xl
+         border border-white/30 bg-white/5 px-7 py-3.5
+         text-sm font-semibold text-white no-underline
+         transition-all duration-300
+         hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/10;
+}
+
+.eyebrow {
+  @apply mb-4 inline-block text-xs font-bold uppercase
+         tracking-[0.22em] text-cyan-700;
+}
+
+.section-header {
+  @apply mx-auto max-w-3xl text-center;
+}
+
+.section-title {
+  @apply text-3xl font-extrabold tracking-tight text-slate-950
+         sm:text-4xl lg:text-[2.75rem] lg:leading-tight;
+  text-wrap: balance;
+}
+
+.section-subtitle {
+  @apply mt-4 text-base leading-7 text-slate-600;
+  text-wrap: pretty;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero-section {
+  @apply relative flex items-center justify-center
+         overflow-hidden bg-slate-950 px-5 pb-16 pt-[120px]
+         sm:px-8 sm:pb-20 lg:px-12;
+  min-height: clamp(580px, 92vh, 860px);
+}
+
+.hero-bg-img {
+  @apply absolute inset-0 h-full w-full object-cover;
+}
+
+.hero-section::after {
+  content: "";
+  @apply absolute inset-0;
+  background:
+    linear-gradient(180deg,
+      rgba(2, 6, 23, 0.78) 0%,
+      rgba(2, 6, 23, 0.58) 45%,
+      rgba(2, 6, 23, 0.88) 100%);
+}
+
+.hero-card {
+  @apply relative z-10 mx-auto flex w-full max-w-5xl
+         flex-col items-center text-center;
+}
+
+.hero-eyebrow {
+  @apply inline-flex items-center gap-2.5 rounded-full
+         border border-white/20 bg-white/10 px-4 py-2
+         text-[11px] font-semibold uppercase tracking-[0.2em]
+         text-slate-100 sm:text-xs;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.hero-eyebrow-dot {
+  @apply h-2 w-2 rounded-full bg-cyan-400;
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2);
+}
+
+/* Slides share one grid cell, so the carousel is as tall as the tallest slide */
+.hero-carousel {
+  @apply mt-7 grid w-full;
+}
+
+.hero-slide {
+  @apply invisible flex flex-col items-center justify-center
+         opacity-0 transition-all duration-700;
+  grid-area: 1 / 1;
+  transform: translateY(14px);
+}
+
+.hero-slide.active {
+  @apply visible opacity-100;
+  transform: translateY(0);
+}
+
+.hero-title {
+  @apply max-w-4xl text-[2rem] font-extrabold leading-[1.12]
+         tracking-tight text-white sm:text-5xl lg:text-6xl;
+  text-wrap: balance;
+}
+
+.hero-description {
+  @apply mt-5 max-w-2xl text-[15px] leading-7 text-slate-200
+         sm:mt-6 sm:text-lg sm:leading-8;
+  text-wrap: pretty;
+}
+
+.hero-actions {
+  @apply mt-9 flex w-full flex-col items-stretch gap-3
+         sm:w-auto sm:flex-row sm:items-center sm:gap-4;
+}
+
+.hero-dots {
+  @apply mt-10 flex items-center justify-center gap-1.5;
+}
+
+/* 24px tall hit area, 4px visible bar */
+.hero-dot {
+  @apply h-6 w-5 cursor-pointer border-0 bg-white/40 px-0 py-[10px]
+         transition-all duration-300 hover:bg-white/70;
+  background-clip: content-box;
+}
+
+.hero-dot.active {
+  @apply w-9 bg-cyan-400;
+}
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+.banner-section {
+  @apply mx-auto w-full max-w-7xl px-5 py-16 text-center
+         sm:px-8 sm:py-20 lg:px-12 lg:py-28;
+}
+
+.main-title {
+  @apply mx-auto max-w-4xl text-3xl font-extrabold leading-tight
+         tracking-tight text-slate-950 sm:text-4xl lg:text-[3.25rem]
+         lg:leading-[1.12];
+  text-wrap: balance;
+}
+
+.main-subtitle {
+  @apply mx-auto mt-6 max-w-3xl text-base leading-7
+         text-slate-600 sm:text-lg sm:leading-8;
+  text-wrap: pretty;
+}
+
+
+/* =========================================================
+   WHAT MAKES US DIFFERENT
+========================================================= */
+
+.different-section {
+  @apply border-y border-slate-200 bg-slate-50;
+}
+
+.different-container {
+  @apply mx-auto w-full max-w-7xl px-5 py-16
+         sm:px-8 sm:py-20 lg:px-12 lg:py-28;
+}
+
+.different-card {
+  @apply mt-10 grid overflow-hidden rounded-2xl border
+         border-slate-200 bg-white shadow-xl shadow-slate-200/60
+         sm:mt-14 sm:rounded-3xl lg:grid-cols-2;
+}
+
+.different-img-wrap {
+  @apply h-64 overflow-hidden sm:h-80 lg:h-auto lg:min-h-[460px];
+}
+
+.different-img-wrap img {
+  @apply block h-full w-full object-cover
+         transition duration-700 hover:scale-105;
+}
+
+.different-features {
+  @apply flex flex-col justify-center gap-2 p-6 sm:p-10 lg:p-14;
+}
+
+.feature-item {
+  @apply flex items-start gap-4 rounded-2xl p-4
+         transition-colors duration-300 hover:bg-slate-50 sm:gap-5;
+}
+
+.feature-icon {
+  @apply flex h-12 w-12 shrink-0 items-center justify-center
+         rounded-xl bg-cyan-50 text-cyan-700
+         ring-1 ring-cyan-100;
+}
+
+.feature-icon svg {
+  @apply h-6 w-6;
+}
+
+.feature-heading {
+  @apply text-lg font-bold text-slate-950;
+}
+
+.feature-text {
+  @apply mt-1.5 text-sm leading-6 text-slate-600;
+}
+
+
+/* =========================================================
+   LEARNING JOURNEY
+========================================================= */
+
+.learning-journey-container {
+  @apply mx-auto w-full max-w-7xl px-5 py-16
+         sm:px-8 sm:py-20 lg:px-12 lg:py-28;
+}
+
+.journey-grid {
+  @apply mt-10 grid gap-5 sm:mt-14 sm:grid-cols-2 sm:gap-6
+         lg:grid-cols-3 lg:gap-8;
+}
+
+.grid-item {
+  @apply flex flex-col overflow-hidden rounded-2xl border
+         border-slate-200 bg-white shadow-sm
+         transition-all duration-300
+         hover:-translate-y-1.5 hover:border-cyan-200
+         hover:shadow-xl hover:shadow-slate-200/70;
+}
+
+.item-img-box {
+  @apply relative overflow-hidden bg-slate-100;
+  aspect-ratio: 16 / 10;
+}
+
+.item-img-box img {
+  @apply block h-full w-full object-cover
+         transition duration-500;
+}
+
+.grid-item:hover .item-img-box img {
+  @apply scale-105;
+}
+
+.item-num {
+  @apply absolute left-4 top-4 flex h-10 w-10 items-center
+         justify-center rounded-xl bg-white text-sm font-extrabold
+         text-slate-950 shadow-lg shadow-slate-900/15;
+}
+
+.item-details {
+  @apply flex flex-1 flex-col p-6;
+}
+
+.item-title {
+  @apply text-lg font-bold text-slate-950;
+}
+
+.item-desc {
+  @apply mt-2 text-sm leading-6 text-slate-600;
+}
+
+
+/* =========================================================
+   STUDENT LEARNING PLATFORM
+========================================================= */
+
+.learning-section {
+  @apply border-t border-slate-200 bg-slate-50 px-5 py-16
+         sm:px-8 sm:py-20 lg:px-12 lg:py-28;
+}
+
+.learning-container {
+  @apply mx-auto grid max-w-7xl items-center gap-12
+         lg:grid-cols-[1.15fr_1fr] lg:gap-16;
+}
+
+.learning-title {
+  @apply text-3xl font-extrabold leading-tight tracking-tight
+         text-slate-950 sm:text-4xl lg:text-[2.75rem];
+  text-wrap: balance;
+}
+
+.learning-description {
+  @apply mt-5 text-base leading-7 text-slate-600;
+}
+
+.learning-features {
+  @apply m-0 mt-8 grid list-none gap-x-8 gap-y-5 p-0 sm:grid-cols-2;
+}
+
+.learning-features li {
+  @apply relative flex flex-col pl-9 text-sm leading-6 text-slate-600;
+}
+
+.learning-features li::before {
+  content: "✓";
+  @apply absolute left-0 top-0.5 flex h-6 w-6 items-center
+         justify-center rounded-full bg-cyan-100 text-xs
+         font-bold text-cyan-800;
+}
+
+.learning-features li strong {
+  @apply font-bold text-slate-950;
+}
+
+.learning-image-wrapper {
+  @apply flex justify-center;
+}
+
+.learning-image-frame {
+  @apply w-full max-w-xl overflow-hidden rounded-3xl border
+         border-slate-200 bg-white p-3
+         shadow-2xl shadow-slate-300/50;
+}
+
+.learning-image {
+  @apply block w-full rounded-2xl;
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.stats-section {
+  @apply relative overflow-hidden bg-slate-950 px-5 py-14
+         text-white sm:px-8 sm:py-20;
+}
+
+.stats-overlay {
+  @apply absolute inset-0;
+  background:
+    radial-gradient(60% 120% at 0% 0%, rgba(34, 211, 238, 0.16), transparent 60%),
+    radial-gradient(60% 120% at 100% 100%, rgba(47, 62, 70, 0.9), transparent 65%);
+}
+
+.stats-container {
+  @apply relative z-10 mx-auto grid max-w-6xl
+         grid-cols-1 divide-y divide-white/10
+         sm:grid-cols-3 sm:divide-x sm:divide-y-0;
+}
+
+.stat-item {
+  @apply px-6 py-7 text-center sm:py-4;
+}
+
+.stat-item h2 {
+  @apply text-4xl font-extrabold tracking-tight text-white
+         sm:text-5xl lg:text-6xl;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-item p {
+  @apply mt-3 text-xs font-semibold uppercase
+         tracking-[0.18em] text-slate-400 sm:text-sm;
+}
+
+
+/* =========================================================
+   CLIENTS
+========================================================= */
+
+.clients-section {
+  @apply mx-auto w-full max-w-7xl px-5 py-16
+         sm:px-8 sm:py-20 lg:px-12 lg:py-28;
+}
+
+.collaboration-container {
+  @apply mx-auto mt-10 grid max-w-4xl gap-5
+         sm:mt-14 sm:grid-cols-2 sm:gap-6;
+}
+
+/* Logos are shown whole (object-contain) inside small uniform cards */
+.partner-logo-card {
+  @apply flex h-28 items-center justify-center rounded-2xl
+         border border-slate-200 bg-white px-6 py-5 shadow-sm
+         transition duration-300
+         hover:-translate-y-1 hover:border-cyan-200 hover:shadow-lg
+         sm:h-32 sm:px-8;
+}
+
+.partner-logo-card img {
+  @apply block max-h-full w-auto max-w-full object-contain
+         opacity-90 transition duration-300;
+}
+
+.partner-logo-card:hover img {
+  @apply opacity-100;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.site-footer {
+  @apply relative overflow-hidden bg-slate-950 text-white;
+}
+
+
+/* ---------- CTA ---------- */
+
+.footer-cta {
+  @apply border-b border-white/10;
+  background:
+    radial-gradient(50% 140% at 100% 0%, rgba(34, 211, 238, 0.14), transparent 60%),
+    #2f3e46;
+}
+
+.footer-cta-content {
+  @apply mx-auto flex max-w-7xl flex-col items-start
+         justify-between gap-8 px-5 py-12
+         sm:px-8 lg:flex-row lg:items-center
+         lg:px-12 lg:py-16;
+}
+
+.footer-eyebrow {
+  @apply text-xs font-bold tracking-[0.25em] text-cyan-300;
+}
+
+.footer-cta-title {
+  @apply mt-3 max-w-2xl text-2xl font-extrabold tracking-tight
+         text-white sm:text-3xl lg:text-4xl;
+  text-wrap: balance;
+}
+
+.footer-cta-text {
+  @apply mt-3 max-w-2xl text-sm leading-6 text-slate-300;
+}
+
+.footer-cta-btn {
+  @apply inline-flex w-full shrink-0 items-center justify-center
+         gap-3 rounded-xl bg-white px-7 py-3.5
+         text-sm font-bold text-slate-950 no-underline
+         transition-all duration-300
+         hover:-translate-y-1 hover:bg-cyan-300
+         hover:shadow-lg hover:shadow-cyan-400/20
+         sm:w-auto;
+}
+
+
+/* ---------- Main Footer ---------- */
+
+.footer-main {
+  @apply mx-auto grid max-w-7xl gap-10 px-5 py-12
+         sm:grid-cols-2 sm:px-8
+         lg:grid-cols-[1.5fr_1fr_1fr_1fr]
+         lg:gap-10 lg:px-12 lg:py-16;
+}
+
+
+/* ---------- Brand ---------- */
+
+.footer-brand {
+  @apply sm:col-span-2 lg:col-span-1 lg:max-w-md;
+}
+
+.footer-logo {
+  @apply inline-flex items-center gap-3 no-underline;
+}
+
+.footer-logo-img {
+  @apply h-12 w-12 rounded-xl object-cover ring-1 ring-white/15;
+}
+
+.footer-brand-name {
+  @apply flex flex-col;
+}
+
+.footer-brand-name strong {
+  @apply text-sm font-bold text-white sm:text-base;
+}
+
+.footer-brand-name span {
+  @apply mt-0.5 text-xs text-slate-400;
+}
+
+.footer-brand-description {
+  @apply mt-6 max-w-md text-sm leading-7 text-slate-400;
+}
+
+.footer-status {
+  @apply mt-6 inline-flex items-center gap-2 rounded-full
+         border border-white/10 bg-white/5 px-3 py-2
+         text-xs text-slate-300;
+}
+
+.footer-status-dot {
+  @apply h-2 w-2 rounded-full bg-emerald-400;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+}
+
+
+/* ---------- Columns ---------- */
+
+.footer-col {
+  @apply min-w-0;
+}
+
+.footer-heading {
+  @apply mb-5 text-xs font-bold uppercase
+         tracking-[0.18em] text-white;
+}
+
+.footer-links {
+  @apply m-0 list-none space-y-3 p-0;
+}
+
+.footer-links li {
+  @apply text-sm;
+}
+
+.footer-links a {
+  @apply flex items-center justify-between gap-4
+         text-slate-400 no-underline
+         transition-all duration-300
+         hover:translate-x-1 hover:text-white;
+}
+
+.footer-link-arrow {
+  @apply text-slate-600 transition-colors duration-300;
+}
+
+.footer-links a:hover .footer-link-arrow {
+  @apply text-cyan-400;
+}
+
+
+/* ---------- Contact (brand column) ---------- */
+
+.footer-contact {
+  @apply m-0 mt-6 list-none space-y-3 p-0;
+}
+
+.footer-contact a {
+  @apply flex items-center gap-3 text-sm text-slate-300
+         no-underline transition-colors duration-300
+         hover:text-white;
+  overflow-wrap: anywhere;
+}
+
+.footer-contact small {
+  @apply block text-[11px] font-semibold uppercase
+         tracking-[0.15em] text-slate-500;
+}
+
+.footer-contact-icon {
+  @apply flex h-9 w-9 shrink-0 items-center justify-center
+         rounded-xl bg-cyan-400/10 text-cyan-400
+         transition-colors duration-300;
+}
+
+.footer-contact a:hover .footer-contact-icon {
+  @apply bg-cyan-400/20;
+}
+
+.footer-contact-icon svg {
+  @apply h-4.5 w-4.5;
+}
+
+
+/* ---------- Support ---------- */
+
+.footer-support-box {
+  @apply mb-5 flex items-center gap-3 rounded-2xl
+         border border-white/10 bg-white/5 p-4;
+}
+
+.support-icon {
+  @apply flex h-9 w-9 shrink-0 items-center justify-center
+         rounded-xl bg-cyan-400/10 text-sm font-bold
+         text-cyan-400;
+}
+
+.footer-support-box strong {
+  @apply block text-sm font-semibold text-white;
+}
+
+.footer-support-box span {
+  @apply mt-1 block text-xs text-slate-400;
+}
+
+.support-text {
+  @apply block leading-6 text-slate-400;
+}
+
+.footer-available {
+  @apply flex items-center gap-2 text-xs font-medium
+         text-emerald-400;
+}
+
+.available-dot {
+  @apply h-2 w-2 rounded-full bg-emerald-400;
+}
+
+
+/* ---------- Footer Bottom ---------- */
+
+.footer-bottom {
+  @apply border-t border-white/10;
+}
+
+.footer-bottom-inner {
+  @apply mx-auto flex max-w-7xl flex-col items-center
+         gap-4 px-5 py-6 text-center
+         sm:px-8 lg:flex-row lg:justify-between
+         lg:px-12 lg:text-left;
+}
+
+.footer-bottom p {
+  @apply m-0 text-xs leading-5 text-slate-500;
+}
+
+.footer-bottom p strong {
+  @apply font-semibold text-slate-400;
+}
+
+.footer-bottom-links {
+  @apply flex flex-wrap items-center justify-center
+         gap-2 text-xs text-slate-500;
+}
+
+.footer-separator {
+  @apply text-slate-700;
+}
+
+.back-to-top {
+  @apply inline-flex items-center gap-2 rounded-lg
+         border border-white/10 px-3 py-2
+         text-xs font-semibold text-slate-400
+         no-underline transition-all duration-300
+         hover:border-cyan-400/40 hover:text-cyan-400;
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .header-nav {
+    @apply gap-2 px-4;
+  }
+
+  .logo-img {
+    @apply h-9 w-9;
+  }
+
+  .company-title {
+    @apply text-xs;
+  }
+
+  .login-btn {
+    @apply px-3.5 py-2 text-[10px];
+  }
+
+  .hero-title {
+    @apply text-[1.7rem];
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }

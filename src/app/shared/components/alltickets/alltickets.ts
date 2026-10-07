@@ -4,6 +4,8 @@ import { TicketService } from '../../../features/services/ticket/ticket-service'
 import { CollegeService } from '../../../features/services/college/college-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Ellipsis } from '../../directives/ellipsis';
+import { TICKET_STATUSES, normalizeTicketStatus, ticketStatusLabel } from '../../models/ticket-status';
 import {
   CdkDragDrop,
   DragDropModule,
@@ -19,7 +21,7 @@ interface KanbanColumn {
 @Component({
   selector: 'app-all-tickets',
   templateUrl: './alltickets.html',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, DragDropModule],
+  imports: [Ellipsis, CommonModule, FormsModule, ReactiveFormsModule, DragDropModule],
   styleUrls: ['./alltickets.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -30,7 +32,7 @@ export class AllTicketsComponent implements OnInit {
   loading = false;
   errorMessage = '';
 
-  statusOptions: string[] = ['Open', 'Resolved', 'Closed'];
+  statusOptions: string[] = [...TICKET_STATUSES];
 
   columns: KanbanColumn[] = [];
 
@@ -160,10 +162,10 @@ export class AllTicketsComponent implements OnInit {
 
       status,
 
-      label: status === 'Resolved' ? 'In process' : status,
+      label: ticketStatusLabel(status),
 
       tickets: this.tickets.filter(ticket =>
-        (ticket.status || 'Open').toLowerCase() === status.toLowerCase()
+        normalizeTicketStatus(ticket.status) === status
       )
 
     }));

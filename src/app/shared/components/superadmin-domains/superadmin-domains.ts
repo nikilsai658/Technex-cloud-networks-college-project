@@ -9,11 +9,12 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Superadmin } from '../../../features/services/superadmin/superadmin';
+import { Ellipsis } from '../../directives/ellipsis';
 
 @Component({
   selector: 'app-superadmin-domains',
   standalone: true,
-  imports: [CommonModule],
+  imports: [Ellipsis, CommonModule],
   templateUrl: './superadmin-domains.html',
   styleUrl: './superadmin-domains.css',
   changeDetection: ChangeDetectionStrategy.OnPush

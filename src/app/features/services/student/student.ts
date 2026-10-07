@@ -19,9 +19,10 @@ export class Student {
     return this.api.GET(`Student/assignment/${assignmentId}`)
   }
   runCode(sourceCode:string, languageId:number, stdin:string|null){
-    return this.api.POST('Student/run', { sourceCode, languageId, stdin });
+    // silent: the code editor shows the error in its Output panel
+    return this.api.POST('Student/run', { sourceCode, languageId, stdin }, { silent: true });
   }
   submitCode(assignmentId:number, sourceCode:string, languageId:number, stdin:string|null){
-    return this.api.POST('Student/submit', { assignmentId, sourceCode, languageId, stdin });
+    return this.api.POST('Student/submit', { assignmentId, sourceCode, languageId, stdin }, { silent: true });
   }
 }

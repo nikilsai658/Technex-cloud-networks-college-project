@@ -112,12 +112,12 @@
 
                         <!-- Course -->
                         <td class="px-5 py-4 font-semibold">
-                            {{ item.courseName }}
+                            <span appEllipsis>{{ item.courseName }}</span>
                         </td>
 
                         <!-- Assignment -->
                         <td class="px-5 py-4">
-                            {{ item.assignmentTitle }}
+                            <span appEllipsis>{{ item.assignmentTitle }}</span>
                         </td>
 
                         <!-- Sequence -->
@@ -278,11 +278,12 @@
                     </label>
                     <input
                         type="number"
+                        min="1"
                         formControlName="sequenceNo"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
                     <p class="text-xs text-red-500 mt-1"
                        *ngIf="submitted && courseAssignmentForm.get('sequenceNo')?.invalid">
-                        Sequence No is required
+                        {{ courseAssignmentForm.get('sequenceNo') | fieldError:'Sequence No' }}
                     </p>
                 </div>
 

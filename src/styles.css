@@ -13,3 +13,12 @@
   width: 0;
   height: 0;
 }
+
+/* Shared inline form-validation message (see shared/validators) */
+.field-error {
+  display: block;
+  color: #dc2626;
+  font-size: 0.75rem;
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+}

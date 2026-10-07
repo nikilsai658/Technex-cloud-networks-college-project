@@ -7,7 +7,7 @@ import { isPlatformBrowser } from '@angular/common';
 // to keep SSR hydration stable, but this guard runs during route
 // resolution, before that render happens. It needs the permissions
 // synchronously, so it can't depend on the deferred signal.
-function getStoredPermissions(): any[] {
+export function getStoredPermissions(): any[] {
 
   try {
 

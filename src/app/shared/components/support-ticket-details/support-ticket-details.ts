@@ -1,4 +1,5 @@
 import {
+  AfterViewChecked,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -24,6 +25,12 @@ import {
   TicketService
 } from '../../../features/services/ticket/ticket-service';
 
+import {
+  TICKET_STATUSES,
+  normalizeTicketStatus,
+  ticketStatusLabel
+} from '../../models/ticket-status';
+
 
 @Component({
   selector: 'app-support-ticket-details',
@@ -42,10 +49,31 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SupportTicketDetailsComponent
-  implements OnInit, OnDestroy {
+  implements OnInit, OnDestroy, AfterViewChecked {
+
+  // The chat box sits inside *ngIf="!loading && ticket", so it can appear
+  // after the messages have already loaded. Scroll to the latest message
+  // as soon as it is rendered.
+  private chatContainerRef?: ElementRef<HTMLDivElement>;
+
+  private pendingScroll = false;
 
   @ViewChild('chatScrollContainer')
-  chatScrollContainer?: ElementRef<HTMLDivElement>;
+  set chatScrollContainer(ref: ElementRef<HTMLDivElement> | undefined) {
+
+    const appeared = !this.chatContainerRef && !!ref;
+
+    this.chatContainerRef = ref;
+
+    if (appeared) {
+      this.scrollToBottom();
+    }
+
+  }
+
+  get chatScrollContainer(): ElementRef<HTMLDivElement> | undefined {
+    return this.chatContainerRef;
+  }
 
   // ==========================================
   // TICKET
@@ -91,6 +119,10 @@ export class SupportTicketDetailsComponent
 
   selectedStatus = '';
 
+  readonly statusOptions = TICKET_STATUSES;
+
+  readonly statusLabel = ticketStatusLabel;
+
 
   // ==========================================
   // LAST MESSAGE ID
@@ -106,6 +138,12 @@ export class SupportTicketDetailsComponent
   private pollHandle: any = null;
 
   private polling = false;
+
+  private statusPolling = false;
+
+  // Bumped on every local status change so an in-flight poll that started
+  // before the change can't overwrite the new status with the old one.
+  private statusVersion = 0;
 
   private readonly POLL_INTERVAL_MS = 3000;
 
@@ -174,6 +212,8 @@ export class SupportTicketDetailsComponent
 
       this.pollMessages();
 
+      this.pollTicketStatus();
+
     }, this.POLL_INTERVAL_MS);
 
   }
@@ -218,7 +258,11 @@ export class SupportTicketDetailsComponent
           const newMessages =
             res?.data || res || [];
 
-          if (newMessages.length) {
+          if (Array.isArray(newMessages) && newMessages.length) {
+
+            // Only follow new messages if the admin is already at the
+            // bottom, so reading older history isn't interrupted.
+            const followNew = this.isNearBottom();
 
             this.messages = [
               ...this.messages,
@@ -227,7 +271,9 @@ export class SupportTicketDetailsComponent
 
             this.updateLastMessageId();
 
-            this.scrollToBottom();
+            if (followNew) {
+              this.scrollToBottom();
+            }
 
             this.cdr.markForCheck();
 
@@ -257,19 +303,106 @@ export class SupportTicketDetailsComponent
   // SCROLL TO BOTTOM
   // ==========================================
 
+  // Only flags the scroll. The actual scroll happens in ngAfterViewChecked,
+  // once the new messages are really in the DOM — a timer can fire before
+  // the view has rendered and leave the chat stuck at the top.
   scrollToBottom(): void {
 
-    setTimeout(() => {
+    this.pendingScroll = true;
 
-      const el = this.chatScrollContainer?.nativeElement;
+    this.cdr.markForCheck();
 
-      if (el) {
+  }
 
-        el.scrollTop = el.scrollHeight;
+  ngAfterViewChecked(): void {
 
-      }
+    if (!this.pendingScroll) {
+      return;
+    }
 
-    });
+    const el = this.chatScrollContainer?.nativeElement;
+
+    // Chat box not rendered yet — keep the flag and retry on the next check
+    if (!el) {
+      return;
+    }
+
+    this.pendingScroll = false;
+
+    el.scrollTop = el.scrollHeight;
+
+  }
+
+  private isNearBottom(): boolean {
+
+    const el = this.chatScrollContainer?.nativeElement;
+
+    if (!el) {
+      return true;
+    }
+
+    return el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+
+  }
+
+
+  // ==========================================
+  // POLL TICKET STATUS
+  // ==========================================
+
+  // Silent refresh — never toggles `loading`, which would hide the page.
+  pollTicketStatus(): void {
+
+    if (
+      this.statusPolling ||
+      this.updatingStatus ||
+      !this.ticketId ||
+      !this.ticket
+    ) {
+      return;
+    }
+
+    this.statusPolling = true;
+
+    const versionAtStart = this.statusVersion;
+
+    this.ticketService
+      .getTicketById(this.ticketId, true)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.statusPolling = false;
+
+          const latest = res?.data || res;
+
+          if (
+            !latest?.status ||
+            this.updatingStatus ||
+            versionAtStart !== this.statusVersion
+          ) {
+            return;
+          }
+
+          if (latest.status !== this.ticket?.status) {
+
+            this.ticket = { ...this.ticket, status: latest.status };
+
+            this.selectedStatus = normalizeTicketStatus(latest.status);
+
+            this.cdr.markForCheck();
+
+          }
+
+        },
+
+        error: () => {
+
+          this.statusPolling = false;
+
+        }
+
+      });
 
   }
 
@@ -303,7 +436,7 @@ export class SupportTicketDetailsComponent
 
 
           this.selectedStatus =
-            this.ticket?.status || 'Open';
+            normalizeTicketStatus(this.ticket?.status);
 
 
           this.loading = false;
@@ -505,6 +638,27 @@ export class SupportTicketDetailsComponent
 
 
   // ==========================================
+  // ENTER TO SEND
+  // ==========================================
+
+  // Enter sends the reply; Shift+Enter inserts a new line.
+  onReplyKeydown(e: Event): void {
+
+    const event = e as KeyboardEvent;
+
+    // Ignore Enter while an IME (e.g. Hindi/Tamil keyboard) is composing text
+    if (event.key !== 'Enter' || event.shiftKey || event.isComposing) {
+      return;
+    }
+
+    event.preventDefault();
+
+    this.sendReply();
+
+  }
+
+
+  // ==========================================
   // CHANGE STATUS
   // ==========================================
 
@@ -512,50 +666,70 @@ export class SupportTicketDetailsComponent
 
     if (
       !status ||
-      this.updatingStatus
+      this.updatingStatus ||
+      status === this.ticket?.status
     ) {
 
       return;
 
     }
 
+    this.applyStatus(status);
+
+  }
+
+
+  // ==========================================
+  // APPLY STATUS (optimistic)
+  // ==========================================
+
+  // Shows the new status straight away, then saves it. If the save fails
+  // the previous status is put back.
+  private applyStatus(status: string): void {
+
+    const previousStatus =
+      this.ticket?.status || 'Open';
+
+    this.statusVersion++;
 
     this.updatingStatus = true;
 
+    this.selectedStatus = status;
+
+    if (this.ticket) {
+
+      // New object reference so OnPush views re-render immediately
+      this.ticket = { ...this.ticket, status };
+
+    }
+
+    if (status.toLowerCase() === 'closed') {
+
+      this.message = '';
+
+    }
+
     this.cdr.markForCheck();
-
-
-    const data = {
-      status: status
-    };
 
 
     this.ticketService
       .updateTicketstatus(
         this.ticketId,
-        data
+        { status }
       )
       .subscribe({
 
         next: (res: any) => {
 
-          console.log(
-            'Status updated:',
-            res
-          );
+          const saved = res?.data?.status;
 
+          if (saved && this.ticket && saved !== this.ticket.status) {
 
-          this.selectedStatus =
-            status;
+            this.ticket = { ...this.ticket, status: saved };
 
-
-          if (this.ticket) {
-
-            this.ticket.status =
-              status;
+            this.selectedStatus = normalizeTicketStatus(saved);
 
           }
-
 
           this.updatingStatus = false;
 
@@ -570,6 +744,15 @@ export class SupportTicketDetailsComponent
             error
           );
 
+          this.statusVersion++;
+
+          this.selectedStatus = normalizeTicketStatus(previousStatus);
+
+          if (this.ticket) {
+
+            this.ticket = { ...this.ticket, status: previousStatus };
+
+          }
 
           this.updatingStatus = false;
 
@@ -598,67 +781,7 @@ export class SupportTicketDetailsComponent
 
     }
 
-
-    this.updatingStatus = true;
-
-    this.cdr.markForCheck();
-
-
-    const data = {
-      status: 'Closed'
-    };
-
-
-    this.ticketService
-      .updateTicketstatus(
-        this.ticketId,
-        data
-      )
-      .subscribe({
-
-        next: (res: any) => {
-
-          console.log(
-            'Ticket closed:',
-            res
-          );
-
-
-          this.selectedStatus =
-            'Closed';
-
-
-          if (this.ticket) {
-
-            this.ticket.status =
-              'Closed';
-
-          }
-
-
-          this.message = '';
-
-          this.updatingStatus = false;
-
-          this.cdr.markForCheck();
-
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Close ticket error:',
-            error
-          );
-
-
-          this.updatingStatus = false;
-
-          this.cdr.markForCheck();
-
-        }
-
-      });
+    this.applyStatus('Closed');
 
   }
 

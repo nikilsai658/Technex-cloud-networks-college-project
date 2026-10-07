@@ -142,8 +142,10 @@
    DESCRIPTION / TAG
    ========================================= */
 
+/* Grows to fill spare card height, so the students box and
+   View Domain button sit at the same spot on every card */
 .domain-description-wrapper {
-  @apply mt-5;
+  @apply mt-5 min-h-10 flex-1;
 }
 
 .domain-description {

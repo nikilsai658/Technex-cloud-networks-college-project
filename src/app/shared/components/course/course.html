@@ -68,7 +68,8 @@
 
             <th class="px-5 py-4 text-left">Description</th>
 
-            <th class="px-5 py-4 text-center">Actions</th>
+            <th class="px-5 py-4 text-center"
+                *ngIf="auth.hasPermission('UPDATE_COURSE') || auth.hasPermission('DELETE_COURSE')">Actions</th>
 
           </tr>
 
@@ -85,14 +86,15 @@
             </td>
 
             <td class="px-5 py-4 font-semibold">
-              {{ course.name }}
+              <span appEllipsis>{{ course.name }}</span>
             </td>
 
             <td class="px-5 py-4">
-              {{ course.description }}
+              <span appEllipsis>{{ course.description }}</span>
             </td>
 
-            <td class="px-5 py-4">
+            <td class="px-5 py-4"
+                *ngIf="auth.hasPermission('UPDATE_COURSE') || auth.hasPermission('DELETE_COURSE')">
 
               <div class="flex justify-center gap-3">
 
@@ -127,7 +129,7 @@
           <tr *ngIf="courses.length === 0">
 
             <td
-              colspan="4"
+              [attr.colspan]="(auth.hasPermission('UPDATE_COURSE') || auth.hasPermission('DELETE_COURSE')) ? 4 : 3"
               class="text-center py-10 text-gray-500">
 
               No Courses Found
@@ -188,7 +190,7 @@
             class="text-xs text-red-500 mt-1"
             *ngIf="courseForm.get('name')?.touched && courseForm.get('name')?.invalid">
 
-            Course Name is required
+            {{ courseForm.get('name') | fieldError:'Course name' }}
 
           </p>
 
@@ -212,7 +214,7 @@
             class="text-xs text-red-500 mt-1"
             *ngIf="courseForm.get('description')?.touched && courseForm.get('description')?.invalid">
 
-            Description is required
+            {{ courseForm.get('description') | fieldError:'Description' }}
 
           </p>
 

@@ -1,21 +1,25 @@
-import { ChangeDetectorRef, Component ,ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectorRef, Component ,ChangeDetectionStrategy, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TicketService } from '../../../features/services/ticket/ticket-service';
+import { ToastService } from '../../../core/toast/toast-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
 
 @Component({
   selector: 'app-raise-ticket',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FieldErrorPipe],
   templateUrl: './ticket.html',
   styleUrl: './ticket.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TicketComponent {
 
+  private toast = inject(ToastService);
+
   loading = false;
-  showSuccess = false;
 
    ticketForm: any;
 
@@ -27,8 +31,8 @@ export class TicketComponent {
   ) {
 
     this.ticketForm = this.fb.group({
-      subject: ['', Validators.required],
-      description: ['', Validators.required]
+      subject: ['', [...AppValidators.requiredText, Validators.minLength(5), Validators.maxLength(150)]],
+      description: ['', [...AppValidators.requiredText, Validators.minLength(10), Validators.maxLength(2000)]]
     });
 
   }
@@ -50,17 +54,15 @@ export class TicketComponent {
     this.loading = true;
 
     this.ticketService.createTicket(this.ticketForm.value).subscribe({
-      next: () => {
+      next: (res: any) => {
 
         this.loading = false;
-        this.showSuccess = true;
         this.cdr.markForCheck();
 
-        setTimeout(() => {
-          this.showSuccess = false;
-          this.cdr.markForCheck();
-          this.router.navigate(['/main/mytickets']);
-        }, 2000);
+        // The toast lives at the app root, so it stays visible after navigating
+        this.router.navigate(['/main/mytickets']).then(() =>
+          this.toast.successFrom(res, 'Ticket Raised Successfully')
+        );
       },
       error: (err) => {
         this.loading = false;

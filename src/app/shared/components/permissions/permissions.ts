@@ -1,9 +1,10 @@
-import {
-  Component,
+import { tokenStorage } from '../../../core/auth/token-storage';
+import { Component,
   OnInit,
   Inject,
   PLATFORM_ID,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  inject
 } from '@angular/core';
 
 import {
@@ -24,17 +25,26 @@ import { CookieService } from 'ngx-cookie-service';
 import { Auth } from '../../../core/auth/auth';
 import { PermissionService } from '../../../features/services/permission/permission-service';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-permission',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, FieldErrorPipe
   ],
   templateUrl: './permissions.html',
   styleUrls: ['./permissions.css']
 })
 export class Permission implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
 
   permissions: any[] = [];
 
@@ -45,6 +55,28 @@ export class Permission implements OnInit {
   selectedPermissionId = 0;
 
   showModal = false;
+
+  searchText = '';
+
+  get filteredPermissions(): any[] {
+
+    const term = this.searchText.trim().toLowerCase();
+
+    if (!term)
+      return this.permissions;
+
+    return this.permissions.filter(p =>
+      (p.name ?? '').toString().toLowerCase().includes(term) ||
+      (p.code ?? '').toString().toLowerCase().includes(term)
+    );
+
+  }
+
+  onSearch(event: Event): void {
+
+    this.searchText = (event.target as HTMLInputElement).value;
+
+  }
 
   constructor(
     private api: PermissionService,
@@ -60,9 +92,9 @@ export class Permission implements OnInit {
 
     this.permissionForm = this.fb.group({
 
-      name: ['', Validators.required],
+      name: ['', [...AppValidators.requiredText, Validators.minLength(2), Validators.maxLength(100), AppValidators.title]],
 
-      code: ['', Validators.required]
+      code: ['', [...AppValidators.requiredText, Validators.minLength(2), Validators.maxLength(30), AppValidators.code]]
 
     });
 
@@ -70,7 +102,7 @@ export class Permission implements OnInit {
       return;
     }
 
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
 
@@ -127,7 +159,7 @@ export class Permission implements OnInit {
   openAddModal(): void {
 
     if (!this.auth.hasPermission('CREATE_PERMISSION')) {
-      alert('No Permission');
+      this.toast.error('No Permission');
       return;
     }
 
@@ -156,7 +188,7 @@ export class Permission implements OnInit {
   createPermission(): void {
 
     if (!this.auth.hasPermission('CREATE_PERMISSION')) {
-      alert('No Permission');
+      this.toast.error('No Permission');
       return;
     }
 
@@ -167,9 +199,9 @@ export class Permission implements OnInit {
 
     this.api.createPermission(this.permissionForm.value).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Permission Created Successfully');
+        this.toast.successFrom(res, 'Permission Added Successfully');
 
         this.resetForm();
 
@@ -190,7 +222,7 @@ export class Permission implements OnInit {
   editPermission(permission: any): void {
 
     if (!this.auth.hasPermission('UPDATE_PERMISSION')) {
-      alert('No Permission');
+      this.toast.error('No Permission');
       return;
     }
 
@@ -217,7 +249,7 @@ export class Permission implements OnInit {
   updatePermission(): void {
 
     if (!this.auth.hasPermission('UPDATE_PERMISSION')) {
-      alert('No Permission');
+      this.toast.error('No Permission');
       return;
     }
 
@@ -234,9 +266,9 @@ export class Permission implements OnInit {
 
     ).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Permission Updated Successfully');
+        this.toast.successFrom(res, 'Permission Updated Successfully');
 
         this.resetForm();
 
@@ -254,21 +286,21 @@ export class Permission implements OnInit {
   // Delete
   //============================
 
-  deletePermission(id: number): void {
+  async deletePermission(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_PERMISSION')) {
-      alert('No Permission');
+      this.toast.error('No Permission');
       return;
     }
 
-    if (!confirm('Delete Permission?'))
+    if (!(await this.confirmDialog.confirmDelete('this permission')))
       return;
 
     this.api.deletePermission(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Permission Deleted Successfully');
+        this.toast.successFrom(res, 'Permission Deleted Successfully');
 
         this.loadPermissions();
 

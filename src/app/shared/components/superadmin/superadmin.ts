@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit, 
 import { Superadmin } from '../../../features/services/superadmin/superadmin';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-superadmin',
-  imports: [CommonModule],
+  imports: [Ellipsis, CommonModule],
   templateUrl: './superadmin.html',
   styleUrl: './superadmin.css',
   changeDetection:ChangeDetectionStrategy.OnPush

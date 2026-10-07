@@ -106,12 +106,12 @@
 
                         <!-- Department -->
                         <td class="px-5 py-4 font-semibold">
-                            {{ item.departmentName }}
+                            <span appEllipsis>{{ item.departmentName }}</span>
                         </td>
 
                         <!-- Branch -->
                         <td class="px-5 py-4">
-                            {{ item.branchName }}
+                            <span appEllipsis>{{ item.branchName }}</span>
                         </td>
 
                         <!-- Actions -->
@@ -203,13 +203,15 @@
                     </label>
                     <select
                         formControlName="departmentName"
+                        [class.text-gray-400]="!departmentBranchForm.get('departmentName')?.value"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
-                        <option value="">Select Department</option>
+                        <option value="" disabled>Select Department</option>
 
                         <option
                             *ngFor="let department of departments"
-                            [value]="department.name">
+                            [value]="department.name"
+                            class="text-gray-800">
 
                             {{ department.name }}
 
@@ -228,13 +230,15 @@
                     </label>
                     <select
                         formControlName="branchName"
+                        [class.text-gray-400]="!departmentBranchForm.get('branchName')?.value"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
-                        <option value="">Select Branch</option>
+                        <option value="" disabled>Select Branch</option>
 
                         <option
                             *ngFor="let branch of branches"
-                            [value]="branch.name">
+                            [value]="branch.name"
+                            class="text-gray-800">
 
                             {{ branch.name }}
 

@@ -109,7 +109,7 @@
 
                         <!-- College Name -->
                         <td class="px-5 py-4 font-semibold">
-                            {{ college.name }}
+                            <span appEllipsis>{{ college.name }}</span>
                         </td>
 
                         <!-- College Code -->
@@ -119,7 +119,7 @@
 
                         <!-- Email -->
                         <td class="px-5 py-4">
-                            {{ college.email }}
+                            <span appEllipsis>{{ college.email }}</span>
                         </td>
 
                         <!-- License (Lock / Unlock) -->
@@ -267,7 +267,7 @@
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
                     <p class="text-xs text-red-500 mt-1"
                        *ngIf="collegeForm.get('name')?.invalid && collegeForm.get('name')?.touched">
-                        College name is required
+                        {{ collegeForm.get('name') | fieldError:'College name' }}
                     </p>
                 </div>
 
@@ -282,7 +282,7 @@
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
                     <p class="text-xs text-red-500 mt-1"
                        *ngIf="collegeForm.get('code')?.invalid && collegeForm.get('code')?.touched">
-                        College code is required
+                        {{ collegeForm.get('code') | fieldError:'College code' }}
                     </p>
                 </div>
 
@@ -297,7 +297,7 @@
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
                     <p class="text-xs text-red-500 mt-1"
                        *ngIf="collegeForm.get('email')?.invalid && collegeForm.get('email')?.touched">
-                        A valid email is required
+                        {{ collegeForm.get('email') | fieldError:'Email' }}
                     </p>
                 </div>
 
@@ -306,13 +306,15 @@
                         Phone Number
                     </label>
                     <input
-                        type="text"
+                        type="tel"
+                        inputmode="numeric"
+                        maxlength="10"
                         formControlName="phoneNumber"
-                        placeholder="+91 9876543210"
+                        placeholder="9876543210"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
                     <p class="text-xs text-red-500 mt-1"
                        *ngIf="collegeForm.get('phoneNumber')?.invalid && collegeForm.get('phoneNumber')?.touched">
-                        Phone number is required
+                        {{ collegeForm.get('phoneNumber') | fieldError:'Phone number' }}
                     </p>
                 </div>
 

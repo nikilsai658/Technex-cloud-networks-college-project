@@ -1,9 +1,10 @@
-import {
-  Component,
+import { tokenStorage } from '../../../core/auth/token-storage';
+import { Component,
   OnInit,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
 
 import {
@@ -25,17 +26,27 @@ import { Auth } from '../../../core/auth/auth';
 import { CollegeService } from '../../../features/services/college/college-service';
 import { Superadmin } from '../../../features/services/superadmin/superadmin';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-college',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FieldErrorPipe
   ],
   templateUrl: './college.html',
   styleUrls: ['./college.css']
 })
 export class College implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
 
   colleges: any[] = [];
 
@@ -73,13 +84,13 @@ export class College implements OnInit {
     // Create Form
     this.collegeForm = this.fb.group({
 
-      name: ['', Validators.required],
+      name: ['', [...AppValidators.requiredText, Validators.minLength(3), Validators.maxLength(150), AppValidators.title]],
 
-      code: ['', Validators.required],
+      code: ['', [...AppValidators.requiredText, Validators.minLength(2), Validators.maxLength(20), AppValidators.code]],
 
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, AppValidators.email]],
 
-      phoneNumber: ['', Validators.required]
+      phoneNumber: ['', [Validators.required, AppValidators.phone]]
 
     });
 
@@ -96,7 +107,7 @@ export class College implements OnInit {
       return;
     }
 
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
 
@@ -343,7 +354,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('MANAGE_COLLEGE_LICENSING')) {
 
-      alert('You do not have permission to manage college licensing.');
+      this.toast.error('You do not have permission to manage college licensing.');
 
       return;
 
@@ -381,7 +392,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('MANAGE_COLLEGE_LICENSING')) {
 
-      alert('You do not have permission to manage college licensing.');
+      this.toast.error('You do not have permission to manage college licensing.');
 
       return;
 
@@ -405,13 +416,13 @@ export class College implements OnInit {
 
     this.superadmin.collegelicense(this.selectedLicenseCollege.id, payload).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
         this.selectedLicenseCollege.isLicensed = payload.isLicensed;
 
         this.selectedLicenseCollege.licenseExpiresAt = payload.licenseExpiresAt;
 
-        alert('License Updated Successfully');
+        this.toast.successFrom(res, 'License Updated Successfully');
 
         this.closeLicenseModal();
 
@@ -422,8 +433,6 @@ export class College implements OnInit {
       error: (err) => {
 
         console.error('Update License Error:', err);
-
-        alert(err?.error?.message || 'Unable to update license.');
 
       }
 
@@ -439,7 +448,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('CREATE_COLLEGE')) {
 
-      alert('You do not have permission to create colleges.');
+      this.toast.error('You do not have permission to create colleges.');
 
       return;
 
@@ -471,7 +480,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('CREATE_COLLEGE')) {
 
-      alert('You do not have permission to create colleges.');
+      this.toast.error('You do not have permission to create colleges.');
 
       return;
 
@@ -487,9 +496,9 @@ export class College implements OnInit {
 
     this.api.createcollege(this.collegeForm.value).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('College Created Successfully');
+        this.toast.successFrom(res, 'College Added Successfully');
 
         this.resetForm();
 
@@ -515,7 +524,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_COLLEGE')) {
 
-      alert('You do not have permission to edit.');
+      this.toast.error('You do not have permission to edit.');
 
       return;
 
@@ -549,7 +558,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_COLLEGE')) {
 
-      alert('You do not have permission to update.');
+      this.toast.error('You do not have permission to update.');
 
       return;
 
@@ -571,9 +580,9 @@ export class College implements OnInit {
 
     ).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('College Updated Successfully');
+        this.toast.successFrom(res, 'College Updated Successfully');
 
         this.resetForm();
 
@@ -595,17 +604,17 @@ export class College implements OnInit {
   // Delete College
   //=====================================
 
-  deleteCollege(id: number): void {
+  async deleteCollege(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_COLLEGE')) {
 
-      alert('You do not have permission to delete.');
+      this.toast.error('You do not have permission to delete.');
 
       return;
 
     }
 
-    if (!confirm('Are you sure you want to delete this college?')) {
+    if (!(await this.confirmDialog.confirmDelete('this college'))) {
 
       return;
 
@@ -613,9 +622,9 @@ export class College implements OnInit {
 
     this.api.deletecollege(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('College Deleted Successfully');
+        this.toast.successFrom(res, 'College Deleted Successfully');
 
         this.loadColleges();
 
@@ -635,17 +644,17 @@ export class College implements OnInit {
   // College License (Lock / Unlock)
   //=====================================
 
-  lockCollege(college: any): void {
+  async lockCollege(college: any): Promise<void> {
 
     if (!this.auth.hasPermission('UPDATE_COLLEGE')) {
 
-      alert('You do not have permission to lock colleges.');
+      this.toast.error('You do not have permission to lock colleges.');
 
       return;
 
     }
 
-    if (!confirm(`Lock "${college.name}"? Users of this college will lose access.`)) {
+    if (!(await this.confirmDialog.confirm({ title: 'Lock college', message: `Lock "${college.name}"? Users of this college will lose access.`, okLabel: 'Lock', tone: 'danger' }))) {
 
       return;
 
@@ -653,11 +662,11 @@ export class College implements OnInit {
 
     this.superadmin.collegelock(college.id, {}).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
         college.isLocked = true;
 
-        alert('College Locked Successfully');
+        this.toast.successFrom(res, 'College Locked Successfully');
 
         this.cd.detectChanges();
 
@@ -673,17 +682,17 @@ export class College implements OnInit {
 
   }
 
-  unlockCollege(college: any): void {
+  async unlockCollege(college: any): Promise<void> {
 
     if (!this.auth.hasPermission('UPDATE_COLLEGE')) {
 
-      alert('You do not have permission to unlock colleges.');
+      this.toast.error('You do not have permission to unlock colleges.');
 
       return;
 
     }
 
-    if (!confirm(`Unlock "${college.name}"?`)) {
+    if (!(await this.confirmDialog.confirm({ title: 'Unlock college', message: `Unlock "${college.name}"? Users of this college will regain access.`, okLabel: 'Unlock', tone: 'default' }))) {
 
       return;
 
@@ -691,11 +700,11 @@ export class College implements OnInit {
 
     this.superadmin.collegeunlock(college.id, {}).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
         college.isLocked = false;
 
-        alert('College Unlocked Successfully');
+        this.toast.successFrom(res, 'College Unlocked Successfully');
 
         this.cd.detectChanges();
 

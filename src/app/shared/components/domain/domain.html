@@ -147,7 +147,8 @@
               Status
             </th>
 
-            <th class="center-column">
+            <th class="center-column"
+                *ngIf="auth.hasPermission('UPDATE_DOMAIN') || auth.hasPermission('DELETE_DOMAIN')">
               Actions
             </th>
 
@@ -186,7 +187,7 @@
 
                 <div>
 
-                  <strong>
+                  <strong appEllipsis>
                     {{ domain.name }}
                   </strong>
 
@@ -204,7 +205,7 @@
             <!-- DESCRIPTION -->
             <td>
 
-              <div class="description-cell">
+              <div class="description-cell" appEllipsis ellipsisMaxWidth="280px">
 
                 {{ domain.description }}
 
@@ -257,7 +258,8 @@
 
 
             <!-- ACTIONS -->
-            <td class="center-column">
+            <td class="center-column"
+                *ngIf="auth.hasPermission('UPDATE_DOMAIN') || auth.hasPermission('DELETE_DOMAIN')">
 
               <div class="action-buttons">
 
@@ -327,7 +329,7 @@
           <tr *ngIf="domains.length === 0">
 
             <td
-              colspan="7"
+              [attr.colspan]="(auth.hasPermission('UPDATE_DOMAIN') || auth.hasPermission('DELETE_DOMAIN')) ? 7 : 6"
               class="empty-state">
 
               <div class="empty-icon">
@@ -404,7 +406,7 @@
             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
           <p class="text-xs text-red-500 mt-1"
              *ngIf="domainForm.get('name')?.invalid && domainForm.get('name')?.touched">
-            Domain name is required
+            {{ domainForm.get('name') | fieldError:'Domain name' }}
           </p>
         </div>
 
@@ -419,7 +421,7 @@
             class="w-full border border-gray-300 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent"></textarea>
           <p class="text-xs text-red-500 mt-1"
              *ngIf="domainForm.get('description')?.invalid && domainForm.get('description')?.touched">
-            Description is required
+            {{ domainForm.get('description') | fieldError:'Description' }}
           </p>
         </div>
 
@@ -432,9 +434,14 @@
             <input
               type="number"
               min="1"
+              max="4"
               formControlName="eligibleFromYear"
               placeholder="1"
               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+            <p class="text-xs text-red-500 mt-1"
+               *ngIf="domainForm.get('eligibleFromYear')?.invalid && domainForm.get('eligibleFromYear')?.touched">
+              {{ domainForm.get('eligibleFromYear') | fieldError:'From year' }}
+            </p>
           </div>
 
           <div>
@@ -444,12 +451,22 @@
             <input
               type="number"
               min="1"
+              max="4"
               formControlName="eligibleToYear"
               placeholder="4"
               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+            <p class="text-xs text-red-500 mt-1"
+               *ngIf="domainForm.get('eligibleToYear')?.invalid && domainForm.get('eligibleToYear')?.touched">
+              {{ domainForm.get('eligibleToYear') | fieldError:'To year' }}
+            </p>
           </div>
 
         </div>
+
+        <p class="text-xs text-red-500 -mt-2 mb-4"
+           *ngIf="domainForm.errors?.['rangeInvalid'] && (domainForm.get('eligibleFromYear')?.touched || domainForm.get('eligibleToYear')?.touched)">
+          Eligible From Year cannot be greater than Eligible To Year
+        </p>
 
         <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
 

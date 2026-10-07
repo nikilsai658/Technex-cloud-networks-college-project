@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
+import { tokenStorage } from '../../core/auth/token-storage';
+import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID, ViewChild, ElementRef, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -26,6 +27,8 @@ import { RolePermissionComponent } from '../../shared/components/rolepermission/
 import { UserComponent } from '../../shared/components/user/user';
 import { Department } from "../../shared/components/department/department";
 import { StudentAssignment } from "../../shared/components/studentassignment/studentassignment";
+import { ToastService } from '../../core/toast/toast-service';
+import { ConfirmService } from '../../core/confirm/confirm-service';
 @Component({
   selector: 'app-admin',
   standalone: true,
@@ -57,6 +60,10 @@ import { StudentAssignment } from "../../shared/components/studentassignment/stu
   styleUrls: ['./admin.css']
 })
 export class Admin implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
 
   @ViewChild('adminContent') adminContent!: ElementRef<HTMLDivElement>;
 
@@ -95,7 +102,7 @@ export class Admin implements OnInit {
     }
 
     // Check login
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
       this.router.navigate(['/auth/login']);
@@ -185,7 +192,7 @@ loadDepartments(): void {
 
         console.log(res);
 
-        alert('Department Created Successfully');
+        this.toast.successFrom(res, 'Department Added Successfully');
 
         this.departmentForm.reset();
 
@@ -244,9 +251,9 @@ loadDepartments(): void {
 
     ).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Department Updated Successfully');
+        this.toast.successFrom(res, 'Department Updated Successfully');
 
         this.departmentForm.reset();
 
@@ -272,17 +279,17 @@ loadDepartments(): void {
   // Delete
   //=====================================
 
-  deleteDepartment(id: number): void {
+  async deleteDepartment(id: number): Promise<void> {
 
-    if (!confirm('Are you sure you want to delete this department?')) {
+    if (!(await this.confirmDialog.confirmDelete('this department'))) {
       return;
     }
 
     this.api.deleteDepartment(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Department Deleted Successfully');
+        this.toast.successFrom(res, 'Department Deleted Successfully');
 
         this.loadDepartments();
 

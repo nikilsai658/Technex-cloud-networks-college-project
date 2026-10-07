@@ -1,10 +1,16 @@
+import { tokenStorage } from '../../../core/auth/token-storage';
 import {
   Component,
   OnInit,
   Inject,
   PLATFORM_ID,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  inject
 } from '@angular/core';
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
 
 import {
   CommonModule,
@@ -26,13 +32,14 @@ import { Auth } from '../../../core/auth/auth';
 import { DomaincourseService } from '../../../features/services/domaincourse/domaincourse-service';
 import { DomainServices } from '../../../features/services/domain/domain-services';
 import { CourseService } from '../../../features/services/course/course-service';
+import { Ellipsis } from '../../directives/ellipsis';
 
 @Component({
   selector: 'app-domaincoursemap',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule, FieldErrorPipe,
     FormsModule,
     RouterLink
   ],
@@ -40,6 +47,9 @@ import { CourseService } from '../../../features/services/course/course-service'
   styleUrls: ['./domaincourse.css']
 })
 export class DomainCourseMapComponent implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
 
   domainCourseForm!: FormGroup;
 
@@ -78,7 +88,7 @@ export class DomainCourseMapComponent implements OnInit {
 
     if (!isPlatformBrowser(this.platformId)) return;
 
-    if (!this.cookie.get('token')) {
+    if (!tokenStorage.getAccess()) {
 
       this.router.navigate(['/auth/login']);
 
@@ -102,9 +112,9 @@ export class DomainCourseMapComponent implements OnInit {
 
       courseName: ['', Validators.required],
 
-      yearNumber: [1, [Validators.required, Validators.min(1)]],
+      yearNumber: [1, [Validators.required, Validators.min(1), Validators.max(4), AppValidators.integer]],
 
-      semester: [1, [Validators.required, Validators.min(1)]]
+      semester: [1, [Validators.required, Validators.min(1), Validators.max(2), AppValidators.integer]]
 
     });
 
@@ -238,7 +248,9 @@ export class DomainCourseMapComponent implements OnInit {
 
       this.api.updateDomaincourse(this.selectedId, payload).subscribe({
 
-        next: () => {
+        next: (res: any) => {
+
+          this.toast.successFrom(res, 'Domain Course Updated Successfully');
 
           this.loadMappings();
 
@@ -254,7 +266,9 @@ export class DomainCourseMapComponent implements OnInit {
 
       this.api.createDomaincourse(payload).subscribe({
 
-        next: () => {
+        next: (res: any) => {
+
+          this.toast.successFrom(res, 'Domain Course Added Successfully');
 
           this.loadMappings();
 
@@ -302,15 +316,17 @@ export class DomainCourseMapComponent implements OnInit {
   // DELETE
   //========================
 
-  delete(id: number) {
+  async delete(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_DOMAIN_COURSE_MAP')) return;
 
-    if (!confirm('Delete this mapping?')) return;
+    if (!(await this.confirmDialog.confirmDelete('this mapping'))) return;
 
     this.api.deleteDomaincourse(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
+
+        this.toast.successFrom(res, 'Domain Course Deleted Successfully');
 
         this.loadMappings();
 

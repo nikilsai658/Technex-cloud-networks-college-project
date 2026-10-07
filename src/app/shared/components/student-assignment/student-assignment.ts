@@ -152,7 +152,7 @@ export class StudentAssignment implements OnInit, OnDestroy{
 
         error: (err: any) => {
 
-          this.runError = err?.error?.message || 'Failed to run code.';
+          this.runError = this.describeRunError(err, 'Failed to run code.');
 
           this.isRunning = false;
 
@@ -160,6 +160,24 @@ export class StudentAssignment implements OnInit, OnDestroy{
         }
 
       });
+  }
+
+  // The code runner (Judge0) sits behind our API; when it is down or slow
+  // its raw gateway errors (502/503/504) aren't useful to a student.
+  private describeRunError(err: any, fallback: string): string {
+
+    const message: string = err?.error?.message || '';
+
+    const runnerUnavailable =
+      err?.status === 0 ||
+      [502, 503, 504].includes(err?.status) ||
+      /\b(502|503|504)\b|timed? ?out|unavailable/i.test(message);
+
+    if (runnerUnavailable) {
+      return 'The code runner is busy or unavailable right now. Please wait a moment and try again.';
+    }
+
+    return message.trim() || fallback;
   }
 
   onSubmitCode(submission: CodeSubmission): void {
@@ -197,7 +215,7 @@ export class StudentAssignment implements OnInit, OnDestroy{
 
         error: (err: any) => {
 
-          this.submitError = err?.error?.message || 'Failed to submit code.';
+          this.submitError = this.describeRunError(err, 'Failed to submit code.');
 
           this.isSubmitting = false;
 

@@ -106,12 +106,12 @@
 
                         <!-- College -->
                         <td class="px-5 py-4 font-semibold">
-                            {{ item.collegeName }}
+                            <span appEllipsis>{{ item.collegeName }}</span>
                         </td>
 
                         <!-- Department -->
                         <td class="px-5 py-4">
-                            {{ item.departmentName }}
+                            <span appEllipsis>{{ item.departmentName }}</span>
                         </td>
 
                         <!-- Actions -->
@@ -203,13 +203,15 @@
                     </label>
                     <select
                         formControlName="collegeName"
+                        [class.text-gray-400]="!collegeDepartmentForm.get('collegeName')?.value"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
-                        <option value="">Select College</option>
+                        <option value="" disabled>Select College</option>
 
                         <option
                             *ngFor="let college of colleges"
-                            [value]="college.name">
+                            [value]="college.name"
+                            class="text-gray-800">
 
                             {{ college.name }}
 
@@ -228,13 +230,15 @@
                     </label>
                     <select
                         formControlName="departmentName"
+                        [class.text-gray-400]="!collegeDepartmentForm.get('departmentName')?.value"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
-                        <option value="">Select Department</option>
+                        <option value="" disabled>Select Department</option>
 
                         <option
                             *ngFor="let department of departments"
-                            [value]="department.name">
+                            [value]="department.name"
+                            class="text-gray-800">
 
                             {{ department.name }}
 

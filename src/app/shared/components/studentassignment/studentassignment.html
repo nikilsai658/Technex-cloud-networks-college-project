@@ -62,6 +62,10 @@
             type="email"
             formControlName="studentEmail"
             class="mt-2 w-full border rounded-lg p-3">
+          <p class="text-xs text-red-500 mt-1"
+             *ngIf="assignmentForm.get('studentEmail')?.invalid && assignmentForm.get('studentEmail')?.touched">
+            {{ assignmentForm.get('studentEmail') | fieldError:'Student email' }}
+          </p>
 
         </div>
 
@@ -77,6 +81,10 @@
             type="text"
             formControlName="courseName"
             class="mt-2 w-full border rounded-lg p-3">
+          <p class="text-xs text-red-500 mt-1"
+             *ngIf="assignmentForm.get('courseName')?.invalid && assignmentForm.get('courseName')?.touched">
+            {{ assignmentForm.get('courseName') | fieldError:'Course name' }}
+          </p>
 
         </div>
 
@@ -92,6 +100,10 @@
             type="text"
             formControlName="assignmentTitle"
             class="mt-2 w-full border rounded-lg p-3">
+          <p class="text-xs text-red-500 mt-1"
+             *ngIf="assignmentForm.get('assignmentTitle')?.invalid && assignmentForm.get('assignmentTitle')?.touched">
+            {{ assignmentForm.get('assignmentTitle') | fieldError:'Assignment title' }}
+          </p>
 
         </div>
 
@@ -106,6 +118,10 @@
           <select
             formControlName="status"
             class="mt-2 w-full border rounded-lg p-3">
+          <p class="text-xs text-red-500 mt-1"
+             *ngIf="assignmentForm.get('status')?.invalid && assignmentForm.get('status')?.touched">
+            {{ assignmentForm.get('status') | fieldError:'Status' }}
+          </p>
 
             <option value="">Select Status</option>
             <option value="Pending">Pending</option>
@@ -128,6 +144,10 @@
             type="number"
             formControlName="score"
             class="mt-2 w-full border rounded-lg p-3">
+          <p class="text-xs text-red-500 mt-1"
+             *ngIf="assignmentForm.get('score')?.invalid && assignmentForm.get('score')?.touched">
+            {{ assignmentForm.get('score') | fieldError:'Score' }}
+          </p>
 
         </div>
 
@@ -143,6 +163,10 @@
             type="number"
             formControlName="attempts"
             class="mt-2 w-full border rounded-lg p-3">
+          <p class="text-xs text-red-500 mt-1"
+             *ngIf="assignmentForm.get('attempts')?.invalid && assignmentForm.get('attempts')?.touched">
+            {{ assignmentForm.get('attempts') | fieldError:'Attempts' }}
+          </p>
 
         </div>
 
@@ -158,6 +182,10 @@
             type="number"
             formControlName="timeTaken"
             class="mt-2 w-full border rounded-lg p-3">
+          <p class="text-xs text-red-500 mt-1"
+             *ngIf="assignmentForm.get('timeTaken')?.invalid && assignmentForm.get('timeTaken')?.touched">
+            {{ assignmentForm.get('timeTaken') | fieldError:'Time taken' }}
+          </p>
 
         </div>
 
@@ -248,7 +276,8 @@
               <th class="px-4 py-3 text-center">Attempts</th>
               <th class="px-4 py-3 text-center">Time</th>
               <th class="px-4 py-3 text-center">Passed</th>
-              <th class="px-4 py-3 text-center">Actions</th>
+              <th class="px-4 py-3 text-center"
+                  *ngIf="auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT') || auth.hasPermission('DELETE_STUDENT_ASSIGNMENT')">Actions</th>
 
             </tr>
 
@@ -261,9 +290,9 @@
               class="border-b hover:bg-gray-50">
 
               <td class="px-4 py-3">{{ i + 1 }}</td>
-              <td class="px-4 py-3 font-semibold">{{ item.studentEmail }}</td>
-              <td class="px-4 py-3">{{ item.courseName }}</td>
-              <td class="px-4 py-3">{{ item.assignmentTitle }}</td>
+              <td class="px-4 py-3 font-semibold"><span appEllipsis>{{ item.studentEmail }}</span></td>
+              <td class="px-4 py-3"><span appEllipsis>{{ item.courseName }}</span></td>
+              <td class="px-4 py-3"><span appEllipsis>{{ item.assignmentTitle }}</span></td>
               <td class="px-4 py-3">{{ item.status }}</td>
               <td class="px-4 py-3 text-center font-semibold">{{ item.score }}</td>
               <td class="px-4 py-3 text-center">{{ item.attempts }}</td>
@@ -281,7 +310,8 @@
 
               </td>
 
-              <td class="px-4 py-3">
+              <td class="px-4 py-3"
+                  *ngIf="auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT') || auth.hasPermission('DELETE_STUDENT_ASSIGNMENT')">
 
                 <div class="flex justify-center gap-2">
 
@@ -311,7 +341,7 @@
 
             <tr *ngIf="assignments.length === 0">
 
-              <td colspan="10" class="text-center py-8 text-gray-500">
+              <td [attr.colspan]="(auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT') || auth.hasPermission('DELETE_STUDENT_ASSIGNMENT')) ? 10 : 9"class="text-center py-8 text-gray-500">
 
                 No Student Assignment Records Found
 

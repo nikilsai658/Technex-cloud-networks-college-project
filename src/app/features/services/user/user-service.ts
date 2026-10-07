@@ -70,4 +70,7 @@ successusers(uploadId: string) {
 failedusers(uploadId: string) {
   return this.api.GET(`User/BulkUpload/${uploadId}/failed`);
 }
+progress(jobId:any){
+  return this.api.GET(`User/BulkUpload/${jobId}/status`);
+}
 }

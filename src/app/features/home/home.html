@@ -1,8 +1,702 @@
-<div >
-    <div class="header">
-        <div><img src="../../../assets/TCN_logo.jpeg"><span class="title">Technex Cloud Networks Pvt Ltd</span></div>
-    <div><a routerLink="/auth/college">
-  <p-button label="Login"></p-button>
-</a></div>
+<div class="landing-container">
+
+  <!-- =========================================================
+       HEADER
+  ========================================================= -->
+  <header class="header-nav">
+    <!-- CSS-only mobile menu toggle -->
+    <input
+      #menuToggle
+      type="checkbox"
+      id="nav-toggle"
+      class="nav-toggle"
+      aria-label="Toggle navigation menu"
+    />
+
+    <a href="#home" class="logo-container" (click)="scrollToSection('home', $event); menuToggle.checked = false">
+      <img src="../../../assets/TCN_logo.jpeg" alt="TCN Logo" class="logo-img" />
+      <span class="company-title">Technex Cloud Networks Pvt Ltd</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      @for (link of navLinks; track link.id) {
+        <a
+          [attr.href]="'#' + link.id"
+          class="nav-item"
+          [class.active]="activeSection() === link.id"
+          (click)="scrollToSection(link.id, $event); menuToggle.checked = false">
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="auth-container">
+      <a href="/auth/college" class="login-btn">
+        LOGIN
+      </a>
+
+      <label for="nav-toggle" class="nav-burger" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
     </div>
+  </header>
+
+
+  <main>
+
+    <!-- =========================================================
+         HERO
+    ========================================================= -->
+    <section id="home" class="hero-section">
+      <img
+        src="../../../assets/images/langingpage_image.png"
+        alt="Technex Office Banner"
+        class="hero-bg-img"
+      />
+
+      <div class="hero-card">
+
+        <div class="hero-carousel">
+          @for (slide of slides; track $index) {
+            <div class="hero-slide" [class.active]="$index === currentSlide()" [attr.aria-hidden]="$index !== currentSlide()">
+              <h1 class="hero-title">
+                {{ slide.title }}
+              </h1>
+              <p class="hero-description">
+                {{ slide.description }}
+              </p>
+            </div>
+          }
+        </div>
+
+        <div class="hero-actions">
+          <a href="/auth/college" class="btn-primary">
+            Get Started
+            <span aria-hidden="true">→</span>
+          </a>
+          <a href="#process" class="btn-ghost" (click)="scrollToSection('process', $event)">
+            Explore the Platform
+          </a>
+        </div>
+
+        <div class="hero-dots">
+          @for (slide of slides; track $index) {
+            <button
+              type="button"
+              class="hero-dot"
+              [class.active]="$index === currentSlide()"
+              [attr.aria-label]="'Show slide ' + ($index + 1)"
+              (click)="currentSlide.set($index)">
+            </button>
+          }
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         ABOUT
+    ========================================================= -->
+    <section id="about" class="banner-section scroll-target">
+      <span class="eyebrow">About Us</span>
+      <h2 class="main-title">Bridging Gap Between Education and Technology</h2>
+      <p class="main-subtitle">
+        Integrating academic knowledge with real-world application through experiential learning, industry-academia partnerships, and collaborative, case-based projects.
+      </p>
+    </section>
+
+
+    <!-- =========================================================
+         WHAT MAKES US DIFFERENT
+    ========================================================= -->
+    <section class="different-section">
+      <div class="different-container">
+        <div class="section-header">
+          <span class="eyebrow">Why Technex</span>
+          <h2 class="section-title">What Makes Us Different</h2>
+          <p class="section-subtitle">We stand out from the crowd with our innovative approach to education</p>
+        </div>
+
+        <div class="different-card">
+          <div class="different-img-wrap">
+            <img src="../../../assets/images/image12.png" alt="Interactive Classroom" />
+          </div>
+
+          <div class="different-features">
+            <div class="feature-item">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="5" width="18" height="14" rx="3" />
+                  <path d="M10 9.5v5l4.5-2.5z" />
+                </svg>
+              </span>
+              <div>
+                <h3 class="feature-heading">Live + Recorded</h3>
+                <p class="feature-text">Attend live classes, watch recordings anytime.</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.5 9 12 4.5 21.5 9 12 13.5z" />
+                  <path d="M6.5 11.5v4.2c1.6 1.4 3.4 2.1 5.5 2.1s3.900-.7 5.500-2.100v-4.200" />
+                  <path d="M21.5 9v5" />
+                </svg>
+              </span>
+              <div>
+                <h3 class="feature-heading">Expert Faculty</h3>
+                <p class="feature-text">Learn from industry experts and professionals.</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="7.500" width="18" height="12" rx="2.500" />
+                  <path d="M9 7.500V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.500" />
+                  <path d="M3 12.500h18" />
+                </svg>
+              </span>
+              <div>
+                <h3 class="feature-heading">Projects &amp; Internships</h3>
+                <p class="feature-text">Get hands-on experience with real-world projects.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         LEARNING JOURNEY
+    ========================================================= -->
+    <section id="process" class="learning-journey-container scroll-target">
+      <div class="section-header">
+        <span class="eyebrow">Your Learning Journey</span>
+        <h2 class="section-title">Everything You Need. In One Place.</h2>
+        <p class="section-subtitle">
+          From domain training to certification, our platform gives you the complete learning and practice experience — designed for your growth.
+        </p>
+      </div>
+
+      <div class="journey-grid">
+
+        <!-- Item 01 -->
+        <article class="grid-item">
+          <div class="item-img-box">
+            <img src="../../../assets/images/Domain-based_training.png" alt="Domain-Based Training" />
+            <span class="item-num">01</span>
+          </div>
+          <div class="item-details">
+            <h3 class="item-title">Domain-Based Training</h3>
+            <p class="item-desc">Get structured training based on your registered domain and build a strong foundation.</p>
+          </div>
+        </article>
+
+        <!-- Item 02 -->
+        <article class="grid-item">
+          <div class="item-img-box">
+            <img src="../../../assets/images/Industry_Ready_courses.png" alt="Industry-Ready Courses" />
+            <span class="item-num">02</span>
+          </div>
+          <div class="item-details">
+            <h3 class="item-title">Industry-Ready Courses</h3>
+            <p class="item-desc">Access courses designed around the latest industry technologies and real-world skills.</p>
+          </div>
+        </article>
+
+        <!-- Item 03 -->
+        <article class="grid-item">
+          <div class="item-img-box">
+            <img src="../../../assets/images/Assignments.png" alt="Assignments" />
+            <span class="item-num">03</span>
+          </div>
+          <div class="item-details">
+            <h3 class="item-title">Assignments</h3>
+            <p class="item-desc">Apply what you learn through practical assignments and real-world tasks.</p>
+          </div>
+        </article>
+
+        <!-- Item 04 -->
+        <article class="grid-item">
+          <div class="item-img-box">
+            <img src="../../../assets/images/coding_practice.png" alt="Coding Practice" />
+            <span class="item-num">04</span>
+          </div>
+          <div class="item-details">
+            <h3 class="item-title">Coding Practice</h3>
+            <p class="item-desc">Solve coding problems, submit your solutions and view instant test results.</p>
+          </div>
+        </article>
+
+        <!-- Item 05 -->
+        <article class="grid-item">
+          <div class="item-img-box">
+            <img src="../../../assets/images/Results.png" alt="Results" />
+            <span class="item-num">05</span>
+          </div>
+          <div class="item-details">
+            <h3 class="item-title">Results</h3>
+            <p class="item-desc">Take tests and Assignments, view your scores, and identify your strengths and level of improvement.</p>
+          </div>
+        </article>
+
+        <!-- Item 06 -->
+        <article class="grid-item">
+          <div class="item-img-box">
+            <img src="../../../assets/images/Progress Traacking.png" alt="Progress Tracking" />
+            <span class="item-num">06</span>
+          </div>
+          <div class="item-details">
+            <h3 class="item-title">Progress Tracking</h3>
+            <p class="item-desc">Monitor your course completion, assignment performance, and overall learning progress.</p>
+          </div>
+        </article>
+
+        <!-- Item 07 -->
+        <article class="grid-item">
+          <div class="item-img-box">
+            <img src="../../../assets/images/Leader_board.png" alt="Leaderboard" />
+            <span class="item-num">07</span>
+          </div>
+          <div class="item-details">
+            <h3 class="item-title">Leaderboard</h3>
+            <p class="item-desc">Challenge yourself and see where you rank among your peers.</p>
+          </div>
+        </article>
+
+        <!-- Item 08 -->
+        <article class="grid-item">
+          <div class="item-img-box">
+            <img src="../../../assets/images/Certificate.png" alt="Certification" />
+            <span class="item-num">08</span>
+          </div>
+          <div class="item-details">
+            <h3 class="item-title">Certification</h3>
+            <p class="item-desc">Complete your courses and earn certificates that validate your achievements.</p>
+          </div>
+        </article>
+
+        <!-- Item 09 -->
+        <article class="grid-item">
+          <div class="item-img-box">
+            <img src="../../../assets/images/Support.png" alt="Student Support" />
+            <span class="item-num">09</span>
+          </div>
+          <div class="item-details">
+            <h3 class="item-title">Student Support</h3>
+            <p class="item-desc">Get assistance when needed to ensure a smooth learning journey.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         STUDENT LEARNING PLATFORM
+    ========================================================= -->
+    <section class="learning-section">
+      <div class="learning-container">
+
+        <!-- LEFT CONTENT -->
+        <div class="learning-content">
+
+          <span class="eyebrow">The Platform</span>
+
+          <h2 class="learning-title">
+            Student Learning &amp; Assignment Platform
+          </h2>
+
+          <p class="learning-description">
+            A digital learning platform designed to help students access courses,
+            learn concepts, practice programming, complete assignments, and track
+            their learning progress in one place.
+          </p>
+
+          <ul class="learning-features">
+
+            <li>
+              <strong>My Learning</strong>
+              <span>Access assigned courses, domains, and learning materials from one dashboard.</span>
+            </li>
+
+            <li>
+              <strong>Interactive Courses</strong>
+              <span>Learn through structured courses with rich and engaging content.</span>
+            </li>
+
+            <li>
+              <strong>Programming Assignments</strong>
+              <span>Practice coding with support for multiple programming languages.</span>
+            </li>
+
+            <li>
+              <strong>Assignment Management</strong>
+              <span>View, start, complete, and submit course assignments.</span>
+            </li>
+
+            <li>
+              <strong>Self-Paced Learning</strong>
+              <span>Learn and complete assignments at your own pace.</span>
+            </li>
+
+            <li>
+              <strong>Assignment Tracking</strong>
+              <span>Keep track of submitted, pending, and completed assignments.</span>
+            </li>
+
+            <li>
+              <strong>Coding Practice</strong>
+              <span>Write and run code while solving programming assignments.</span>
+            </li>
+
+            <li>
+              <strong>Student Progress</strong>
+              <span>Monitor assignment completion, scores, and overall learning progress.</span>
+            </li>
+
+            <li>
+              <strong>Certificates</strong>
+              <span>Access certificates for eligible completed courses or learning programs.</span>
+            </li>
+
+            <li>
+              <strong>Help &amp; Support</strong>
+              <span>Get assistance with learning, assignments, and platform-related issues.</span>
+            </li>
+
+          </ul>
+
+        </div>
+
+        <!-- RIGHT IMAGE -->
+        <div class="learning-image-wrapper">
+          <div class="learning-image-frame">
+            <img
+              src="../../../assets/images/studentassignment.png"
+              alt="Student learning"
+              class="learning-image"
+            />
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         STATISTICS
+    ========================================================= -->
+    <section class="stats-section" #statsSection>
+      <div class="stats-overlay"></div>
+
+      <div class="stats-container">
+
+        @for (stat of stats; track stat.label; let i = $index) {
+          <div class="stat-item">
+            <h2>{{ statCounts()[i] }}+</h2>
+            <p>{{ stat.label }}</p>
+          </div>
+        }
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         CLIENTS & COLLABORATIONS
+    ========================================================= -->
+    <section class="clients-section">
+
+      <div class="section-header">
+        <span class="eyebrow">Partners</span>
+        <h2 class="section-title">Our Clients &amp; Collaborations</h2>
+        <p class="section-subtitle">
+          Trusted by businesses, strengthened through collaboration.
+        </p>
+      </div>
+
+      <div class="collaboration-container">
+
+        <div class="partner-logo-card">
+          <img
+            src="../../../assets/images/Rvs_college.png"
+            alt="RVS College of Engineering and Technology"
+            loading="lazy"
+          />
+        </div>
+
+        <div class="partner-logo-card">
+          <img
+            src="../../../assets/images/Hindusthan_college.png"
+            alt="Hindusthan Institute of Technology"
+            loading="lazy"
+          />
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================================================
+       FOOTER
+  ========================================================= -->
+  <footer id="contact" class="site-footer scroll-target">
+
+    <!-- Top CTA -->
+    <div class="footer-cta">
+      <div class="footer-cta-content">
+        <div>
+
+          <h2 class="footer-cta-title">
+            Build your skills. Shape your future.
+          </h2>
+
+          <p class="footer-cta-text">
+            Learn through practical courses, coding practice,
+            assignments and industry-focused experiences.
+          </p>
+        </div>
+
+        <a href="/auth/college" class="footer-cta-btn">
+          Get Started
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+
+
+    <!-- Main Footer -->
+    <div class="footer-main">
+
+      <!-- Brand -->
+      <div class="footer-brand">
+
+        <a href="#home"
+           class="footer-logo"
+           (click)="scrollToSection('home', $event)">
+
+          <img
+            src="../../../assets/TCN_logo.jpeg"
+            alt="Technex Cloud Networks Logo"
+            class="footer-logo-img"
+          />
+
+          <div class="footer-brand-name">
+            <strong>Technex Cloud Networks</strong>
+            <span>Pvt Ltd</span>
+          </div>
+
+        </a>
+
+        <p class="footer-brand-description">
+          Bridging the gap between education and technology through
+          domain-based training, industry-ready courses and
+          hands-on learning experiences.
+        </p>
+
+        <ul class="footer-contact">
+
+          <li>
+            <a [attr.href]="'mailto:' + contact.email">
+              <span class="footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+              </span>
+              <span>
+                <small>Email</small>
+                {{ contact.email }}
+              </span>
+            </a>
+          </li>
+
+          <li>
+            <a [attr.href]="phoneHref">
+              <span class="footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.95.68l1.5 4.49a1 1 0 01-.5 1.21l-2.26 1.13a11.04 11.04 0 005.52 5.52l1.13-2.26a1 1 0 011.21-.5l4.49 1.5a1 1 0 01.68.95V19a2 2 0 01-2 2h-1C9.72 21 3 14.28 3 6V5z"></path>
+                </svg>
+              </span>
+              <span>
+                <small>Phone</small>
+                {{ contact.phone }}
+              </span>
+            </a>
+          </li>
+
+        </ul>
+
+        <div class="footer-status">
+          <span class="footer-status-dot"></span>
+          <span>Learning platform available 24/7</span>
+        </div>
+
+      </div>
+
+
+      <!-- Quick Links -->
+      <div class="footer-col">
+
+        <h4 class="footer-heading">Explore</h4>
+
+        <ul class="footer-links">
+
+          @for (link of navLinks; track link.id) {
+            <li>
+              <a
+                [attr.href]="'#' + link.id"
+                (click)="scrollToSection(link.id, $event)"
+              >
+                <span>{{ link.label }}</span>
+                <span class="footer-link-arrow">→</span>
+              </a>
+            </li>
+          }
+
+        </ul>
+
+      </div>
+
+
+      <!-- Platform -->
+      <div class="footer-col">
+
+        <h4 class="footer-heading">Platform</h4>
+
+        <ul class="footer-links">
+
+          <li>
+            <a href="#process" (click)="scrollToSection('process', $event)">
+              <span>Domain-Based Training</span>
+              <span class="footer-link-arrow">→</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#process" (click)="scrollToSection('process', $event)">
+              <span>Industry-Ready Courses</span>
+              <span class="footer-link-arrow">→</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#process" (click)="scrollToSection('process', $event)">
+              <span>Assignments</span>
+              <span class="footer-link-arrow">→</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#process" (click)="scrollToSection('process', $event)">
+              <span>Coding Practice</span>
+              <span class="footer-link-arrow">→</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#process" (click)="scrollToSection('process', $event)">
+              <span>Progress Tracking</span>
+              <span class="footer-link-arrow">→</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#process" (click)="scrollToSection('process', $event)">
+              <span>Certification</span>
+              <span class="footer-link-arrow">→</span>
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
+
+      <!-- Support -->
+      <div class="footer-col">
+
+        <h4 class="footer-heading">Student Support</h4>
+
+        <div class="footer-support-box">
+
+          <div class="support-icon">
+            ?
+          </div>
+
+          <div>
+            <strong>Need assistance?</strong>
+            <span>We're here to help.</span>
+          </div>
+
+        </div>
+
+        <ul class="footer-links support-links">
+
+          <li>
+            <a href="/auth/college">
+              <span>Login to your account</span>
+              <span class="footer-link-arrow">→</span>
+            </a>
+          </li>
+
+          <li>
+            <span class="support-text">
+              Raise a ticket from your dashboard
+            </span>
+          </li>
+
+          <li class="footer-available">
+            <span class="available-dot"></span>
+            Available 24/7
+          </li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+
+      <div class="footer-bottom-inner">
+
+        <p>
+          © {{ currentYear }}
+          <strong>Technex Cloud Networks Pvt Ltd.</strong>
+          All rights reserved.
+        </p>
+
+        <div class="footer-bottom-links">
+          <span>Education</span>
+          <span class="footer-separator">•</span>
+          <span>Technology</span>
+          <span class="footer-separator">•</span>
+          <span>Innovation</span>
+        </div>
+
+        <a
+          href="#home"
+          class="back-to-top"
+          (click)="scrollToSection('home', $event)"
+        >
+          Back to top
+          <span>↑</span>
+        </a>
+
+      </div>
+
+    </div>
+
+  </footer>
 </div>

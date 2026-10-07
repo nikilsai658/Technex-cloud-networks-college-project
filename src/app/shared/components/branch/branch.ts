@@ -1,9 +1,10 @@
-import {
-  Component,
+import { tokenStorage } from '../../../core/auth/token-storage';
+import { Component,
   OnInit,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
 
 import {
@@ -24,17 +25,26 @@ import { CookieService } from 'ngx-cookie-service';
 import { Auth } from '../../../core/auth/auth';
 import { BranchService } from '../../../features/services/branch/branch-service';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-branch',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, FieldErrorPipe
   ],
   templateUrl: './branch.html',
   styleUrls: ['./branch.css']
 })
 export class Branch implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
 
   branches: any[] = [];
 
@@ -47,6 +57,28 @@ export class Branch implements OnInit {
   selectedBranchId = 0;
 
   showModal = false;
+
+  searchText = '';
+
+  get filteredBranches(): any[] {
+
+    const term = this.searchText.trim().toLowerCase();
+
+    if (!term)
+      return this.branches;
+
+    return this.branches.filter(b =>
+      (b.name ?? '').toString().toLowerCase().includes(term) ||
+      (b.code ?? '').toString().toLowerCase().includes(term)
+    );
+
+  }
+
+  onSearch(event: Event): void {
+
+    this.searchText = (event.target as HTMLInputElement).value;
+
+  }
 
   constructor(
     private api: BranchService,
@@ -62,9 +94,9 @@ export class Branch implements OnInit {
 
     this.branchForm = this.fb.group({
 
-      name: ['', Validators.required],
+      name: ['', [...AppValidators.requiredText, Validators.minLength(2), Validators.maxLength(100), AppValidators.title]],
 
-      code: ['', Validators.required],
+      code: ['', [...AppValidators.requiredText, Validators.minLength(2), Validators.maxLength(30), AppValidators.code]],
 
     });
 
@@ -72,7 +104,7 @@ export class Branch implements OnInit {
       return;
     }
 
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
 
@@ -182,9 +214,9 @@ export class Branch implements OnInit {
 
     this.api.createBranch(this.branchForm.value).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Branch Created Successfully');
+        this.toast.successFrom(res, 'Branch Added Successfully');
 
         this.branchForm.reset();
 
@@ -250,9 +282,9 @@ export class Branch implements OnInit {
 
     ).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Branch Updated Successfully');
+        this.toast.successFrom(res, 'Branch Updated Successfully');
 
         this.branchForm.reset();
 
@@ -280,9 +312,9 @@ export class Branch implements OnInit {
   // Delete Branch
   //=====================================
 
-  deleteBranch(id: number): void {
+  async deleteBranch(id: number): Promise<void> {
 
-    if (!confirm('Are you sure you want to delete this branch?')) {
+    if (!(await this.confirmDialog.confirmDelete('this branch'))) {
 
       return;
 
@@ -290,9 +322,9 @@ export class Branch implements OnInit {
 
     this.api.deleteBranch(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Branch Deleted Successfully');
+        this.toast.successFrom(res, 'Branch Deleted Successfully');
 
         this.loadBranches();
 

@@ -57,6 +57,10 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
   editor: any;
   monaco: any;
 
+  // Fallback when Monaco can't load: a plain textarea bound to this
+  editorFailed = false;
+  fallbackCode = this.getDefaultCode('python');
+
   selectedLanguage = 'python';
 
   stdin = '';
@@ -95,6 +99,16 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
+
+    try {
+      await this.loadMonaco();
+    } catch (error) {
+      console.error('Code editor failed to load:', error);
+      this.editorFailed = true;
+    }
+  }
+
+  private async loadMonaco(): Promise<void> {
 
     this.configureMonacoWorkers();
 
@@ -149,35 +163,62 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges {
 
     this.selectedLanguage = language;
 
-    this.monaco.editor.setModelLanguage(
-      this.editor.getModel(),
-      language
-    );
+    if (this.editor && this.monaco) {
+      this.monaco.editor.setModelLanguage(
+        this.editor.getModel(),
+        language
+      );
+    }
 
-    this.editor.setValue(this.getDefaultCode(language));
+    this.setCode(this.getDefaultCode(language));
   }
 
   resetCode(): void {
 
-    this.editor.setValue(
+    this.setCode(
       this.getDefaultCode(this.selectedLanguage)
     );
   }
 
+  // True once there is something to type into (Monaco or the fallback)
+  get editorReady(): boolean {
+    return !!this.editor || this.editorFailed;
+  }
+
+  private getCode(): string {
+    return this.editor ? this.editor.getValue() : this.fallbackCode;
+  }
+
+  private setCode(code: string): void {
+    if (this.editor) {
+      this.editor.setValue(code);
+    } else {
+      this.fallbackCode = code;
+    }
+  }
+
   onRunClick(): void {
+
+    if (!this.editorReady) {
+      return;
+    }
 
     this.run.emit({
       languageId: this.languageIds[this.selectedLanguage],
-      sourceCode: this.editor.getValue(),
+      sourceCode: this.getCode(),
       stdin: this.stdin.trim() ? this.stdin : null
     });
   }
 
   onSubmitClick(): void {
 
+    if (!this.editorReady) {
+      return;
+    }
+
     this.submit.emit({
       languageId: this.languageIds[this.selectedLanguage],
-      sourceCode: this.editor.getValue(),
+      sourceCode: this.getCode(),
       stdin: this.stdin.trim() ? this.stdin : null
     });
   }

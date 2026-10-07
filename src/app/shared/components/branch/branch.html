@@ -78,6 +78,8 @@
 
         <input
             type="text"
+            [value]="searchText"
+            (input)="onSearch($event)"
             placeholder="Search Branch..."
             class="w-full border rounded-lg p-3">
 
@@ -102,7 +104,8 @@
 
                     <th class="p-4 text-left">Status</th>
 
-                    <th class="p-4 text-center">Actions</th>
+                    <th class="p-4 text-center"
+                        *ngIf="auth.hasPermission('UPDATE_BRANCH') || auth.hasPermission('DELETE_BRANCH')">Actions</th>
 
                 </tr>
 
@@ -111,7 +114,7 @@
             <tbody>
 
                 <tr
-                    *ngFor="let branch of branches; let i=index"
+                    *ngFor="let branch of filteredBranches; let i=index"
                     class="border-b hover:bg-gray-50 transition-colors">
 
                     <td class="p-4">
@@ -119,7 +122,7 @@
                     </td>
 
                     <td class="p-4 font-semibold">
-                        {{branch.name}}
+                        <span appEllipsis>{{ branch.name }}</span>
                     </td>
 
                     <td class="p-4">
@@ -136,7 +139,8 @@
 
                     </td>
 
-                    <td class="p-4">
+                    <td class="p-4"
+                        *ngIf="auth.hasPermission('UPDATE_BRANCH') || auth.hasPermission('DELETE_BRANCH')">
 
                         <div class="flex justify-center gap-2">
 
@@ -166,8 +170,8 @@
 
                 </tr>
 
-                <tr *ngIf="!branches || branches.length === 0">
-                    <td colspan="6" class="p-6 text-center text-gray-400">
+                <tr *ngIf="filteredBranches.length === 0">
+                    <td [attr.colspan]="(auth.hasPermission('UPDATE_BRANCH') || auth.hasPermission('DELETE_BRANCH')) ? 5 : 4" class="p-6 text-center text-gray-400">
                         No branches found.
                     </td>
                 </tr>
@@ -216,7 +220,7 @@
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
                     <p class="text-xs text-red-500 mt-1"
                        *ngIf="branchForm.get('name')?.invalid && branchForm.get('name')?.touched">
-                        Branch name is required
+                        {{ branchForm.get('name') | fieldError:'Branch name' }}
                     </p>
                 </div>
 
@@ -231,7 +235,7 @@
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
                     <p class="text-xs text-red-500 mt-1"
                        *ngIf="branchForm.get('code')?.invalid && branchForm.get('code')?.touched">
-                        Branch code is required
+                        {{ branchForm.get('code') | fieldError:'Branch code' }}
                     </p>
                 </div>
 

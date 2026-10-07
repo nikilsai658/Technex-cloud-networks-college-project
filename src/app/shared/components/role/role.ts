@@ -1,9 +1,10 @@
-import {
-  Component,
+import { tokenStorage } from '../../../core/auth/token-storage';
+import { Component,
   OnInit,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
 
 import {
@@ -24,17 +25,26 @@ import { CookieService } from 'ngx-cookie-service';
 import { Auth } from '../../../core/auth/auth';
 import { RoleService } from '../../../features/services/role/role-service';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-role',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, FieldErrorPipe
   ],
   templateUrl: './role.html',
   styleUrls: ['./role.css']
 })
 export class Role implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
 
   roles: any[] = [];
 
@@ -58,7 +68,7 @@ export class Role implements OnInit {
 
     // Initialize form here
    this.roleForm = this.fb.group({
-  name: ['', Validators.required],
+  name: ['', [...AppValidators.requiredText, Validators.minLength(2), Validators.maxLength(100), AppValidators.title]],
   requiresCollege: [true],
   requiresDepartment: [true],
   requiresBranch: [true],
@@ -73,7 +83,7 @@ export class Role implements OnInit {
       return;
     }
 
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
       this.router.navigate(['/auth/login']);
@@ -81,7 +91,7 @@ export class Role implements OnInit {
     }
 
     if (!this.auth.hasPermission('VIEW_ROLE')) {
-      alert('You do not have permission to view Roles.');
+      this.toast.error('You do not have permission to view Roles.');
       this.router.navigate(['/dashboard']);
       return;
     }
@@ -129,7 +139,7 @@ export class Role implements OnInit {
   openAddModal(): void {
 
     if (!this.auth.hasPermission('CREATE_ROLE')) {
-      alert('You do not have permission to create Role.');
+      this.toast.error('You do not have permission to create Role.');
       return;
     }
 
@@ -154,7 +164,7 @@ export class Role implements OnInit {
   createRole(): void {
 
     if (!this.auth.hasPermission('CREATE_ROLE')) {
-      alert('You do not have permission to create Role.');
+      this.toast.error('You do not have permission to create Role.');
       return;
     }
 
@@ -165,9 +175,9 @@ export class Role implements OnInit {
 
     this.api.createRole(this.roleForm.value).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Role Created Successfully');
+        this.toast.successFrom(res, 'Role Added Successfully');
 
         this.resetForm();
 
@@ -190,7 +200,7 @@ export class Role implements OnInit {
   editRole(role: any): void {
 
     if (!this.auth.hasPermission('UPDATE_ROLE')) {
-      alert('You do not have permission to edit Role.');
+      this.toast.error('You do not have permission to edit Role.');
       return;
     }
 
@@ -200,7 +210,7 @@ export class Role implements OnInit {
 
     this.roleForm.patchValue({
 
-      roleName: role.roleName,
+      name: role.name ?? role.roleName ?? '',
       requiresCollege: role.requiresCollege,
       requiresDepartment: role.requiresDepartment,
       requiresBranch: role.requiresBranch,
@@ -219,7 +229,7 @@ export class Role implements OnInit {
   updateRole(): void {
 
     if (!this.auth.hasPermission('UPDATE_ROLE')) {
-      alert('You do not have permission to update Role.');
+      this.toast.error('You do not have permission to update Role.');
       return;
     }
 
@@ -233,9 +243,9 @@ export class Role implements OnInit {
       this.roleForm.value
     ).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Role Updated Successfully');
+        this.toast.successFrom(res, 'Role Updated Successfully');
 
         this.resetForm();
 
@@ -255,22 +265,22 @@ export class Role implements OnInit {
   // Delete Role
   //==============================
 
-  deleteRole(id: number): void {
+  async deleteRole(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_ROLE')) {
-      alert('You do not have permission to delete Role.');
+      this.toast.error('You do not have permission to delete Role.');
       return;
     }
 
-    if (!confirm('Are you sure you want to delete this Role?')) {
+    if (!(await this.confirmDialog.confirmDelete('this role'))) {
       return;
     }
 
     this.api.deleteRole(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Role Deleted Successfully');
+        this.toast.successFrom(res, 'Role Deleted Successfully');
 
         this.loadRoles();
 
@@ -292,7 +302,7 @@ export class Role implements OnInit {
 
     this.roleForm.reset({
 
-      roleName: '',
+      name: '',
       requiresCollege: true,
       requiresDepartment: true,
       requiresBranch: true,

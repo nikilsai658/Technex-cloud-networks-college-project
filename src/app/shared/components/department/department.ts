@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, Inject, PLATFORM_ID  } from '@angular/core';
+import { tokenStorage } from '../../../core/auth/token-storage';
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DepartmentService } from '../../../features/services/department/department-service';
 import { Router } from '@angular/router';
@@ -6,14 +7,23 @@ import { Auth } from '../../../core/auth/auth';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-department',
   standalone:true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [Ellipsis, CommonModule,ReactiveFormsModule, FieldErrorPipe],
   templateUrl: './department.html',
   styleUrl: './department.css',
 })
 export class Department {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
     departments: any[] = [];
 
   departmentForm!: FormGroup;
@@ -40,8 +50,8 @@ export class Department {
   ngOnInit(): void {
 
     this.departmentForm = this.fb.group({
-      name: ['', Validators.required],
-      code: ['', Validators.required]
+      name: ['', [...AppValidators.requiredText, Validators.minLength(2), Validators.maxLength(100), AppValidators.title]],
+      code: ['', [...AppValidators.requiredText, Validators.minLength(2), Validators.maxLength(30), AppValidators.code]]
     });
 
     if (!isPlatformBrowser(this.platformId)) {
@@ -49,7 +59,7 @@ export class Department {
     }
 
     // Check login
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
       this.router.navigate(['/auth/login']);
@@ -158,7 +168,7 @@ loadDepartments(): void {
 
         console.log(res);
 
-        alert('Department Created Successfully');
+        this.toast.successFrom(res, 'Department Added Successfully');
 
         this.departmentForm.reset();
 
@@ -221,9 +231,9 @@ loadDepartments(): void {
 
     ).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Department Updated Successfully');
+        this.toast.successFrom(res, 'Department Updated Successfully');
 
         this.departmentForm.reset();
 
@@ -251,17 +261,17 @@ loadDepartments(): void {
   // Delete
   //=====================================
 
-  deleteDepartment(id: number): void {
+  async deleteDepartment(id: number): Promise<void> {
 
-    if (!confirm('Are you sure you want to delete this department?')) {
+    if (!(await this.confirmDialog.confirmDelete('this department'))) {
       return;
     }
 
     this.api.deleteDepartment(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Department Deleted Successfully');
+        this.toast.successFrom(res, 'Department Deleted Successfully');
 
         this.loadDepartments();
 

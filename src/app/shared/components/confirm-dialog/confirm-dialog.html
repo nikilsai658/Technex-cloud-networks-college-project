@@ -1,0 +1,50 @@
+@if (confirm.state(); as s) {
+
+  <div class="confirm-backdrop" (click)="confirm.close(false)">
+
+    <div
+      class="confirm-card"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="confirm-title"
+      aria-describedby="confirm-message"
+      (click)="$event.stopPropagation()">
+
+      <div class="confirm-icon" [class.confirm-icon-danger]="s.tone === 'danger'">
+        @if (s.tone === 'danger') {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.87 12.14A2 2 0 0116.13 21H7.87a2 2 0 01-1.99-1.86L5 7m5 4v6m4-6v6M4 7h16M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"></path>
+          </svg>
+        } @else {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
+          </svg>
+        }
+      </div>
+
+      <h2 id="confirm-title" class="confirm-title">{{ s.title }}</h2>
+      <p id="confirm-message" class="confirm-message">{{ s.message }}</p>
+
+      <div class="confirm-actions">
+        <button
+          #cancelButton
+          type="button"
+          class="confirm-btn confirm-btn-cancel"
+          (click)="confirm.close(false)">
+          {{ s.cancelLabel }}
+        </button>
+
+        <button
+          type="button"
+          class="confirm-btn confirm-btn-ok"
+          [class.confirm-btn-danger]="s.tone === 'danger'"
+          (click)="confirm.close(true)">
+          {{ s.okLabel }}
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+}

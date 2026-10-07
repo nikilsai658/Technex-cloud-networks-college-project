@@ -106,12 +106,12 @@
 
                         <!-- Student Email -->
                         <td class="px-5 py-4">
-                            {{ item.email }}
+                            <span appEllipsis>{{ item.email }}</span>
                         </td>
 
                         <!-- Domain -->
                         <td class="px-5 py-4 font-semibold">
-                            {{ item.domainName }}
+                            <span appEllipsis>{{ item.domainName }}</span>
                         </td>
 
                         <!-- Actions -->
@@ -265,13 +265,13 @@
                         Student Email
                     </label>
                     <input
-                        type="text"
+                        type="email"
                         formControlName="studentEmail"
                         placeholder="student@example.com"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
                     <p class="text-xs text-red-500 mt-1"
                        *ngIf="submitted && studentDomainForm.get('studentEmail')?.invalid">
-                        Student email is required
+                        {{ studentDomainForm.get('studentEmail') | fieldError:'Student email' }}
                     </p>
                 </div>
 

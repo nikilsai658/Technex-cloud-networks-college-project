@@ -15,6 +15,7 @@ export class StudentAssignments implements OnInit {
   domainId!: number;
   courseId!: number;
   assignments:any[]=[];
+  loading = true;
   constructor(private route: ActivatedRoute,private api:Student,private cd:ChangeDetectorRef, private router:Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
@@ -25,13 +26,17 @@ export class StudentAssignments implements OnInit {
     }
   }
   loadAssignments():void{
+   this.loading = true;
    this.api.getstudentcourseById(this.domainId, this.courseId).subscribe({
     next:(res:any)=>{
       console.log(res.data)
         this.assignments=res?.data??[];
+        this.loading = false;
         this.cd.detectChanges();
     },error:(err:any)=>{
        this.assignments = [];
+       this.loading = false;
+       this.cd.detectChanges();
        console.log(err);
     }
    })

@@ -3,10 +3,11 @@ import { Student } from '../../../features/services/student/student';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Ellipsis } from '../../directives/ellipsis';
 
 @Component({
   selector: 'app-student-courses',
-  imports: [CommonModule,FormsModule,ReactiveFormsModule],
+  imports: [Ellipsis, CommonModule,FormsModule,ReactiveFormsModule],
   templateUrl: './student-courses.html',
   styleUrl: './student-courses.css',
 })

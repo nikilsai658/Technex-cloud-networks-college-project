@@ -48,7 +48,8 @@
 
             <th class="p-3 text-sm font-semibold text-center">Year</th>
 
-            <th class="p-3 text-sm font-semibold text-center">Actions</th>
+            <th class="p-3 text-sm font-semibold text-center"
+                *ngIf="auth.hasPermission('UPDATE_ROLE') || auth.hasPermission('DELETE_ROLE')">Actions</th>
 
           </tr>
 
@@ -61,7 +62,7 @@
             class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
 
             <td class="p-3 font-medium text-gray-800">
-              {{ role.name }}
+              <span appEllipsis>{{ role.name }}</span>
             </td>
 
             <td class="text-center p-3">
@@ -108,7 +109,8 @@
 
             </td>
 
-            <td class="p-3">
+            <td class="p-3"
+                *ngIf="auth.hasPermission('UPDATE_ROLE') || auth.hasPermission('DELETE_ROLE')">
 
               <div class="flex justify-center gap-2">
 
@@ -139,7 +141,7 @@
           <tr *ngIf="roles.length === 0">
 
             <td
-              colspan="6"
+              [attr.colspan]="(auth.hasPermission('UPDATE_ROLE') || auth.hasPermission('DELETE_ROLE')) ? 6 : 5"
               class="p-6 text-center text-gray-400">
 
               No Roles Found
@@ -198,7 +200,7 @@
             class="text-xs text-red-500 mt-1"
             *ngIf="roleForm.get('name')?.invalid && roleForm.get('name')?.touched">
 
-            Role Name is required.
+            {{ roleForm.get('name') | fieldError:'Role name' }}
 
           </p>
 

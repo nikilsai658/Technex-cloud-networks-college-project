@@ -3,8 +3,11 @@ import {
   OnInit,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
 
 import {
   CommonModule,
@@ -25,11 +28,12 @@ import { Auth } from '../../../core/auth/auth';
 import { CollegedepartService } from '../../../features/services/collegedepartment/collegedepart-service';
 import { CollegeService } from '../../../features/services/college/college-service';
 import { DepartmentService } from '../../../features/services/department/department-service';
+import { Ellipsis } from '../../directives/ellipsis';
 
 @Component({
   selector: 'app-collegedepartment',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
@@ -38,6 +42,9 @@ import { DepartmentService } from '../../../features/services/department/departm
   styleUrls: ['./collegedepartment.css']
 })
 export class CollegeDepartmentComponent implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
 
   collegeDepartmentForm!: FormGroup;
 
@@ -267,7 +274,9 @@ loadDepartments(): void {
         .pipe(finalize(() => this.loading = false))
         .subscribe({
 
-          next: () => {
+          next: (res: any) => {
+
+            this.toast.successFrom(res, 'College Department Updated Successfully');
 
             this.loadMappings();
 
@@ -284,7 +293,9 @@ loadDepartments(): void {
         .pipe(finalize(() => this.loading = false))
         .subscribe({
 
-          next: () => {
+          next: (res: any) => {
+
+            this.toast.successFrom(res, 'College Department Added Successfully');
 
             this.loadMappings();
 
@@ -322,17 +333,19 @@ edit(item: any) {
   //==========================
   // DELETE
   //==========================
-delete(id: number) {
+async delete(id: number): Promise<void> {
 
   if (!this.auth.hasPermission('DELETE_COLLEGE_DEPARTMENT')) {
     return;
   }
 
-  if (!confirm('Delete this mapping?')) return;
+  if (!(await this.confirmDialog.confirmDelete('this mapping'))) return;
 
   this.collegeDepartmentService.deleteCollegedepartment(id)
     .subscribe({
-      next: () => {
+      next: (res: any) => {
+
+        this.toast.successFrom(res, 'College Department Deleted Successfully');
         this.loadMappings();
       }
     });
@@ -350,7 +363,14 @@ delete(id: number) {
 
     this.selectedId = null;
 
-    this.collegeDepartmentForm.reset();
+    // Reset to '' (not null) so the "Select ..." placeholder option is shown
+    this.collegeDepartmentForm.reset({
+
+      collegeName: '',
+
+      departmentName: ''
+
+    });
 
   }
 

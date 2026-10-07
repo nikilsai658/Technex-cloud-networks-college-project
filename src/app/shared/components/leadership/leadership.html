@@ -288,7 +288,9 @@
         <input
           type="text"
           class="student-search"
-          placeholder="Search student or roll #..." />
+          placeholder="Search student or roll #..."
+          [value]="searchText"
+          (input)="onSearch($event)" />
 
         <span class="student-count">
           {{ leaderboard?.length || 0 }} Enrolled
@@ -306,7 +308,7 @@
 
     <div
       class="table-container"
-      *ngIf="leaderboard && leaderboard.length > 0">
+      *ngIf="filteredLeaderboard.length > 0">
 
       <table class="leaderboard-table">
 
@@ -342,7 +344,7 @@
         <tbody>
 
           <tr
-            *ngFor="let student of leaderboard"
+            *ngFor="let student of filteredLeaderboard"
             class="leaderboard-row"
             [class.current-student]="student.rank === myRank">
 
@@ -389,11 +391,11 @@
 
                 <div class="student-details">
 
-                  <p class="student-name">
+                  <p class="student-name" appEllipsis>
                     {{ student.studentName }}
                   </p>
 
-                  <p class="student-label">
+                  <p class="student-label" appEllipsis>
                     {{ student.email || 'Student' }}
                     <span *ngIf="student.rollNumber">
                       • {{ student.rollNumber }}
@@ -488,6 +490,20 @@
 
       <p>
         Student rankings will appear here once performance data is available.
+      </p>
+
+    </div>
+
+    <div
+      class="empty-state"
+      *ngIf="leaderboard.length > 0 && filteredLeaderboard.length === 0">
+
+      <h3>
+        No matching students
+      </h3>
+
+      <p>
+        No student matches "{{ searchText }}".
       </p>
 
     </div>

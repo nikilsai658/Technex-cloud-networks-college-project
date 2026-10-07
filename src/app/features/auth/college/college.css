@@ -1,36 +1,136 @@
 @reference "../../../../styles.css";
+
+:host {
+    @apply block w-full;
+}
+
 .main-container {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center; /* Vertical center */
     align-items: center;     /* Horizontal center */
+    padding: 32px 16px;
+    background: #f4f4f5; /* neutral grey, no blue tint */
+}
+
+/* Card framing the existing content; brand-coloured bar along the top */
+.college-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    gap: 12px;
+    gap: 6px;
+    width: 100%;
+    max-width: 500px;
+    padding: 44px 44px 48px;
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-top: 4px solid #2F3E46;
+    border-radius: 18px;
+    box-shadow:
+        0 1px 2px rgba(24, 24, 27, 0.04),
+        0 18px 40px -12px rgba(24, 24, 27, 0.16);
+}
+
+@media (max-width: 480px) {
+    .college-card {
+        padding: 32px 22px 34px;
+        border-radius: 16px;
+    }
+}
+
+/* Shared logo component */
+.main-container ::ng-deep .logo {
+    margin-bottom: 14px;
+}
+
+.main-container ::ng-deep .logo img {
+    @apply mx-auto block h-20 w-20 rounded-2xl object-cover
+           shadow-lg shadow-slate-300/70 ring-1 ring-slate-200;
 }
 
 .companyname {
     color: #2F3E46;
-    @apply text-3xl font-bold;
+    @apply text-2xl font-extrabold leading-tight tracking-tight
+           sm:text-3xl;
     margin: 0;
+    text-wrap: balance;
+}
+
+/* "Pvt Ltd" line under the company name */
+span.companyname {
+    @apply text-xs font-semibold uppercase tracking-[0.3em]
+           text-slate-500 sm:text-sm;
 }
 
 .form-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    margin-top: 20px;
+    align-items: stretch;
+    gap: 14px;
+    width: 100%;
+    max-width: 350px;
+    margin-top: 26px;
+    padding-top: 26px;
+    border-top: 1px solid #e4e4e7;
 }
 
 .country-select {
-    width: 320px;
+    width: 100%;
+}
+
+:host ::ng-deep .p-floatlabel {
+    @apply block w-full text-left;
+}
+
+:host ::ng-deep .p-floatlabel label {
+    @apply font-medium text-slate-500;
+}
+
+/* PrimeNG Select */
+:host ::ng-deep .p-select {
+    @apply min-h-12 w-full items-center rounded-xl border-slate-300
+           bg-white text-left shadow-sm transition-all duration-300;
+}
+
+:host ::ng-deep .p-select:not(.p-disabled):hover {
+    border-color: #2F3E46;
+}
+
+:host ::ng-deep .p-select:not(.p-disabled).p-focus {
+    border-color: #2F3E46;
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
 }
 
 /* PrimeNG Button */
-:host ::ng-deep .p-button {
-    @apply w-[350px] h-12 rounded-lg bg-[#2f3e46f6] font-bold border-none;
+:host ::ng-deep p-button {
+    @apply block w-full;
 }
-:host ::ng-deep .p-button:hover{
-    @apply bg-[#2f3e46] border-none;
+
+:host ::ng-deep .p-button {
+    @apply h-12 w-full rounded-xl border-none bg-[#2f3e46] font-bold
+           tracking-wide shadow-md shadow-slate-300/70
+           transition-all duration-300;
+}
+
+:host ::ng-deep .p-button:not(:disabled):hover {
+    @apply -translate-y-0.5 border-none bg-[#24313a]
+           shadow-lg shadow-slate-400/50;
+}
+
+:host ::ng-deep .p-button:focus-visible {
+    outline: 2px solid #0891b2;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :host ::ng-deep .p-button,
+    :host ::ng-deep .p-select {
+        transition: none;
+    }
+
+    :host ::ng-deep .p-button:not(:disabled):hover {
+        transform: none;
+    }
 }

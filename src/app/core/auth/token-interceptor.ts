@@ -1,12 +1,9 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
+import { tokenStorage } from './token-storage';
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
-  const cookie = inject(CookieService);
-
-  const token = cookie.get('token');
+  const token = tokenStorage.getAccess();
 
   if (token) {
     req = req.clone({

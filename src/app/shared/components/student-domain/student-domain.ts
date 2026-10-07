@@ -2,11 +2,12 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Student } from '../../../features/services/student/student';
 import { Router } from '@angular/router';
+import { Ellipsis } from '../../directives/ellipsis';
 
 @Component({
   selector: 'app-student-domain',
   standalone: true,
-  imports: [CommonModule],
+  imports: [Ellipsis, CommonModule],
   templateUrl: './student-domain.html',
   styleUrl: './student-domain.css',
   changeDetection:ChangeDetectionStrategy.OnPush

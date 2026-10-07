@@ -3,8 +3,11 @@ import {
   OnInit,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
 
 import {
   CommonModule
@@ -27,11 +30,12 @@ import { Auth } from '../../../core/auth/auth';
 import { RoleService } from '../../../features/services/role/role-service';
 import { PermissionService } from '../../../features/services/permission/permission-service';
 import { RolepermissionService } from '../../../features/services/rolepermission/rolepermission-service';
+import { Ellipsis } from '../../directives/ellipsis';
 
 @Component({
   selector: 'app-rolepermission',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
@@ -41,6 +45,9 @@ import { RolepermissionService } from '../../../features/services/rolepermission
   styleUrls: ['./rolepermission.css']
 })
 export class RolePermissionComponent implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
 
   rolePermissionForm!: FormGroup;
 
@@ -271,7 +278,9 @@ export class RolePermissionComponent implements OnInit {
       .pipe(finalize(() => this.loading = false))
       .subscribe({
 
-        next: () => {
+        next: (res: any) => {
+
+          this.toast.successFrom(res, 'Role Permission Added Successfully');
 
           this.loadMappings();
 
@@ -287,17 +296,19 @@ export class RolePermissionComponent implements OnInit {
   // DELETE
   //=====================================
 
-  delete(id: number): void {
+  async delete(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_ROLE_PERMISSION')) return;
 
-    if (!confirm('Delete this mapping?')) return;
+    if (!(await this.confirmDialog.confirmDelete('this mapping'))) return;
 
     this.rolePermissionService
       .deleteRolepermission(id)
       .subscribe({
 
-        next: () => {
+        next: (res: any) => {
+
+          this.toast.successFrom(res, 'Role Permission Deleted Successfully');
 
           this.loadMappings();
 

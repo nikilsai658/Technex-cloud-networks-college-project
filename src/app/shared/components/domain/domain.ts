@@ -1,9 +1,10 @@
-import {
-  Component,
+import { tokenStorage } from '../../../core/auth/token-storage';
+import { Component,
   OnInit,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
 
 import {
@@ -24,17 +25,26 @@ import { CookieService } from 'ngx-cookie-service';
 import { Auth } from '../../../core/auth/auth';
 import { DomainServices } from '../../../features/services/domain/domain-services';
 
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
+import { AppValidators } from '../../validators/app-validators';
+import { FieldErrorPipe } from '../../validators/field-error.pipe';
+import { Ellipsis } from '../../directives/ellipsis';
 @Component({
   selector: 'app-domain',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, FieldErrorPipe
   ],
   templateUrl: './domain.html',
   styleUrls: ['./domain.css']
 })
 export class DomainComponent implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
+
 
   domains: any[] = [];
 
@@ -61,16 +71,16 @@ export class DomainComponent implements OnInit {
   ngOnInit(): void {
 
     this.domainForm = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      eligibleFromYear: [1, Validators.required],
-      eligibleToYear: [1, Validators.required],
+      name: ['', [...AppValidators.requiredText, Validators.minLength(2), Validators.maxLength(100), AppValidators.title]],
+      description: ['', [...AppValidators.requiredText, Validators.minLength(10), Validators.maxLength(1000)]],
+      eligibleFromYear: [1, [Validators.required, Validators.min(1), Validators.max(4), AppValidators.integer]],
+      eligibleToYear: [1, [Validators.required, Validators.min(1), Validators.max(4), AppValidators.integer]],
       isActive: [true]
-    });
+    }, { validators: AppValidators.range('eligibleFromYear', 'eligibleToYear') });
 
     if (!isPlatformBrowser(this.platformId)) return;
 
-    const token = this.cookie.get('token');
+    const token = tokenStorage.getAccess();
 
     if (!token) {
       this.router.navigate(['/auth/login']);
@@ -126,7 +136,7 @@ export class DomainComponent implements OnInit {
   openAddModal(): void {
 
     if (!this.auth.hasPermission('CREATE_DOMAIN')) {
-      alert('Permission denied');
+      this.toast.error('Permission denied');
       return;
     }
 
@@ -151,7 +161,7 @@ export class DomainComponent implements OnInit {
   createDomain(): void {
 
     if (!this.auth.hasPermission('CREATE_DOMAIN')) {
-      alert('Permission denied');
+      this.toast.error('Permission denied');
       return;
     }
 
@@ -162,9 +172,9 @@ export class DomainComponent implements OnInit {
 
     this.api.createDomain(this.domainForm.value).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Domain Created Successfully');
+        this.toast.successFrom(res, 'Domain Added Successfully');
 
         this.resetForm();
 
@@ -189,7 +199,7 @@ export class DomainComponent implements OnInit {
   editDomain(domain: any): void {
 
     if (!this.auth.hasPermission('UPDATE_DOMAIN')) {
-      alert('Permission denied');
+      this.toast.error('Permission denied');
       return;
     }
 
@@ -218,7 +228,7 @@ export class DomainComponent implements OnInit {
   updateDomain(): void {
 
     if (!this.auth.hasPermission('UPDATE_DOMAIN')) {
-      alert('Permission denied');
+      this.toast.error('Permission denied');
       return;
     }
 
@@ -232,9 +242,9 @@ export class DomainComponent implements OnInit {
       this.domainForm.value
     ).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Domain Updated Successfully');
+        this.toast.successFrom(res, 'Domain Updated Successfully');
 
         this.resetForm();
 
@@ -256,20 +266,20 @@ export class DomainComponent implements OnInit {
   // DELETE
   //=============================
 
-  deleteDomain(id: number): void {
+  async deleteDomain(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_DOMAIN')) {
-      alert('Permission denied');
+      this.toast.error('Permission denied');
       return;
     }
 
-    if (!confirm('Delete this Domain?')) return;
+    if (!(await this.confirmDialog.confirmDelete('this domain'))) return;
 
     this.api.deleteDomain(id).subscribe({
 
-      next: () => {
+      next: (res: any) => {
 
-        alert('Deleted Successfully');
+        this.toast.successFrom(res, 'Deleted Successfully');
 
         this.loadDomains();
 

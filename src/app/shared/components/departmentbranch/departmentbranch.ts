@@ -3,8 +3,11 @@ import {
   OnInit,
   ChangeDetectorRef,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  inject
 } from '@angular/core';
+import { ToastService } from '../../../core/toast/toast-service';
+import { ConfirmService } from '../../../core/confirm/confirm-service';
 
 import {
   CommonModule
@@ -26,11 +29,12 @@ import { Auth } from '../../../core/auth/auth';
 import { DepartmentService } from '../../../features/services/department/department-service';
 import { BranchService } from '../../../features/services/branch/branch-service';
 import { DeptbranchService} from '../../../features/services/departmentbranch/deptbranch-service';
+import { Ellipsis } from '../../directives/ellipsis';
 
 @Component({
   selector: 'app-departmentbranch',
   standalone: true,
-  imports: [
+  imports: [Ellipsis, 
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
@@ -40,6 +44,9 @@ import { DeptbranchService} from '../../../features/services/departmentbranch/de
   styleUrls: ['./departmentbranch.css']
 })
 export class DepartmentBranchComponent implements OnInit {
+
+  private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmService);
 
   departmentBranchForm!: FormGroup;
 
@@ -219,7 +226,9 @@ export class DepartmentBranchComponent implements OnInit {
         .pipe(finalize(() => this.loading = false))
         .subscribe({
 
-          next: () => {
+          next: (res: any) => {
+
+            this.toast.successFrom(res, 'Department Branch Updated Successfully');
 
             this.loadMappings();
 
@@ -236,7 +245,9 @@ export class DepartmentBranchComponent implements OnInit {
         .pipe(finalize(() => this.loading = false))
         .subscribe({
 
-          next: () => {
+          next: (res: any) => {
+
+            this.toast.successFrom(res, 'Department Branch Added Successfully');
 
             this.loadMappings();
 
@@ -278,16 +289,18 @@ export class DepartmentBranchComponent implements OnInit {
   // DELETE
   //==========================
 
-  delete(id: number): void {
+  async delete(id: number): Promise<void> {
 
     if (!this.auth.hasPermission('DELETE_DEPARTMENT_BRANCH')) return;
 
-    if (!confirm('Delete this mapping?')) return;
+    if (!(await this.confirmDialog.confirmDelete('this mapping'))) return;
 
     this.departmentBranchService.deleteDeptbranch(id)
       .subscribe({
 
-        next: () => {
+        next: (res: any) => {
+
+          this.toast.successFrom(res, 'Department Branch Deleted Successfully');
 
           this.loadMappings();
 
@@ -309,7 +322,14 @@ export class DepartmentBranchComponent implements OnInit {
 
     this.selectedId = null;
 
-    this.departmentBranchForm.reset();
+    // Reset to '' (not null) so the "Select ..." placeholder option is shown
+    this.departmentBranchForm.reset({
+
+      departmentName: '',
+
+      branchName: ''
+
+    });
 
   }
 
